@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Elysean Perfumes - Checkout</title>
+    <link rel='stylesheet' href='/css/bootstrap.min.css'>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .checkout-card {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .pay-btn {
+            background-color: #000;
+            color: white;
+            border: none;
+            padding: 14px;
+            width: 100%;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .pay-btn:disabled { background-color: #999; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+    <div class='checkout-card'>
+        <h2>Elysean Perfumes</h2>
+        <p style='color:#666;'>Complete your purchase securely with Yoco</p>
+        <div style='border-top:1px solid #eee; padding-top:16px; margin-top:16px;'>
+            <div style='display:flex; justify-content:space-between; margin-bottom:8px;'>
+                <span>Perfume Order</span>
+                <span>R100.00</span>
+            </div>
+        </div>
+        <div style='border-top:1px solid #eee; padding-top:12px; margin-top:12px;'>
+            <div style='display:flex; justify-content:space-between; font-weight:bold;'>
+                <span>Total</span>
+                <span>R100.00</span>
+            </div>
+        </div>
+        <button class='pay-btn' id='pay-btn' onclick='startCheckout()'>
+            Pay R100.00 with Yoco
+        </button>
+        <p id='error-msg' style='color:red; margin-top:12px; display:none;'></p>
+    </div>
+    <script>
+        async function startCheckout() {
+            const btn = document.getElementById('pay-btn');
+            const errorMsg = document.getElementById('error-msg');
+            btn.disabled = true;
+            btn.textContent = 'Redirecting to payment...';
+            errorMsg.style.display = 'none';
+            try {
+                const response = await fetch('/create-checkout', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amountInCents: 10000 })
+                });
+                const data = await response.json();
+                if (data.redirectUrl) {
+                    window.location.href = data.redirectUrl;
+                } else {
+                    throw new Error(data.error || 'Something went wrong');
+                }
+            } catch (error) {
+                errorMsg.textContent = 'Error: ' + error.message;
+                errorMsg.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = 'Pay R100.00 with Yoco';
+            }
+        }
+    </script>
+</body>
+</html>
+
