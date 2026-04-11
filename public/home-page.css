@@ -1,4 +1,5 @@
-*,
+
+html { cursor: none !important; }*,
 *::before,
 *::after {
     margin: 0;
