@@ -85,7 +85,7 @@
 
         // Redirect after 3 seconds
         setTimeout(() => {
-          window.location.href = '/cart-page.html?success=true';
+          window.location.href = 'cart-page.html?success=true';
         }, 3200);
       }, 2500);
     });
