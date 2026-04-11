@@ -16,7 +16,7 @@ console.log("Cart.js is connected successfully!");
     if (urlParams.get('success') === 'true') {
       document.getElementById('successBanner').classList.add('show');
       localStorage.removeItem('elyseanCart');
-      window.history.replaceState({}, '', 'cart.html');
+      window.history.replaceState({}, '', '/cart-page.html');
     }
 
     // ─── CART ───
