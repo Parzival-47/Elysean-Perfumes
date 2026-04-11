@@ -5,35 +5,7 @@
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <title>Elysean Perfumes - Checkout</title>
     <link rel='stylesheet' href='/css/bootstrap.min.css'>
-    <style>
-        body {
-            background-color: #f8f9fa;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        .checkout-card {
-            background: white;
-            border-radius: 12px;
-            padding: 40px;
-            max-width: 420px;
-            width: 100%;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        }
-        .pay-btn {
-            background-color: #000;
-            color: white;
-            border: none;
-            padding: 14px;
-            width: 100%;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-        .pay-btn:disabled { background-color: #999; cursor: not-allowed; }
-    </style>
+    <link rel='stylesheet' href='/css/yoco-payment.css'>
 </head>
 <body>
     <div class='checkout-card'>
@@ -56,33 +28,7 @@
         </button>
         <p id='error-msg' style='color:red; margin-top:12px; display:none;'></p>
     </div>
-    <script>
-        async function startCheckout() {
-            const btn = document.getElementById('pay-btn');
-            const errorMsg = document.getElementById('error-msg');
-            btn.disabled = true;
-            btn.textContent = 'Redirecting to payment...';
-            errorMsg.style.display = 'none';
-            try {
-                const response = await fetch('/create-checkout', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ amountInCents: 10000 })
-                });
-                const data = await response.json();
-                if (data.redirectUrl) {
-                    window.location.href = data.redirectUrl;
-                } else {
-                    throw new Error(data.error || 'Something went wrong');
-                }
-            } catch (error) {
-                errorMsg.textContent = 'Error: ' + error.message;
-                errorMsg.style.display = 'block';
-                btn.disabled = false;
-                btn.textContent = 'Pay R100.00 with Yoco';
-            }
-        }
-    </script>
+        <script src='/js/yoco-payment.js'></script>
 </body>
 </html>
 

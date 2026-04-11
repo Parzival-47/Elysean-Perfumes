@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Elysean Perfumes — Luxury Fragrance House</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🖤</text></svg>"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="/css/home-page.css"/>
+</head>
+<body>
+
+  <!-- CURSOR -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- HEADER -->
+  <header id="header">
+    <a href="index.html" class="logo">Ely<span>s</span>ean</a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="products.html">Collections</a>
+      <a href="#about">Our Story</a>
+      <a href="cart.html" class="nav-cta">Cart (<span id="cart-count">0</span>)</a>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg" id="heroBg"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">The Art of Rare Fragrance</p>
+      <h1 class="hero-title">Where <em>Scent</em><br>Becomes<br>Memory</h1>
+      <p class="hero-sub">Handcrafted fragrances for those who refuse to be ordinary. Bottled luxury. Timeless presence.</p>
+      <div class="hero-actions">
+        <a href="products.html" class="btn-primary">Explore Collection</a>
+        <a href="#about" class="btn-ghost">Our Story</a>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <div class="scroll-line"></div>
+      <span>Scroll</span>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-section">
+    <div class="marquee-track" id="marqueeTrack">
+      <div class="marquee-item">Handcrafted Luxury <span class="marquee-dot">✦</span></div>
+      <div class="marquee-item">South Africa's Finest <span class="marquee-dot">✦</span></div>
+      <div class="marquee-item">Rare Ingredients <span class="marquee-dot">✦</span></div>
+      <div class="marquee-item">Timeless Elegance <span class="marquee-dot">✦</span></div>
+      <div class="marquee-item">Eau de Parfum 20% <span class="marquee-dot">✦</span></div>
+      <div class="marquee-item">Free Samples Available <span class="marquee-dot">✦</span></div>
+      <div class="marquee-item">Handcrafted Luxury <span class="marquee-dot">✦</span></div>
+      <div class="marquee-item">South Africa's Finest <span class="marquee-dot">✦</span></div>
+      <div class="marquee-item">Rare Ingredients <span class="marquee-dot">✦</span></div>
+      <div class="marquee-item">Timeless Elegance <span class="marquee-dot">✦</span></div>
+      <div class="marquee-item">Eau de Parfum 20% <span class="marquee-dot">✦</span></div>
+      <div class="marquee-item">Free Samples Available <span class="marquee-dot">✦</span></div>
+    </div>
+  </div>
+
+  <!-- CATEGORIES -->
+  <section class="categories">
+    <div class="cat-header reveal">
+      <div class="cat-header-text">
+        <span class="section-label">The Collections</span>
+        <h2 class="section-title">Four Worlds.<br><em>One House.</em></h2>
+        <p>Each collection is a universe unto itself — crafted for a distinct soul, a distinct moment in time.</p>
+      </div>
+      <a href="products.html" class="cat-view-all reveal reveal-delay-1">View All Fragrances →</a>
+    </div>
+
+    <div class="categories-grid reveal reveal-delay-1">
+      <a href="products.html?cat=masculine" class="cat-card">
+        <img src="https://images.unsplash.com/photo-1594035910387-fea47794261f?w=800&q=85" alt="Masculine" class="cat-card-img"/>
+        <div class="cat-card-overlay"></div>
+        <div class="cat-card-content">
+          <span class="cat-number">01</span>
+          <h3 class="cat-name">Masculine</h3>
+          <p class="cat-count">18 Fragrances</p>
+        </div>
+        <div class="cat-card-arrow">→</div>
+      </a>
+      <a href="products.html?cat=feminine" class="cat-card">
+        <img src="https://images.unsplash.com/photo-1615634260167-c8cdede054de?w=800&q=85" alt="Feminine" class="cat-card-img"/>
+        <div class="cat-card-overlay"></div>
+        <div class="cat-card-content">
+          <span class="cat-number">02</span>
+          <h3 class="cat-name">Feminine</h3>
+          <p class="cat-count">24 Fragrances</p>
+        </div>
+        <div class="cat-card-arrow">→</div>
+      </a>
+      <a href="products.html?cat=unisex" class="cat-card">
+        <img src="https://images.unsplash.com/photo-1547887538-047ad8a8b207?w=800&q=85" alt="Unisex" class="cat-card-img"/>
+        <div class="cat-card-overlay"></div>
+        <div class="cat-card-content">
+          <span class="cat-number">03</span>
+          <h3 class="cat-name">Unisex</h3>
+          <p class="cat-count">12 Fragrances</p>
+        </div>
+        <div class="cat-card-arrow">→</div>
+      </a>
+      <a href="products.html?cat=ouds" class="cat-card">
+        <img src="https://images.unsplash.com/photo-1600612253971-2b58555c7b60?w=800&q=85" alt="Ouds" class="cat-card-img"/>
+        <div class="cat-card-overlay"></div>
+        <div class="cat-card-content">
+          <span class="cat-number">04</span>
+          <h3 class="cat-name">Ouds</h3>
+          <p class="cat-count">9 Fragrances</p>
+        </div>
+        <div class="cat-card-arrow">→</div>
+      </a>
+    </div>
+  </section>
+
+  <!-- FEATURED STRIP -->
+  <div class="featured-strip">
+    <div class="strip-text reveal">
+      <span class="section-label">The Signature</span>
+      <h2 class="section-title">Born from<br><em>Obsession</em></h2>
+      <p>Every bottle of Elysean carries within it hundreds of hours of refinement. We source only the rarest raw materials — aged oud from the Middle East, Bulgarian rose at peak harvest, and vetiver from the island of Réunion.</p>
+      <div class="strip-stats">
+        <div class="stat">
+          <span class="stat-num">63+</span>
+          <span class="stat-label">Fragrances</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">20%</span>
+          <span class="stat-label">Concentration</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">8hrs</span>
+          <span class="stat-label">Avg Longevity</span>
+        </div>
+      </div>
+      <a href="products.html" class="btn-primary">Shop Now</a>
+    </div>
+    <div class="strip-image reveal reveal-delay-2">
+      <img src="https://images.unsplash.com/photo-1590156562745-5d9c9a9be2a5?w=900&q=85" alt="Elysean Bottle"/>
+      <div class="strip-image-accent"></div>
+      <div class="strip-image-badge">EDP 20%</div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <section class="about" id="about">
+    <span class="section-label reveal">Our Story</span>
+    <div class="about-divider reveal"></div>
+    <blockquote class="about-quote reveal reveal-delay-1">
+      "Fragrance is the <span>invisible luxury</span> that<br>lingers long after you have left the room."
+    </blockquote>
+    <p class="reveal reveal-delay-2">
+      Elysean Perfumes was founded on a single belief: that South Africa deserves a luxury fragrance house of its own. We blend Eastern oud traditions with Western perfumery techniques, creating fragrances that transcend geography and time.
+    </p>
+    <div class="about-pillars reveal reveal-delay-3">
+      <div class="pillar">
+        <span class="pillar-icon">◈</span>
+        <h4>Rare Materials</h4>
+        <p>Sourced from 14<br>countries worldwide</p>
+      </div>
+      <div class="pillar">
+        <span class="pillar-icon">◈</span>
+        <h4>High Concentration</h4>
+        <p>20% EDP for<br>lasting presence</p>
+      </div>
+      <div class="pillar">
+        <span class="pillar-icon">◈</span>
+        <h4>Try Before You Buy</h4>
+        <p>2ml samples available<br>for every fragrance</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="index.html" class="logo">Ely<span>s</span>ean</a>
+        <p>A luxury fragrance house born in South Africa. Crafted for those who understand that scent is the most intimate form of self-expression.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Collections</h5>
+        <a href="products.html?cat=masculine">Masculine</a>
+        <a href="products.html?cat=feminine">Feminine</a>
+        <a href="products.html?cat=unisex">Unisex</a>
+        <a href="products.html?cat=ouds">Ouds</a>
+      </div>
+      <div class="footer-col">
+        <h5>Information</h5>
+        <a href="#">Fragrance Guide</a>
+        <a href="#">How to Layer</a>
+        <a href="#">Shipping Info</a>
+        <a href="#">Returns</a>
+      </div>
+      <div class="footer-col">
+        <h5>Contact</h5>
+        <a href="#">info@elysean.co.za</a>
+        <a href="#">WhatsApp Us</a>
+        <a href="#">Instagram</a>
+        <a href="#">Facebook</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Elysean Perfumes. All rights reserved. Crafted in South Africa.</p>
+      <div class="footer-socials">
+        <a href="#">Instagram</a>
+        <a href="#">Facebook</a>
+        <a href="#">WhatsApp</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="home-page.js"></script>
+  
+</body>
+</html>

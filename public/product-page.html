@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Collections — Elysean Perfumes</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🖤</text></svg>"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="css/product-page.css"/>
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <header>
+    <a href="index.html" class="logo">Ely<span>s</span>ean</a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="products.html">Collections</a>
+      <a href="index.html#about">Our Story</a>
+      <a href="cart.html" class="nav-cta">Cart (<span id="cart-count">0</span>)</a>
+    </nav>
+  </header>
+
+  <div class="page-hero">
+    <div class="page-hero-text">
+      <span class="eyebrow">The Collections</span>
+      <h1>All <em>Fragrances</em></h1>
+    </div>
+    <div class="page-hero-meta">
+      <p>Discover your signature scent. Every bottle tells a story of rare ingredients and meticulous craft.</p>
+    </div>
+  </div>
+
+  <div class="filters-bar">
+    <button class="filter-btn active" data-cat="all">All</button>
+    <button class="filter-btn" data-cat="masculine">Masculine</button>
+    <button class="filter-btn" data-cat="feminine">Feminine</button>
+    <button class="filter-btn" data-cat="unisex">Unisex</button>
+    <button class="filter-btn" data-cat="ouds">Ouds</button>
+    <span class="filter-count" id="filter-count">12 fragrances</span>
+  </div>
+
+  <section class="products-section">
+    <div class="products-grid" id="products-grid"></div>
+  </section>
+
+  <!-- PRODUCT DETAIL MODAL -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modal">
+      <div class="modal-img"><img id="modal-img" src="" alt=""/></div>
+      <div class="modal-body">
+        <button class="modal-close" id="modalClose">✕</button>
+        <span class="modal-category" id="modal-cat"></span>
+        <h2 class="modal-name" id="modal-name"></h2>
+        <p class="modal-brand" id="modal-brand"></p>
+        <p class="modal-desc" id="modal-desc"></p>
+        <p class="modal-notes-title">Fragrance Notes</p>
+        <div class="modal-notes" id="modal-notes"></div>
+        <p class="modal-concentration">Concentration: <strong id="modal-conc"></strong></p>
+        <span class="size-label">Select Size</span>
+        <div class="size-options" id="size-options"></div>
+        <button class="modal-add-btn" id="modal-add-btn">Add to Cart</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CART POPUP -->
+  <div class="cart-popup" id="cartPopup">
+    <span class="popup-check">✦</span>
+    <p class="popup-title">Added to Cart</p>
+    <p class="popup-sub" id="popup-sub">Your fragrance has been added.</p>
+    <div class="popup-actions">
+      <a href="cart.html" class="popup-cart-btn">Go to Cart</a>
+      <button class="popup-continue-btn" id="popupContinue">Continue Shopping</button>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2025 Elysean Perfumes. Crafted in South Africa.</p>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="cart.html">Cart</a>
+      <a href="#">Contact</a>
+    </div>
+  </footer>
+
+  <script src="js/product-page.js"></script>
+  
+</body>
+</html>
