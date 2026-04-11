@@ -17,6 +17,14 @@ app.use('/js', express.static(path.join(__dirname, 'node_modules/jquery/dist')))
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/home-page.html'));
 });
+
+app.get('/:page', (req, res) => {
+    const page = req.params.page;
+    const filePath = path.join(__dirname, 'public', page);
+    res.sendFile(filePath, err => {
+        if (err) res.status(404).send('Page not found');
+    });
+});
  
 app.post('/create-checkout', async (req, res) => {
     const { amountInCents } = req.body;
@@ -30,13 +38,9 @@ app.post('/create-checkout', async (req, res) => {
             body: JSON.stringify({
                 amount: amountInCents,
                 currency: 'ZAR',
-                homepageUrl: `https://elyseanperfumes.co.za/homepage.html`,
-                cartpageUrl: `https://elyseanperfumes.co.za/cart-page.html`,
-                productpageUrl: `https://elyseanperfumes.co.za/product-page.html`,
                 successUrl: `https://elyseanperfumes.co.za/success.html`,
                 cancelUrl: `https://elyseanperfumes.co.za/cancel.html`,
                 failureUrl: `https://elyseanperfumes.co.za/cancel.html`,
-                yocopayUrl: `https://elyseanperfumes.co.za/yoco-payment.html`
             })
         });
         const data = await response.json();
