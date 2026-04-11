@@ -30,9 +30,9 @@ app.post('/create-checkout', async (req, res) => {
             body: JSON.stringify({
                 amount: amountInCents,
                 currency: 'ZAR',
-                successUrl: `http://localhost:${PORT}/success.html`,
-                cancelUrl: `http://localhost:${PORT}/cancel.html`,
-                failureUrl: `http://localhost:${PORT}/cancel.html`
+                successUrl: `https://elysean-perfumes.onrender.com/success.html`,
+                cancelUrl: `https://elysean-perfumes.onrender.com/cancel.html`,
+                failureUrl: `https://elysean-perfumes.onrender.com/cancel.html`
             })
         });
         const data = await response.json();
