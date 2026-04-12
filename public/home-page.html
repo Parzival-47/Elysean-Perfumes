@@ -26,6 +26,16 @@
     </nav>
   </header>
 
+  <!-- Mobile nav overlay -->
+<div class="mobile-nav-overlay" id="mobileOverlay"></div>
+
+<!-- Mobile nav drawer -->
+<div class="mobile-nav" id="mobileNav">
+  <a href="home-page.html">Home</a>
+  <a href="product-page.html">Collections</a>
+  <a href="cart-page.html">Cart</a>
+</div>
+
   <!-- HERO -->
   <section class="hero">
     <div class="hero-bg" id="heroBg"></div>
@@ -75,16 +85,19 @@
 
     <div class="categories-grid reveal reveal-delay-1">
       <a href="product-page.html?cat=masculine" class="cat-card">
-        <img src="https://images.unsplash.com/photo-1594035910387-fea47794261f?w=800&q=85" alt="Masculine" class="cat-card-img"/>
-        <div class="cat-card-overlay"></div>
-        <div class="cat-card-content">
-          <span class="cat-number">01</span>
-          <h3 class="cat-name">Masculine</h3>
-          <p class="cat-count">18 Fragrances</p>
+        <div class="cat-card-inner"> 
+          <img src="https://images.unsplash.com/photo-1594035910387-fea47794261f?w=800&q=85" alt="Masculine" class="cat-card-img"/>
+          <div class="cat-card-overlay"></div>
+          <div class="cat-card-content">
+            <span class="cat-number">01</span>
+            <h3 class="cat-name">Masculine</h3>
+            <p class="cat-count">18 Fragrances</p>
+          </div>
         </div>
         <div class="cat-card-arrow">→</div>
       </a>
       <a href="product-page.html?cat=feminine" class="cat-card">
+        <div class="cat-card-inner">
         <img src="https://images.unsplash.com/photo-1615634260167-c8cdede054de?w=800&q=85" alt="Feminine" class="cat-card-img"/>
         <div class="cat-card-overlay"></div>
         <div class="cat-card-content">
@@ -92,9 +105,11 @@
           <h3 class="cat-name">Feminine</h3>
           <p class="cat-count">24 Fragrances</p>
         </div>
+      </div>
         <div class="cat-card-arrow">→</div>
       </a>
       <a href="product-page.html?cat=unisex" class="cat-card">
+        <div class="cat-card-inner">
         <img src="https://images.unsplash.com/photo-1547887538-047ad8a8b207?w=800&q=85" alt="Unisex" class="cat-card-img"/>
         <div class="cat-card-overlay"></div>
         <div class="cat-card-content">
@@ -102,15 +117,18 @@
           <h3 class="cat-name">Unisex</h3>
           <p class="cat-count">12 Fragrances</p>
         </div>
+        </div>
         <div class="cat-card-arrow">→</div>
       </a>
       <a href="product-page.html?cat=ouds" class="cat-card">
+        <div class="cat-card-inner">
         <img src="https://images.unsplash.com/photo-1600612253971-2b58555c7b60?w=800&q=85" alt="Ouds" class="cat-card-img"/>
         <div class="cat-card-overlay"></div>
         <div class="cat-card-content">
           <span class="cat-number">04</span>
           <h3 class="cat-name">Ouds</h3>
           <p class="cat-count">9 Fragrances</p>
+        </div>
         </div>
         <div class="cat-card-arrow">→</div>
       </a>
@@ -175,44 +193,52 @@
     </div>
   </section>
 
-  <!-- FOOTER -->
   <footer>
-    <div class="footer-top">
-      <div class="footer-brand">
-        <a href="home-page.html" class="logo">Ely<span>s</span>ean</a>
-        <p>A luxury fragrance house born in South Africa. Crafted for those who understand that scent is the most intimate form of self-expression.</p>
-      </div>
-      <div class="footer-col">
-        <h5>Collections</h5>
-        <a href="product-page.html?cat=masculine">Masculine</a>
-        <a href="product-page.html?cat=feminine">Feminine</a>
-        <a href="product-page.html?cat=unisex">Unisex</a>
-        <a href="product-page.html?cat=ouds">Ouds</a>
-      </div>
-      <div class="footer-col">
-        <h5>Information</h5>
-        <a href="#">Fragrance Guide</a>
-        <a href="#">How to Layer</a>
-        <a href="#">Shipping Info</a>
-        <a href="#">Returns</a>
-      </div>
-      <div class="footer-col">
-        <h5>Contact</h5>
-        <a href="#">info@elysean.co.za</a>
-        <a href="#">WhatsApp Us</a>
-        <a href="#">Instagram</a>
-        <a href="#">Facebook</a>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="home-page.html" class="logo">Ely<span>s</span>ean</a>
+      <p>A luxury fragrance house born in South Africa. Crafted for those who understand that scent is the most intimate form of self-expression.</p>
+      <div class="footer-social-row">
+        <a href="#" class="footer-social-btn">IG</a>
+        <a href="#" class="footer-social-btn">FB</a>
+        <a href="#" class="footer-social-btn">WA</a>
       </div>
     </div>
-    <div class="footer-bottom">
-      <p>© 2025 Elysean Perfumes. All rights reserved. Crafted in South Africa.</p>
-      <div class="footer-socials">
-        <a href="#">Instagram</a>
-        <a href="#">Facebook</a>
-        <a href="#">WhatsApp</a>
+    <div class="footer-col">
+      <h5>Collections</h5>
+      <a href="product-page.html?cat=masculine">Masculine</a>
+      <a href="product-page.html?cat=feminine">Feminine</a>
+      <a href="product-page.html?cat=unisex">Unisex</a>
+      <a href="product-page.html?cat=ouds">Ouds</a>
+    </div>
+    <div class="footer-col">
+      <h5>Information</h5>
+      <a href="#">Fragrance Guide</a>
+      <a href="#">How to Layer</a>
+      <a href="#">Shipping Info</a>
+      <a href="#">Returns</a>
+    </div>
+    <div class="footer-col">
+      <h5>Contact</h5>
+      <a href="mailto:info@elysean.co.za">info@elysean.co.za</a>
+      <a href="#">WhatsApp Us</a>
+      <a href="#">Instagram</a>
+      <a href="#">Facebook</a>
+    </div>
+  </div>
+  <div class="footer-divider"></div>
+  <div class="footer-bottom">
+    <p>© 2025 Elysean Perfumes. All rights reserved. Crafted in South Africa.</p>
+    <div class="footer-bottom-right">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms</a>
+      <div class="footer-badge">
+        <span>Payments by</span>
+        <strong>Yoco</strong>
       </div>
     </div>
-  </footer>
+  </div>
+</footer>
 
   <script src="/home-page.js"></script>
   

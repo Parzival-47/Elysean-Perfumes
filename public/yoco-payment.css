@@ -1,13 +1,15 @@
-
-html { cursor: none !important; }
-
-body {
+    body {
     background-color: #f8f9fa;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
 }
+
+html {
+    scroll-behavior: smooth;
+    cursor: none !important;
+    }
 
 .checkout-card {
     background: white;

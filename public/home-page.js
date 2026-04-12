@@ -20,6 +20,34 @@
       el.addEventListener('mouseleave', () => { cursor.classList.remove('hover'); ring.classList.remove('hover'); });
     });
 
+    // ─── MOBILE NAV ───
+const navToggle = document.getElementById('navToggle');
+const mobileNav = document.getElementById('mobileNav');
+const mobileOverlay = document.getElementById('mobileOverlay');
+
+function openMobileNav() {
+    navToggle.classList.add('open');
+    mobileNav.classList.add('open');
+    mobileOverlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeMobileNav() {
+    navToggle.classList.remove('open');
+    mobileNav.classList.remove('open');
+    mobileOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+navToggle.addEventListener('click', () => {
+    navToggle.classList.contains('open') ? closeMobileNav() : openMobileNav();
+});
+
+mobileOverlay.addEventListener('click', closeMobileNav);
+mobileNav.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', closeMobileNav);
+});
+
     // ─── HEADER SCROLL ───
     const header = document.getElementById('header');
     window.addEventListener('scroll', () => {

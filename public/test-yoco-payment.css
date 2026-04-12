@@ -1,4 +1,3 @@
-    html { cursor: none !important; }
 *,
 *::before,
 *::after {
@@ -24,6 +23,7 @@
 
 html {
     scroll-behavior: smooth;
+    cursor: none !important;
 }
 
 body {
