@@ -285,7 +285,7 @@ nav a:hover {
 
 /* ─── HERO ─── */
 .hero {
-    height: 100vh;
+    height: 100dvh;
     position: relative;
     display: flex;
     align-items: flex-end;
@@ -319,19 +319,20 @@ nav a:hover {
 .hero-content {
     position: relative;
     z-index: 2;
-    padding: 0 60px 120px;
-    max-width: 700px;
+    padding: 0 30px -10px;
+    max-width: 800px;
+    margin-top: -200px;
 }
 
 .hero-eyebrow {
-    font-size: 0.68rem;
+    font-size: 0.75rem;
     letter-spacing: 0.3em;
     text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 24px;
+    margin-bottom: -60px;
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(0px);
     animation: fadeUp 0.9s ease 0.3s forwards;
+    color: var(--gold);
 }
 
 .hero-title {
@@ -342,12 +343,13 @@ nav a:hover {
     letter-spacing: -0.01em;
     margin-bottom: 28px;
     opacity: 0;
-    transform: translateY(30px);
     animation: fadeUp 1s ease 0.5s forwards;
 }
 
 .hero-title em {
     font-style: italic;
+    font-family: 'Cinzel Decorative', serif;
+    text-transform: uppercase;
     background: var(--grad);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -437,6 +439,7 @@ nav a:hover {
     display: flex;
     flex-direction: column;
     align-items: center;
+    align-self: column-end;
     gap: 12px;
     opacity: 0;
     animation: fadeIn 1s ease 1.5s forwards;

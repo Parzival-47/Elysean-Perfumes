@@ -121,10 +121,11 @@
 
       <!-- PAY BUTTON -->
       <div class="pay-btn-wrap">
-        <button class="pay-btn" id="payBtn">
+        <button class="pay-btn" id="payBtn" onclick='startCheckout()'>
           <span class="btn-text">Pay Now — <span class="pay-btn-amount" id="payBtnAmount">R0</span></span>
           <div class="spinner"></div>
         </button>
+        <p id='error-msg' style='color:red; margin-top:12px; display:none;'></p>
         <a href="cart-page.html" class="back-link">← Back to Cart</a>
       </div>
     </div>

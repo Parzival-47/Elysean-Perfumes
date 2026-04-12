@@ -38,7 +38,7 @@ app.post('/create-checkout', async (req, res) => {
             body: JSON.stringify({
                 amount: amountInCents,
                 currency: 'ZAR',
-                successUrl: `https://elyseanperfumes.co.za/success.html`,
+                successUrl: `https://elyseanperfumes.co.za/cart-page.html?success=true`,
                 cancelUrl: `https://elyseanperfumes.co.za/cancel.html`,
                 failureUrl: `https://elyseanperfumes.co.za/cancel.html`,
             })
