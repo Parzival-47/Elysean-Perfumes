@@ -2,27 +2,25 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const fetch = require('node-fetch');
- 
+
 const app = express();
 const PORT = process.env.PORT || 3000;
- 
 const YOCO_SECRET_KEY = process.env.YOCO_SECRET_KEY;
- 
+
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/css', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/css')));
-app.use('/js', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/js')));
-app.use('/js', express.static(path.join(__dirname, 'node_modules/jquery/dist')));
- 
+
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public/home-page.html'));
+    res.sendFile(path.join(__dirname, 'public', 'home-page.html'));
 });
 
 app.get('/:page', (req, res) => {
     const page = req.params.page;
     const filePath = path.join(__dirname, 'public', page);
-    res.sendFile(filePath, err => {
-        if (err) res.status(404).send('Page not found');
+    res.sendFile(filePath, (err) => {
+        if (err) {
+            res.status(404).send('Page not found');
+        }
     });
 });
  
