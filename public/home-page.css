@@ -70,13 +70,6 @@ header.scrolled {
     text-transform: uppercase;
 }
 
-header.scrolled .logo {
-    color: #1a1a1a;
-
-.logo span {
-    color: var(--gold-light);
-}
-
 nav {
     display: flex;
     gap: 44px;
@@ -253,7 +246,7 @@ nav a:hover {
 .hero-bg {
     position: absolute;
     inset: 0;
-    background-image: url('images/EP-website-hero-image.png');
+    background-image: url("images/EP-website-hero-image.png");
     background-size: cover;
     background-position: center 30%;
     transform: scale(1.05);
@@ -1234,4 +1227,4 @@ footer::after {
 
     .cat-card {
         height: 260px;
-    }}}
+    }}
