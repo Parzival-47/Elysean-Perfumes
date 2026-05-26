@@ -6,11 +6,12 @@
 
 :root {
     --black: #0A0A0A;
+    --white: #FFFFFF;
     --dark: #0F0F0F;
     --charcoal: #1A1A1A;
     --mid: #2A2A2A;
     --gold: #D4A843;
-    --gold-light: #E8BC55;
+    --gold-light: #ffc107;
     --gold-pale: #F0D080;
     --gold-dim: #A07830;
     --cream: #F8F4ED;
@@ -18,7 +19,7 @@
     --muted: #9A9489;
     --border: rgba(212, 168, 67, 0.15);
     --border-light: rgba(212, 168, 67, 0.35);
-    --grad: linear-gradient(135deg, #D4A843 0%, #F0D080 50%, #C8860A 100%);
+    --grad: linear-gradient(135deg, #FFC107 5%, #FFE68A 50%, #E89B00 95%);
     --grad-subtle: linear-gradient(135deg, rgba(212,168,67,0.15) 0%, rgba(240,208,128,0.08) 100%);
     --grad-border: linear-gradient(135deg, #D4A843, #F0D080, #C8860A);
     --glow: 0 0 40px rgba(212, 168, 67, 0.12);
@@ -30,9 +31,9 @@ html {
 }
 
 body {
-    background: var(--dark);
-    color: var(--cream);
-    font-family: 'Inter', sans-serif;
+    background: var(--cream);
+    color: var(--white);
+    font-family: 'Montserrat', sans-serif;
     font-weight: 300;
     line-height: 1.7;
     overflow-x: hidden;
@@ -53,24 +54,27 @@ header {
 }
 
 header.scrolled {
-    background: rgba(10, 10, 10, 0.92);
+    background: var(--white);
     backdrop-filter: blur(20px);
     padding: 18px 60px;
     border-bottom: 1px solid var(--border);
 }
 
 .logo {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.4rem;
-    font-weight: 500;
+    font-family: 'Montserrat', serif;
+    font-size: 30px;
+    font-weight: 600;
     letter-spacing: 0.12em;
-    color: var(--cream);
+    color: var(--white);
     text-decoration: none;
     text-transform: uppercase;
 }
 
+header.scrolled .logo {
+    color: #1a1a1a;
+
 .logo span {
-    color: var(--gold);
+    color: var(--gold-light);
 }
 
 nav {
@@ -249,7 +253,7 @@ nav a:hover {
 .hero-bg {
     position: absolute;
     inset: 0;
-    background-image: url('https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=1800&q=90');
+    background-image: url('/images/EP-website-hero-image.png');
     background-size: cover;
     background-position: center 30%;
     transform: scale(1.05);
@@ -273,26 +277,29 @@ nav a:hover {
 .hero-content {
     position: relative;
     z-index: 2;
-    padding: 0 30px -10px;
-    max-width: 800px;
+    padding: 0 20px -10px;
+    max-width: 1000px;
     margin-top: -200px;
 }
 
 .hero-eyebrow {
-    font-size: 0.75rem;
+    font-size: 15px;
+    font-style: italic;
+    font-style: bold;
+    font-family: 'DM Mono';
     letter-spacing: 0.3em;
     text-transform: uppercase;
     margin-bottom: -60px;
     opacity: 0;
     transform: translateY(0px);
     animation: fadeUp 0.9s ease 0.3s forwards;
-    color: var(--gold);
+    color: var(--white);
 }
 
 .hero-title {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(3.5rem, 7vw, 6.5rem);
-    font-weight: 400;
+    font-family: 'DM Mono';
+    font-size: clamp(3.5rem, 9vw, 7rem);
+    font-weight: 600;
     line-height: 1.05;
     letter-spacing: -0.01em;
     margin-bottom: 28px;
@@ -302,7 +309,7 @@ nav a:hover {
 
 .hero-title em {
     font-style: italic;
-    font-family: 'Cinzel Decorative', serif;
+    font-family: 'DM Mono';
     text-transform: uppercase;
     background: var(--grad);
     -webkit-background-clip: text;
@@ -311,8 +318,8 @@ nav a:hover {
 }
 
 .hero-sub {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.2rem;
+    font-family: 'Montserrat';
+    font-size: 18px;
     color: var(--off-white);
     opacity: 0;
     transform: translateY(20px);
