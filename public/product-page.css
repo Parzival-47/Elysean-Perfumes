@@ -23,7 +23,6 @@
 
 html {
     scroll-behavior: smooth;
-    cursor: none !important;
 }
 
 body {
@@ -33,48 +32,6 @@ body {
     font-weight: 300;
     line-height: 1.7;
     overflow-x: hidden;
-}
-
-* {
-    cursor: none !important;
-}
-
-.cursor {
-    width: 8px;
-    height: 8px;
-    background: var(--gold);
-    border-radius: 50%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    z-index: 9999;
-    transition: transform 0.15s ease, width 0.3s ease, height 0.3s ease;
-    transform: translate(-50%, -50%);
-}
-
-.cursor-ring {
-    width: 36px;
-    height: 36px;
-    border: 1px solid rgba(201, 164, 111, 0.5);
-    border-radius: 50%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    z-index: 9998;
-    transform: translate(-50%, -50%);
-}
-
-.cursor.hover {
-    width: 20px;
-    height: 20px;
-}
-
-.cursor-ring.hover {
-    width: 56px;
-    height: 56px;
-    border-color: var(--gold);
 }
 
 header {

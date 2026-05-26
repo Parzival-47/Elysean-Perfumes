@@ -1,15 +1,3 @@
-// ─── CURSOR ───
-const cursor = document.getElementById('cursor');
-const ring = document.getElementById('cursorRing');
-let mx = 0, my = 0, rx = 0, ry = 0;
-document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cursor.style.left = mx + 'px'; cursor.style.top = my + 'px'; });
-function animRing() { rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12; ring.style.left = rx + 'px'; ring.style.top = ry + 'px'; requestAnimationFrame(animRing); }
-animRing();
-function addCursorHover(el) {
-    el.addEventListener('mouseenter', () => { cursor.classList.add('hover'); ring.classList.add('hover'); });
-    el.addEventListener('mouseleave', () => { cursor.classList.remove('hover'); ring.classList.remove('hover'); });
-}
-
 // ─── PRODUCTS DATA ───
 const PRODUCTS = [
     { id: 1, cat: 'feminine', name: 'Andromeda Tiziana Terenzi', brand: 'Elysean Perfumes', desc: 'Celestial floral-woody fragrance with bright citrus and creamy sandalwood.', notes: ['Citrus', 'Floral', 'Sandalwood', 'Woody', 'Musk'], conc: 'Eau de Parfum — 20%', img: 'images/ProductCoverImage-Fem.png', sizes: [{ ml: '2ml', label: 'Sample', price: 40 }, { ml: '30ml', label: '', price: 155 }, { ml: '50ml', label: '', price: 226 }, { ml: '100ml', label: '', price: 378 }, { ml: '250ml', label: '', price: 765 }] },																									

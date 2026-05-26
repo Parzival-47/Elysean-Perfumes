@@ -1,4 +1,4 @@
-    // ─── MOBILE NAV ───
+   // ─── MOBILE NAV ───
 const navToggle = document.getElementById('navToggle');
 const mobileNav = document.getElementById('mobileNav');
 const mobileOverlay = document.getElementById('mobileOverlay');
