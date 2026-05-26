@@ -253,7 +253,7 @@ nav a:hover {
 .hero-bg {
     position: absolute;
     inset: 0;
-    background-image: url('/images/EP-website-hero-image.png');
+    background-image: url('images/EP-website-hero-image.png');
     background-size: cover;
     background-position: center 30%;
     transform: scale(1.05);
@@ -1154,12 +1154,16 @@ footer::after {
         display: none;
     }
 
+    .nav-toggle {
+        display: flex;
+    }
+
     section {
         padding: 80px 24px;
     }
 
     .hero-content {
-        padding: 0 24px 80px;
+        padding: 0 24px 100px;
     }
 
     .hero-scroll {
@@ -1174,11 +1178,12 @@ footer::after {
 
     .categories-grid {
         grid-template-columns: 1fr;
+        gap: 12px;
         height: auto;
     }
 
     .cat-card {
-        height: 280px;
+        height: 320px;
     }
 
     .featured-strip {
@@ -1197,40 +1202,6 @@ footer::after {
     .about-pillars {
         flex-direction: column;
         gap: 40px;
-    }
-
-    .footer-top {
-        grid-template-columns: 1fr;
-        gap: 40px;
-    }
-
-    .footer-bottom {
-        flex-direction: column;
-        gap: 20px;
-        text-align: center;
-    }
-}
-
-@media (max-width: 768px) {
-    nav {
-        display: none;
-    }
-
-    .nav-toggle {
-        display: flex;
-    }
-
-    .hero-content {
-        padding: 0 24px 100px;
-    }
-
-    .categories-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-    }
-
-    .cat-card {
-        height: 320px;
     }
 
     .footer-top {
@@ -1263,5 +1234,4 @@ footer::after {
 
     .cat-card {
         height: 260px;
-    }
-}
+    }}}
