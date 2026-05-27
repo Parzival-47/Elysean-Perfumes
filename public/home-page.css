@@ -1,4 +1,4 @@
-*::before,*::after {
+*, *::before,*::after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -7,10 +7,12 @@
 :root {
     --black: #0A0A0A;
     --white: #FFFFFF;
+    --white: #FFFFFF;
     --dark: #0F0F0F;
     --charcoal: #1A1A1A;
     --mid: #2A2A2A;
     --gold: #D4A843;
+    --gold-light: #ffc107;
     --gold-light: #ffc107;
     --gold-pale: #F0D080;
     --gold-dim: #A07830;
@@ -19,6 +21,7 @@
     --muted: #9A9489;
     --border: rgba(212, 168, 67, 0.15);
     --border-light: rgba(212, 168, 67, 0.35);
+    --grad: linear-gradient(135deg, #FFC107 5%, #FFE68A 50%, #E89B00 95%);
     --grad: linear-gradient(135deg, #FFC107 5%, #FFE68A 50%, #E89B00 95%);
     --grad-subtle: linear-gradient(135deg, rgba(212,168,67,0.15) 0%, rgba(240,208,128,0.08) 100%);
     --grad-border: linear-gradient(135deg, #D4A843, #F0D080, #C8860A);
@@ -31,6 +34,9 @@ html {
 }
 
 body {
+    background: var(--cream);
+    color: var(--white);
+    font-family: 'Montserrat', sans-serif;
     background: var(--cream);
     color: var(--black);
     font-family: 'Montserrat', sans-serif;
@@ -55,6 +61,7 @@ header {
 
 header.scrolled {
     background: var(--white);
+    background: var(--white);
     backdrop-filter: blur(20px);
     padding: 18px 60px;
     border-bottom: 1px solid var(--border);
@@ -68,15 +75,14 @@ header.scrolled a.logo {
     font-family: 'Montserrat', serif;
     font-size: 30px;
     font-weight: 600;
+    font-family: 'Montserrat', serif;
+    font-size: 30px;
+    font-weight: 600;
     letter-spacing: 0.12em;
+    color: var(--white);
     color: var(--white);
     text-decoration: none;
     text-transform: uppercase;
-    transition: color 0.3s ease;
-}
-
-.logo span {
-    color: var(--gold);
 }
 
 nav {
@@ -1177,12 +1183,16 @@ header.scrolled .nav-toggle span {
         display: none;
     }
 
+    .nav-toggle {
+        display: flex;
+    }
+
     section {
         padding: 80px 24px;
     }
 
     .hero-content {
-        padding: 0 24px 80px;
+        padding: 0 24px 100px;
     }
 
     .hero-scroll {
@@ -1197,11 +1207,12 @@ header.scrolled .nav-toggle span {
 
     .categories-grid {
         grid-template-columns: 1fr;
+        gap: 12px;
         height: auto;
     }
 
     .cat-card {
-        height: 280px;
+        height: 320px;
     }
 
     .featured-strip {
@@ -1220,40 +1231,6 @@ header.scrolled .nav-toggle span {
     .about-pillars {
         flex-direction: column;
         gap: 40px;
-    }
-
-    .footer-top {
-        grid-template-columns: 1fr;
-        gap: 40px;
-    }
-
-    .footer-bottom {
-        flex-direction: column;
-        gap: 20px;
-        text-align: center;
-    }
-}
-
-@media (max-width: 768px) {
-    nav {
-        display: none;
-    }
-
-    .nav-toggle {
-        display: flex;
-    }
-
-    .hero-content {
-        padding: 0 24px 100px;
-    }
-
-    .categories-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-    }
-
-    .cat-card {
-        height: 320px;
     }
 
     .footer-top {
@@ -1286,5 +1263,4 @@ header.scrolled .nav-toggle span {
 
     .cat-card {
         height: 260px;
-    }
-}
+    }}
