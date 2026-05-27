@@ -38,7 +38,7 @@ body {
     color: var(--white);
     font-family: 'Montserrat', sans-serif;
     background: var(--cream);
-    color: var(--black);
+    color: var(--white);
     font-family: 'Montserrat', sans-serif;
     font-weight: 300;
     line-height: 1.7;
@@ -76,13 +76,15 @@ header.scrolled a.logo {
     font-size: 30px;
     font-weight: 600;
     font-family: 'Montserrat', serif;
-    font-size: 30px;
-    font-weight: 600;
     letter-spacing: 0.12em;
-    color: var(--white);
     color: var(--white);
     text-decoration: none;
     text-transform: uppercase;
+}
+
+.logo span {
+    color: var(--gold-light);
+    transition: color 0.3s ease;
 }
 
 nav {
@@ -92,13 +94,13 @@ nav {
 }
 
 nav a {
-    color: var(--muted);
+    color: var(--white);
     text-decoration: none;
-    font-size: 0.72rem;
+    font-size: 14px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
     transition: color 0.3s ease;
-    font-weight: 400;
+    font-weight: 500;
 }
 
 nav a:hover {
@@ -198,7 +200,7 @@ nav a:hover {
 }
 
 .mobile-nav a {
-    color: var(--muted);
+    color: var(--white);
     text-decoration: none;
     font-size: 1.1rem;
     font-family: 'Playfair Display', serif;
@@ -261,7 +263,7 @@ nav a:hover {
 .hero-bg {
     position: absolute;
     inset: 0;
-    background-image: url('/images/EP-website-hero-image.png');
+    background-image: url('/images/EP-website-hero-image-2.png');
     background-size: cover;
     background-position: center 30%;
     transform: scale(1.05);
@@ -285,15 +287,15 @@ nav a:hover {
 .hero-content {
     position: relative;
     z-index: 2;
-    padding: 0 20px -10px;
+    padding: 0 20px 100px;
     max-width: 1000px;
-    margin-top: -200px;
+    margin-top: 0px;
 }
 
 .hero-eyebrow {
     font-size: 15px;
     font-style: italic;
-    font-style: bold;
+    font-weight: bold;
     font-family: 'DM Mono';
     letter-spacing: 0.3em;
     text-transform: uppercase;
