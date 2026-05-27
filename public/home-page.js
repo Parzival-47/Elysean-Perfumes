@@ -1,4 +1,4 @@
-    // ─── MOBILE NAV ───
+   // ─── MOBILE NAV ───
 const navToggle = document.getElementById('navToggle');
 const mobileNav = document.getElementById('mobileNav');
 const mobileOverlay = document.getElementById('mobileOverlay');
@@ -54,10 +54,13 @@ mobileNav.querySelectorAll('a').forEach(link => {
     link.addEventListener('click', closeMobileNav);
 });
 
-    // ─── HEADER SCROLL ───
-    const header = document.getElementById('header');
     window.addEventListener('scroll', () => {
-      header.classList.toggle('scrolled', window.scrollY > 60);
+        const header = document.getElementById("header");
+        if (window.scrollY > 80) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
     });
 
     // ─── HERO BG ───

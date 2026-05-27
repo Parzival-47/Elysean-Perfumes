@@ -32,7 +32,7 @@ html {
 
 body {
     background: var(--cream);
-    color: var(--white);
+    color: var(--black);
     font-family: 'Montserrat', sans-serif;
     font-weight: 300;
     line-height: 1.7;
@@ -60,6 +60,10 @@ header.scrolled {
     border-bottom: 1px solid var(--border);
 }
 
+header.scrolled a.logo {
+    color: var(--black) !important;
+}
+
 .logo {
     font-family: 'Montserrat', serif;
     font-size: 30px;
@@ -68,13 +72,11 @@ header.scrolled {
     color: var(--white);
     text-decoration: none;
     text-transform: uppercase;
+    transition: color 0.3s ease;
 }
 
-header.scrolled .logo {
-    color: #1a1a1a;
-
 .logo span {
-    color: var(--gold-light);
+    color: var(--gold);
 }
 
 nav {
@@ -1063,6 +1065,27 @@ footer::after {
     -webkit-text-fill-color: transparent;
     background-clip: text;
     font-style: italic;
+}
+
+/* ─── SCROLLED HEADER STYLES ─── */
+header.scrolled .logo {
+    color: var(--black);
+}
+
+header.scrolled .logo span {
+    color: var(--gold-light);
+}
+
+header.scrolled nav a {
+    color: #444444;
+}
+
+header.scrolled nav a:hover {
+    color: var(--gold);
+}
+
+header.scrolled .nav-toggle span {
+    background: var(--black);
 }
 
 /* ─── ANIMATIONS ─── */
