@@ -34,11 +34,14 @@ html {
 }
 
 body {
-    background: var(--cream);
+    background: var(--white);
     color: var(--white);
     font-family: 'Montserrat', sans-serif;
-    background: var(--cream);
-    color: var(--white);
+    background: var(--white);
+    color: var(--black);
+    font-family: 'Montserrat', sans-serif;
+    background: var(--white);
+    color: var(--black);
     font-family: 'Montserrat', sans-serif;
     font-weight: 300;
     line-height: 1.7;
@@ -62,7 +65,7 @@ header {
 header.scrolled {
     background: var(--white);
     background: var(--white);
-    backdrop-filter: blur(20px);
+    backdrop-filter: blur(1.250rem);
     padding: 18px 60px;
     border-bottom: 1px solid var(--border);
 }
@@ -73,7 +76,7 @@ header.scrolled a.logo {
 
 .logo {
     font-family: 'Montserrat', serif;
-    font-size: 30px;
+    font-size: 1.875rem;
     font-weight: 600;
     font-family: 'Montserrat', serif;
     letter-spacing: 0.12em;
@@ -89,14 +92,14 @@ header.scrolled a.logo {
 
 nav {
     display: flex;
-    gap: 44px;
+    gap: 2.750rem;
     align-items: center;
 }
 
 nav a {
     color: var(--white);
     text-decoration: none;
-    font-size: 14px;
+    font-size: 0.875rem;
     letter-spacing: 0.18em;
     text-transform: uppercase;
     transition: color 0.3s ease;
@@ -138,18 +141,18 @@ nav a:hover {
 .nav-toggle {
     display: none;
     flex-direction: column;
-    gap: 5px;
+    gap: 0.313rem;
     background: none;
     border: none;
-    padding: 4px;
+    padding: 0.25rem;
     z-index: 200;
 }
 
 .nav-toggle span {
     display: block;
-    width: 24px;
+    width: 1.5rem;
     height: 1px;
-    background: var(--cream);
+    background: var(--white);
     transition: all 0.4s ease;
 }
 
@@ -171,7 +174,7 @@ nav a:hover {
     top: 0;
     right: 0;
     bottom: 0;
-    width: 280px;
+    width: 17.5rem;
     background: var(--charcoal);
     z-index: 150;
     transform: translateX(100%);
@@ -195,7 +198,7 @@ nav a:hover {
     top: 0;
     left: 0;
     bottom: 0;
-    width: 1px;
+    width: 0.063rem;
     background: var(--grad-border);
 }
 
@@ -225,7 +228,7 @@ nav a:hover {
 
 .mobile-nav a:hover {
     color: var(--gold-light);
-    padding-left: 8px;
+    padding-left: 0.5rem;
 }
 
 .mobile-nav a:hover::after {
@@ -260,8 +263,8 @@ nav a:hover {
     align-items: center;
     justify-content: left;
     overflow: hidden;
-    padding-top: 90px;
-    margin-bottom: 0px;
+    padding-top: 5.625rem;
+    margin-bottom: 0rem;
 }
 
 .hero-bg {
@@ -292,20 +295,20 @@ nav a:hover {
     position: relative;
     z-index: 2;
     padding: 0 20px;
-    max-width: 1100px;
+    max-width: 68.75rem;
     width: 100%;
     text-align: left;
-    margin-top: 100px;
+    margin-top: 6.250rem;
 }
 
 .hero-eyebrow {
-    font-size: 15px;
+    font-size: 0.938rem;
     font-style: italic;
     font-weight: bold;
     font-family: 'DM Mono';
     letter-spacing: 0.3em;
     text-transform: uppercase;
-    margin-bottom: 20px;
+    margin-bottom: 1.250rem;
     opacity: 0;
     transform: translateY(0px);
     animation: fadeUp 0.9s ease 0.3s forwards;
@@ -314,11 +317,12 @@ nav a:hover {
 
 .hero-title {
     font-family: 'DM Mono';
+    color: var(--white);
     font-size: clamp(3.5rem, 9vw, 7rem);
     font-weight: 600;
     line-height: 1.05;
     letter-spacing: -0.01em;
-    margin-bottom: 28px;
+    margin-bottom: 1.750rem;
     opacity: 0;
     animation: fadeUp 1s ease 0.5s forwards;
 }
@@ -335,20 +339,20 @@ nav a:hover {
 
 .hero-sub {
     font-family: 'Montserrat';
-    font-size: 18px;
+    font-size: 1.125rem;
     color: var(--off-white);
     opacity: 0;
     transform: translateY(20px);
     animation: fadeUp 0.9s ease 0.7s forwards;
     max-width: 440px;
-    margin-bottom: 48px;
+    margin-bottom: 3rem;
     font-weight: 300;
     letter-spacing: 0.02em;
 }
 
 .hero-actions {
     display: flex;
-    gap: 20px;
+    gap: 1.250rem;
     align-items: center;
     opacity: 0;
     transform: translateY(20px);
@@ -360,7 +364,7 @@ nav a:hover {
     color: var(--black);
     text-decoration: none;
     padding: 16px 40px;
-    font-size: 0.72rem;
+    font-size: 0.9rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     font-weight: 500;
@@ -411,35 +415,35 @@ nav a:hover {
 /* ─── MARQUEE ─── */
 .marquee-section {
     z-index: 1;
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
+    border-top: 2px solid var(--border);
+    border-bottom: 2px solid var(--border);
     padding: 18px 0;
     overflow: hidden;
-    background: var(--mid);
+    background: var(--gold-light);
 }
 
 .marquee-track {
     display: flex;
     gap: 0;
-    animation: marquee 25s linear infinite;
+    animation: marquee 15s linear infinite;
     white-space: nowrap;
 }
 
 .marquee-item {
     display: inline-flex;
     align-items: center;
-    gap: 32px;
+    gap: 1.625rem;
     padding: 0 32px;
-    font-size: 0.75rem;
+    font-size: 0.875rem;
     letter-spacing: 0.25em;
     text-transform: uppercase;
-    color: var(--white);
+    color: var(--black);
     font-weight: 400;
 }
 
 .marquee-dot {
-    color: var(--gold);
-    font-size: 1rem;
+    color: var(--black);
+    font-size: 1.5rem;
 }
 
 /* ─── SECTION COMMONS ─── */
@@ -448,23 +452,24 @@ section {
 }
 
 .section-label {
-    font-size: 0.62rem;
+    font-size: 0.7rem;
     letter-spacing: 0.35em;
     text-transform: uppercase;
-    background: var(--grad);
+    background: var(--black);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    margin-bottom: 20px;
+    margin-bottom: 1.25rem;
     display: block;
 }
 
 .section-title {
     font-family: 'Playfair Display', serif;
-    font-size: clamp(2.2rem, 4vw, 3.5rem);
+    font-size: clamp(2.4rem, 6vw, 4rem);
     font-weight: 400;
     line-height: 1.15;
-    margin-bottom: 20px;
+    margin-bottom: 1.25rem;
+     color: var(--black);
 }
 
 .section-title em {
@@ -474,7 +479,8 @@ section {
 
 /* ─── CATEGORIES ─── */
 .categories {
-    background: var(--dark);
+    background: var(--white);
+    color: var(--black);
 }
 
 .cat-header {
@@ -488,9 +494,14 @@ section {
     max-width: 500px;
 }
 
+.section-title {
+    margin-bottom: 12px;
+    font-size: 50px;
+}
+
 .cat-header p {
-    color: var(--muted);
-    font-family: 'Cormorant Garamond', serif;
+    color: var(--black);
+    font-family: 'Montserrat', serif;
     font-size: 1.1rem;
     line-height: 1.8;
 }
