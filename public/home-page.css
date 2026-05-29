@@ -7,7 +7,6 @@
 :root {
     --black: #0A0A0A;
     --white: #FFFFFF;
-    --white: #FFFFFF;
     --dark: #0F0F0F;
     --charcoal: #1A1A1A;
     --mid: #2A2A2A;
@@ -411,11 +410,11 @@ nav a:hover {
 /* ─── MARQUEE ─── */
 .marquee-section {
     z-index: 1;
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    padding: 18px 0;
+    border-top: 0.125rem solid var(--border);
+    border-bottom: 0.125rem solid var(--border);
+    padding: 1.125rem 0;
     overflow: hidden;
-    background: var(--mid);
+    background: var(--gold-light);
 }
 
 .marquee-track {
@@ -428,18 +427,18 @@ nav a:hover {
 .marquee-item {
     display: inline-flex;
     align-items: center;
-    gap: 32px;
+    gap: 2.125rem;
     padding: 0 32px;
-    font-size: 0.75rem;
+    font-size: 0.875rem;
     letter-spacing: 0.25em;
     text-transform: uppercase;
-    color: var(--white);
+    color: var(--black);
     font-weight: 400;
 }
 
 .marquee-dot {
-    color: var(--gold);
-    font-size: 1rem;
+    color: var(--black);
+    font-size: 1.563rem;
 }
 
 /* ─── SECTION COMMONS ─── */
