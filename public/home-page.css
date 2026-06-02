@@ -522,7 +522,7 @@ section {
 /* FLOATING CARD GRID */
 .categories-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 1.25rem;
     height: auto;
 }
@@ -533,7 +533,7 @@ section {
     text-decoration: none;
     display: block;
     height: 30rem;
-    border-radius: 0.125rem;
+    border-radius: 1.5rem;
     /* Gradient border */
     padding: 0.0625rem; /* Border thickness */
     background: var(--grad-border);
@@ -561,22 +561,18 @@ section {
     height: 100%;
     object-fit: cover;
     transition: transform 0.9s cubic-bezier(0.23, 1, 0.32, 1);
-    filter: brightness(0.5);
+    filter: brightness(1);
     display: block;
 }
 
 .cat-card:hover .cat-card-img {
     transform: scale(1.08);
-    filter: brightness(0.35);
+    filter: brightness(0.95);
 }
 
 .cat-card-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top,
-        rgba(10, 10, 10, 0.95) 0%,
-        rgba(10, 10, 10, 0.4) 50%,
-        transparent 100%);
 }
 
 /* Gradient shimmer on hover */
@@ -605,7 +601,7 @@ section {
 }
 
 .cat-number {
-    font-size: 0.58rem;
+    font-size: 1.5rem;
     letter-spacing: 0.3em;
     text-transform: uppercase;
     background: var(--grad);
@@ -618,17 +614,17 @@ section {
 
 .cat-name {
     font-family: 'Nunito Sans', sans-serif;
-    font-size: 1.5rem;
+    font-size: 2.5rem;
     font-weight: 400;
-    color: var(--cream);
-    line-height: 1.2;
+    color: var(--white);
+    line-height: 1.5;
     margin-bottom: 0.375rem;
 }
 
 .cat-count {
     font-size: 0.72rem;
-    color: var(--muted);
-    margin-top: 0.5rem;
+    color: var(--white);
+    margin-top: 0.9rem;
     letter-spacing: 0.05em;
     transform: translateY(0.625rem);
     opacity: 0;
