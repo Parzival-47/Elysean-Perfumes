@@ -20,6 +20,7 @@
     --cream: #F8F4ED;
     --off-white: #EDE8E0;
     --muted: #9A9489;
+    --purple: #5B21B6;
     --border: rgba(212, 168, 67, 0.15);
     --border-light: rgba(212, 168, 67, 0.35);
     --grad: linear-gradient(135deg, #FFC107 5%, #FFE68A 50%, #E89B00 95%);
@@ -488,13 +489,14 @@ section {
 }
 
 .cat-header-text {
-    max-width: 100%;
+    width: 100%;
 }
 
 .cat-header-button {
     display: flex;
     justify-content: space-between;
     align-items: right;
+    vertical-align: center;
     width: 100%;
 }
 
@@ -686,6 +688,7 @@ section {
     grid-template-columns: 1fr 1fr;
     gap: 5rem;
     align-items: center;
+    border-bottom: 2px solid var(--gold-light);
 }
 
 .strip-text .section-label {
@@ -708,7 +711,7 @@ section {
     display: flex;
     gap: 3rem;
     margin-bottom: 3rem;
-    border-top: 1px solid var(--border);
+    border-top: 1px solid var(--gold-light);
     padding-top: 2rem;
 }
 
@@ -757,28 +760,19 @@ section {
 }
 
 /* ─── ABOUT ─── */
-.about-banner-image {
-    width: 100%;
-    object-fit: cover;
-    height: 600px;
-    object-fit: cover;
-    object-position: top-left;
-    clip-path: inset(20px 0px 20px 0px); 
-    display :block;
-}
-
 .about {
     background: var(--light-grey);
     text-align: center;
     max-width: 56.25rem;
     margin: 0 auto;
-    padding: 140px 60px;
+    padding: 60px 60px;
 }
 
 .about .section-label {
     justify-content: center;
     color: var(--black);
     display: flex;
+    font-size: 2.5rem;
 }
 
 .about-quote {
@@ -792,13 +786,13 @@ section {
 }
 
 .about-quote span {
-    color: var(--gold);
+    color: var(--gold-light);
 }
 
 .about p {
     font-family: 'Nunito Sans', serif;
     font-size: 1.15rem;
-    color: var(--muted);
+    color: var(--black);
     line-height: 1.9;
     margin-bottom: 3rem;
 }
@@ -825,19 +819,19 @@ section {
     font-size: 1.5rem;
     margin-bottom: 16px;
     display: block;
-    color: var(--gold);
+    color: var(--gold-light);
 }
 
 .pillar h4 {
     font-family: 'Nunito Sans', serif;
-    font-size: 1rem;
+    font-size: 1.5rem;
     font-weight: 400;
-    color: var(--cream);
+    color: var(--black);
     margin-bottom: 0.5rem;
 }
 
 .pillar p {
-    font-size: 0.8rem;
+    font-size: 1.15rem;
     color: var(--black);
     margin: 0;
     font-family: 'Nunito Sans', sans-serif;
@@ -891,7 +885,7 @@ footer::after {
 
 .footer-brand p {
     font-family: 'Nunito Sans', serif;
-    color: var(--muted);
+    color: var(--white);
     font-size: 1rem;
     line-height: 1.8;
     max-width: 260px;
@@ -911,7 +905,7 @@ footer::after {
     justify-content: center;
     border: none;
     background: var(--charcoal);
-    color: var(--muted);
+    color: var(--white);
     text-decoration: none;
     font-size: 0.7rem;
     font-weight: 500;
@@ -944,7 +938,7 @@ footer::after {
 }
 
 .footer-col h5 {
-    font-size: 0.62rem;
+    font-size: 1rem;
     letter-spacing: 0.3em;
     text-transform: uppercase;
     background: var(--grad);
@@ -958,7 +952,7 @@ footer::after {
 
 .footer-col a {
     display: block;
-    color: var(--muted);
+    color: var(--white);
     text-decoration: none;
     font-size: 0.83rem;
     margin-bottom: 1.75rem;
@@ -1028,45 +1022,6 @@ footer::after {
 
 .footer-bottom-right a:hover {
     color: var(--gold-light);
-}
-
-.footer-badge {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    border: none;
-    position: relative;
-    padding: 8px 16px;
-    background: var(--charcoal);
-}
-
-.footer-badge::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    padding: 1px;
-    background: var(--grad-border);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-}
-
-.footer-badge span {
-    font-size: 0.6rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--muted);
-}
-
-.footer-badge strong {
-    font-family: 'Nunito Sans', serif;
-    font-size: 0.9rem;
-    background: var(--grad);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    font-style: italic;
 }
 
 /* ─── SCROLLED HEADER STYLES ─── */

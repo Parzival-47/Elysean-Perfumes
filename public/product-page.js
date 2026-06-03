@@ -453,4 +453,3 @@ if (urlCat) {
 
 renderProducts(currentFilter);
 updateCartCount();
-document.querySelectorAll('a, button').forEach(el => addCursorHover(el));
