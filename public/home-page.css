@@ -6,6 +6,8 @@
 
 :root {
     --black: #0A0A0A;
+    --light-grey: #F4F4F4;
+    --warm-white: #FAF7F0;
     --white: #FFFFFF;
     --dark: #0F0F0F;
     --charcoal: #1A1A1A;
@@ -33,10 +35,10 @@ html {
 }
 
 body {
-    background: var(--cream);
-    color: var(--white);
+    background: var(--light-gray);
+    color: var(--White);
     font-family: 'Nunito Sans', sans-serif;
-    background: var(--cream);
+    background: var(--light-grey);
     color: var(--white);
     font-family: 'Nunito Sans', sans-serif;
     font-weight: 300;
@@ -360,7 +362,7 @@ nav a:hover {
     color: var(--black);
     text-decoration: none;
     padding: 16px 40px;
-    font-size: 1.2rem;
+    font-size: 0.8rem;
     border-radius: 1.25rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
@@ -430,7 +432,7 @@ nav a:hover {
     display: inline-flex;
     align-items: center;
     gap: 2.125rem;
-    padding: 0 32px;
+    padding: 0 20px;
     font-size: 0.875rem;
     letter-spacing: 0.25em;
     text-transform: uppercase;
@@ -476,18 +478,24 @@ section {
 
 /* ─── CATEGORIES ─── */
 .categories {
-    background: var(--off-white);
+    background: var(--light-grey);
 }
 
 .cat-header {
     display: flex;
-    justify-content: space-between;
     align-items: flex-end;
     margin-bottom: 4.5rem;
 }
 
 .cat-header-text {
     max-width: 100%;
+}
+
+.cat-header-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: right;
+    width: 100%;
 }
 
 .cat-header p {
@@ -672,7 +680,7 @@ section {
 
 /* ─── FEATURED STRIP ─── */
 .featured-strip {
-    background: var(--off-white);
+    background: var(--light-grey);
     padding: 100px 60px;
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -749,8 +757,18 @@ section {
 }
 
 /* ─── ABOUT ─── */
+.about-banner-image {
+    width: 100%;
+    object-fit: cover;
+    height: 600px;
+    object-fit: cover;
+    object-position: top-left;
+    clip-path: inset(20px 0px 20px 0px); 
+    display :block;
+}
+
 .about {
-    background: var(--off-white);
+    background: var(--light-grey);
     text-align: center;
     max-width: 56.25rem;
     margin: 0 auto;
