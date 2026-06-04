@@ -8,11 +8,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@200;300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href='/product-page.css'/>
 </head>
 <body>
 
-  <header>
+  <header id="header">
     <a href="home-page.html" class="logo">Ely<span>s</span>ean</a>
     <nav>
       <a href="home-page.html">Home</a>
@@ -22,9 +23,10 @@
   </header>
 
   <div class="page-hero">
+    <div class="hero-bg" id="heroBg"></div>
     <div class="page-hero-text">
-      <span class="eyebrow">The Collections</span>
-      <h1>All <em>Fragrances</em></h1>
+      <span class="eyebrow"></span>
+      <h1>Our <em>Collection</em></h1>
     </div>
     <div class="page-hero-meta">
       <p>Discover your signature scent. Every bottle tells a story of rare ingredients and meticulous craft.</p>
@@ -36,8 +38,20 @@
     <button class="filter-btn" data-cat="masculine">Masculine</button>
     <button class="filter-btn" data-cat="feminine">Feminine</button>
     <button class="filter-btn" data-cat="unisex">Unisex</button>
-    <button class="filter-btn" data-cat="ouds">Ouds</button>
-    <span class="filter-count" id="filter-count">12 fragrances</span>
+    <span class="filter-count" id="filter-count">310 fragrances</span>
+  </div>
+
+  <!-- SEARCH BAR -->
+  <div class="search-container">
+      <div class="search-wrapper">
+          <input 
+              type="text" 
+              id="searchInput" 
+              placeholder="Search perfumes... (e.g. Oud, Chanel, Vanilla)" 
+              autocomplete="off">
+          <button id="searchClear" class="search-clear">✕</button>
+      </div>
+      <div id="searchResultsCount" class="search-count"></div>
   </div>
 
   <section class="products-section">

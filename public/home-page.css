@@ -37,10 +37,10 @@ html {
 
 body {
     background: var(--light-gray);
-    color: var(--White);
+    color: var(--white);
     font-family: 'Nunito Sans', sans-serif;
     background: var(--light-grey);
-    color: var(--white);
+    color: var(--White);
     font-family: 'Nunito Sans', sans-serif;
     font-weight: 300;
     line-height: 1.7;
@@ -852,8 +852,8 @@ footer::before {
     top: 0;
     left: 0;
     right: 0;
-    height: 0.0625rem;
-    background: var(--grad-border);
+    height: 0.1rem;
+    background: var(--gold-light);
 }
 
 /* Subtle background glow */
@@ -1001,7 +1001,7 @@ footer::after {
 
 .footer-bottom p {
     font-size: 0.72rem;
-    color: var(--black);
+    color: var(--white);
     letter-spacing: 0.05em;
 }
 
@@ -1012,7 +1012,7 @@ footer::after {
 }
 
 .footer-bottom-right a {
-    color: var(--black);
+    color: var(--white);
     text-decoration: none;
     font-size: 0.65rem;
     letter-spacing: 0.15em;

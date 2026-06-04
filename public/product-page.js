@@ -44,7 +44,7 @@ const PRODUCTS = [
     { id: 42, cat: 'feminine', name: 'Cacharel Yes I Am', brand: 'Elysean Perfumes', desc: 'Bold fruity-floral with caramel, rose, and warm sandalwood.', notes: ['Caramel', 'Rose', 'Sandalwood', 'Floral', 'Fruity'], conc: 'Eau de Parfum — 20%', img: 'images/ProductCoverImage-Fem.png', sizes: [{ ml: '2ml', label: 'Sample', price: 40 }, { ml: '30ml', label: '', price: 118 }, { ml: '50ml', label: '', price: 156 }, { ml: '100ml', label: '', price: 225 }, { ml: '250ml', label: '', price: 386 }] },																									
     { id: 43, cat: 'feminine', name: 'Calvin Klein Euphoria', brand: 'Elysean Perfumes', desc: 'Sensual dark floral with pomegranate, black orchid, and warm amber.', notes: ['Pomegranate', 'Black Orchid', 'Amber', 'Floral', 'Dark'], conc: 'Eau de Parfum — 20%', img: 'images/ProductCoverImage-Fem.png', sizes: [{ ml: '2ml', label: 'Sample', price: 40 }, { ml: '30ml', label: '', price: 136 }, { ml: '50ml', label: '', price: 192 }, { ml: '100ml', label: '', price: 302 }, { ml: '250ml', label: '', price: 577 }] },																									
     { id: 44, cat: 'feminine', name: 'Carolina Herrera 212 VIP Ladies', brand: 'Elysean Perfumes', desc: 'Glamorous floral with champagne accord, gardenia, and warm musk.', notes: ['Gardenia', 'Champagne', 'Musk', 'Floral', 'Warm'], conc: 'Eau de Parfum — 20%', img: 'images/ProductCoverImage-Fem.png', sizes: [{ ml: '2ml', label: 'Sample', price: 40 }, { ml: '30ml', label: '', price: 128 }, { ml: '50ml', label: '', price: 177 }, { ml: '100ml', label: '', price: 270 }, { ml: '250ml', label: '', price: 498 }] },																									
-    { id: 45, cat: 'feminine', name: 'Carolina Herrera Good Girl', brand: 'Elysean Perfumes', desc: 'Iconic dual-nature scent with jasmine, tonka bean, and dark cocoa.', notes: ['Jasmine', 'Tonka Bean', 'Cocoa', 'Floral', 'Dark'], conc: 'Eau de Parfum — 20%', img: 'images/ProductCoverImage-Fem.png', sizes: [{ ml: '2ml', label: 'Sample', price: 40 }, { ml: '30ml', label: '', price: 144 }, { ml: '50ml', label: '', price: 206 }, { ml: '100ml', label: '', price: 335 }, { ml: '250ml', label: '', price: 658 }] },																									
+    { id: 45, cat: 'feminine', name: 'Carolina Herrera Good Girl', brand: 'Elysean Perfumes', desc: 'Iconic dual-nature scent with jasmine, tonka bean, and dark cocoa.', notes: ['Jasmine', 'Tonka Bean', 'Cocoa', 'Floral', 'Dark'], conc: 'Eau de Parfum — 20%', img: 'images/Feminine-Category.png', sizes: [{ ml: '2ml', label: 'Sample', price: 40 }, { ml: '30ml', label: '', price: 144 }, { ml: '50ml', label: '', price: 206 }, { ml: '100ml', label: '', price: 335 }, { ml: '250ml', label: '', price: 658 }] },																									
     { id: 46, cat: 'feminine', name: 'Carolina Herrera Good Girl', brand: 'Elysean Perfumes', desc: 'Iconic dual-nature scent with jasmine, tonka bean, and dark cocoa.', notes: ['Jasmine', 'Tonka Bean', 'Cocoa', 'Floral', 'Dark'], conc: 'Eau de Parfum — 20%', img: 'images/ProductCoverImage-Fem.png', sizes: [{ ml: '2ml', label: 'Sample', price: 40 }, { ml: '30ml', label: '', price: 130 }, { ml: '50ml', label: '', price: 179 }, { ml: '100ml', label: '', price: 275 }, { ml: '250ml', label: '', price: 511 }] },																									
     { id: 47, cat: 'feminine', name: 'Chanel Coco', brand: 'Elysean Perfumes', desc: 'Rich oriental floral with rose, jasmine, vanilla, and precious woods.', notes: ['Rose', 'Jasmine', 'Vanilla', 'Woods', 'Oriental'], conc: 'Eau de Parfum — 20%', img: 'images/ProductCoverImage-Fem.png', sizes: [{ ml: '2ml', label: 'Sample', price: 40 }, { ml: '30ml', label: '', price: 145 }, { ml: '50ml', label: '', price: 207 }, { ml: '100ml', label: '', price: 336 }, { ml: '250ml', label: '', price: 662 }] },																									
     { id: 48, cat: 'feminine', name: 'Chanel Coco Madam', brand: 'Elysean Perfumes', desc: 'Modern floral chypre with grapefruit, rose, and white musk.', notes: ['Grapefruit', 'Rose', 'White Musk', 'Floral', 'Chypre'], conc: 'Eau de Parfum — 20%', img: 'images/ProductCoverImage-Fem.png', sizes: [{ ml: '2ml', label: 'Sample', price: 40 }, { ml: '30ml', label: '', price: 150 }, { ml: '50ml', label: '', price: 216 }, { ml: '100ml', label: '', price: 356 }, { ml: '250ml', label: '', price: 712 }] },																									
@@ -316,6 +316,17 @@ let currentFilter = 'all';
 let selectedProduct = null;
 let selectedSize = null;
 
+// ─── CURSOR HOVER HELPER ───
+function addCursorHover(element) {
+    if (!element) return;
+    element.addEventListener('mouseenter', () => {
+        document.documentElement.style.setProperty('--cursor', 'pointer');
+    });
+    element.addEventListener('mouseleave', () => {
+        document.documentElement.style.setProperty('--cursor', 'default');
+    });
+}
+
 // ─── RENDER PRODUCTS ───
 function renderProducts(filter) {
     const grid = document.getElementById('products-grid');
@@ -453,3 +464,130 @@ if (urlCat) {
 
 renderProducts(currentFilter);
 updateCartCount();
+
+// ─── SEARCH FUNCTIONALITY ───
+function setupSearch() {
+    const searchInput = document.getElementById('searchInput');
+    const searchClear = document.getElementById('searchClear');
+    const countDisplay = document.getElementById('searchResultsCount');
+
+    if (!searchInput) return;
+
+    function performSearch() {
+        const term = searchInput.value.toLowerCase().trim();
+        
+        let filtered = PRODUCTS;
+
+        if (term !== '') {
+            filtered = PRODUCTS.filter(product => 
+                product.name.toLowerCase().includes(term) ||
+                product.brand.toLowerCase().includes(term) ||
+                (product.desc && product.desc.toLowerCase().includes(term)) ||
+                (product.notes && product.notes.some(note => note.toLowerCase().includes(term)))
+            );
+        }
+
+        // Update count
+        countDisplay.textContent = `${filtered.length} results found`;
+
+        // Render the filtered products
+        renderProductsWithArray(filtered);
+    }
+
+    searchInput.addEventListener('input', performSearch);
+
+    searchClear.addEventListener('click', () => {
+        searchInput.value = '';
+        performSearch();
+        searchClear.classList.remove('visible');
+    });
+
+    searchInput.addEventListener('input', () => {
+        searchClear.classList.toggle('visible', searchInput.value.length > 0);
+    });
+}
+
+// New function to render any array of products
+function renderProductsWithArray(productsArray) {
+    const grid = document.getElementById('products-grid');
+    if (!grid) return;
+
+    grid.innerHTML = '';
+
+    if (productsArray.length === 0) {
+        grid.innerHTML = `
+            <div style="grid-column: 1/-1; text-align: center; padding: 100px 20px; color: #666;">
+                <h3>No matching perfumes found</h3>
+                <p>Try searching for "Oud", "Vanilla", "Chanel", "Diesel", etc.</p>
+            </div>`;
+        return;
+    }
+
+    productsArray.forEach((p, i) => {
+        const startPrice = p.sizes[0].price;
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.style.animationDelay = (i * 0.05) + 's';
+        
+        card.innerHTML = `
+            <div class="product-card-img-wrap">
+                <img src="${p.img}" alt="${p.name}" class="product-card-img" loading="lazy"/>
+                <div class="product-badge">${p.cat.charAt(0).toUpperCase() + p.cat.slice(1)}</div>
+                <button class="quick-view" data-id="${p.id}">Quick View</button>
+            </div>
+            <div class="product-card-body">
+                <span class="product-category">${p.cat}</span>
+                <h3 class="product-name">${p.name}</h3>
+                <p class="product-brand">${p.brand}</p>
+                <div class="product-notes">
+                    ${p.notes.slice(0, 3).map(n => `<span class="note-tag">${n}</span>`).join('')}
+                </div>
+                <div class="product-price-row">
+                    <div class="product-price">R${startPrice}<span>from</span></div>
+                    <button class="add-btn" data-id="${p.id}">Select Size</button>
+                </div>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+
+    // Re-attach event listeners
+    attachProductListeners();
+}
+
+// Helper to attach click listeners
+function attachProductListeners() {
+    document.querySelectorAll('.quick-view, .add-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const id = parseInt(e.target.dataset.id);
+            openModal(id);
+        });
+    });
+}
+
+// Update your original renderProducts to use the new function
+function renderProducts(filter) {
+    let filtered = filter === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.cat === filter);
+    renderProductsWithArray(filtered);
+}
+
+// Initialize everything
+document.addEventListener('DOMContentLoaded', () => {
+    renderProducts(currentFilter);
+    setupSearch();
+    updateCartCount();
+});
+
+window.addEventListener('scroll', () => {
+    const header = document.getElementById('header');
+    
+    if (window.scrollY > 80) {
+        header.classList.add('scrolled');
+    } else {
+        header.classList.remove('scrolled');
+    }
+});
+
+    // ─── HERO BG ───
+    const heroBg = document.getElementById('heroBg');
+    setTimeout(() => heroBg.classList.add('loaded'), 100);

@@ -9,8 +9,11 @@
 :root {
     --black: #0A0A0A;
     --dark: #0F0F0F;
+    --light-grey: #F4F4F4;
+    --white: #FFFFFF;
     --charcoal: #1A1A1A;
     --mid: #2A2A2A;
+     --gold-light: #ffc107;
     --gold: #C9A46F;
     --gold-light: #D4AF88;
     --gold-pale: #E8D5B7;
@@ -26,9 +29,9 @@ html {
 }
 
 body {
-    background: var(--dark);
-    color: var(--cream);
-    font-family: 'Inter', sans-serif;
+    background: var(--light-grey);
+    color: var(--black);
+    font-family: 'Nunito Sans', sans-serif;
     font-weight: 300;
     line-height: 1.7;
     overflow-x: hidden;
@@ -44,23 +47,34 @@ header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: rgba(10, 10, 10, 0.95);
-    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    background: transparent;
+    transition: all 0.5s ease;
+}
+
+header.scrolled {
+    background: var(--white);
+    backdrop-filter: blur(1.25rem);
+    padding: 18px 60px;
     border-bottom: 1px solid var(--border);
 }
 
+header.scrolled .logo {
+    color: var(--black) !important;
+}
+
 .logo {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Nunito Sans', serif;
     font-size: 1.4rem;
     font-weight: 500;
     letter-spacing: 0.12em;
-    color: var(--cream);
+    color: var(--white);
     text-decoration: none;
     text-transform: uppercase;
 }
 
 .logo span {
-    color: var(--gold);
+    color: var(--gold-light);
 }
 
 nav {
@@ -70,13 +84,13 @@ nav {
 }
 
 nav a {
-    color: var(--muted);
+    color: var(--white);
     text-decoration: none;
-    font-size: 0.72rem;
+    font-size: 0.875rem;
     letter-spacing: 0.18em;
     text-transform: uppercase;
     transition: color 0.3s ease;
-    font-weight: 400;
+    font-weight: 500;
 }
 
 nav a:hover {
@@ -88,6 +102,7 @@ nav a:hover {
     border: 1px solid var(--border-light);
     padding: 10px 24px;
     transition: all 0.3s ease !important;
+    background: transparent !important;
 }
 
 .nav-cta:hover {
@@ -98,11 +113,21 @@ nav a:hover {
 /* PAGE HERO */
 .page-hero {
     padding: 180px 60px 80px;
-    background: var(--charcoal);
+    background: var(--light-grey);
     border-bottom: 1px solid var(--border);
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
+}
+
+.page-hero-bg {
+    position: absolute;
+    inset: 0;
+    background-image: url('/images/collection.png');
+    background-size: cover;
+    background-position: center 35%;
+    transform: scale(1.05);
+    transition: transform 8s ease;
 }
 
 .page-hero-text .eyebrow {
@@ -115,7 +140,7 @@ nav a:hover {
 }
 
 .page-hero-text h1 {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Nunito Sans', serif;
     font-size: clamp(2.5rem, 5vw, 4rem);
     font-weight: 400;
     line-height: 1.1;
@@ -131,7 +156,7 @@ nav a:hover {
 }
 
 .page-hero-meta p {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: 'Nunito Sans', serif;
     font-size: 1.1rem;
     color: var(--muted);
     line-height: 1.8;
@@ -157,7 +182,7 @@ nav a:hover {
     font-size: 0.65rem;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Nunito Sans', sans-serif;
     transition: all 0.3s ease;
 }
 
@@ -179,6 +204,84 @@ nav a:hover {
     color: var(--muted);
 }
 
+/* ─── PROFESSIONAL SEARCH BAR ─── */
+.search-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 60px 50px;
+    text-align: center;
+}
+
+.search-wrapper {
+    position: relative;
+    max-width: 620px;
+    margin: 0 auto;
+}
+
+#searchInput {
+    width: 100%;
+    padding: 20px 28px 20px 62px;
+    font-size: 1.05rem;
+    font-family: 'Nunito Sans', system-ui, sans-serif;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(212, 168, 67, 0.3);
+    border-radius: 50px;
+    color: #1a1a1a;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.06);
+}
+
+#searchInput:focus {
+    outline: none;
+    border-color: var(--gold);
+    background: white;
+    box-shadow: 0 8px 35px rgba(212, 168, 67, 0.18);
+    transform: translateY(-2px);
+}
+
+.search-wrapper::before {
+    content: '✦';
+    position: absolute;
+    left: 26px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.35rem;
+    color: var(--gold);
+    opacity: 0.85;
+    pointer-events: none;
+}
+
+.search-clear {
+    position: absolute;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    color: #888;
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.search-clear.visible {
+    opacity: 0.8;
+}
+
+.search-clear:hover {
+    color: var(--gold);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.search-count {
+    margin-top: 14px;
+    font-size: 0.88rem;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    font-weight: 400;
+}
+
 /* PRODUCTS GRID */
 .products-section {
     padding: 80px 60px;
@@ -192,7 +295,7 @@ nav a:hover {
 
 /* PRODUCT CARD */
 .product-card {
-    background: var(--charcoal);
+    background: var(--light-grey);
     transition: background 0.3s ease;
     position: relative;
     overflow: hidden;
@@ -248,7 +351,7 @@ nav a:hover {
     font-size: 0.65rem;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Nunito Sans', sans-serif;
     white-space: nowrap;
     opacity: 0;
     transition: all 0.4s ease;
@@ -273,7 +376,7 @@ nav a:hover {
 }
 
 .product-name {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Nunito Sans', serif;
     font-size: 1.3rem;
     font-weight: 400;
     color: var(--cream);
@@ -310,7 +413,7 @@ nav a:hover {
 }
 
 .product-price {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: 'Nunito Sans', serif;
     font-size: 1.4rem;
     color: var(--gold);
     letter-spacing: 0.02em;
@@ -319,7 +422,7 @@ nav a:hover {
 .product-price span {
     font-size: 0.75rem;
     color: var(--muted);
-    font-family: 'Inter', sans-serif;
+    font-family: 'Nunito Sans', sans-serif;
     margin-left: 4px;
 }
 
@@ -331,7 +434,7 @@ nav a:hover {
     font-size: 0.62rem;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Nunito Sans', sans-serif;
     transition: all 0.3s ease;
 }
 
@@ -422,7 +525,7 @@ nav a:hover {
 }
 
 .modal-name {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Nunito Sans', serif;
     font-size: 1.8rem;
     font-weight: 400;
     line-height: 1.2;
@@ -436,7 +539,7 @@ nav a:hover {
 }
 
 .modal-desc {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: 'Nunito Sans', serif;
     font-size: 1.05rem;
     color: var(--off-white);
     line-height: 1.8;
@@ -498,7 +601,7 @@ nav a:hover {
     background: transparent;
     color: var(--muted);
     font-size: 0.7rem;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Nunito Sans', sans-serif;
     transition: all 0.3s ease;
     text-align: center;
 }
@@ -534,7 +637,7 @@ nav a:hover {
     font-size: 0.72rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Nunito Sans', sans-serif;
     font-weight: 500;
     transition: all 0.3s ease;
     width: 100%;
@@ -570,7 +673,7 @@ nav a:hover {
 }
 
 .popup-title {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Nunito Sans', serif;
     font-size: 1.1rem;
     margin-bottom: 4px;
 }
@@ -595,7 +698,7 @@ nav a:hover {
     font-size: 0.65rem;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Nunito Sans', sans-serif;
     font-weight: 500;
     text-align: center;
     transition: background 0.3s ease;
@@ -614,7 +717,7 @@ nav a:hover {
     font-size: 0.65rem;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Nunito Sans', sans-serif;
     transition: all 0.3s ease;
 }
 
@@ -628,7 +731,7 @@ nav a:hover {
     text-align: center;
     padding: 100px 40px;
     color: var(--muted);
-    font-family: 'Cormorant Garamond', serif;
+    font-family: 'Nunito Sans', serif;
     font-size: 1.3rem;
 }
 
