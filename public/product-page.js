@@ -346,9 +346,14 @@ function renderProducts(filter) {
           </div>
           <div class="product-card-body">
             <span class="product-category">${p.cat}</span>
-            <h3 class="product-name">${p.name}</h3>
-            <p class="product-brand">${p.brand}</p>
+            <br>
+            <div class="title-area">
+                <h3 class="product-name">${p.name}</h3>
+                <p class="product-brand">${p.brand}</p>
+            </div>
+
             <div class="product-notes">${p.notes.slice(0, 3).map(n => `<span class="note-tag">${n}</span>`).join('')}</div>
+
             <div class="product-price-row">
               <div class="product-price">R${startPrice}<span>from</span></div>
               <button class="add-btn" data-id="${p.id}">Select Size</button>

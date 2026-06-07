@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Elysean Perfumes - Shop</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --gold: #C9A84C;
+      --navy: #080B1A;
+      --cream: #F5EFE0;
+    }
+
+    body {
+      font-family: 'Jost', sans-serif;
+      background: var(--navy);
+      color: var(--cream);
+    }
+
+    .heading-font {
+      font-family: 'Cormorant Garamond', serif;
+    }
+
+    .product-row {
+      transition: all 0.3s ease;
+    }
+
+    .product-row:hover {
+      background: rgba(201, 168, 76, 0.08);
+      transform: translateX(8px);
+    }
+
+    .category-indicator {
+      width: 6px;
+      height: 100%;
+      flex-shrink: 0;
+      border-radius: 9999px;
+    }
+
+    .scent-note {
+      font-size: 0.8rem;
+      padding: 0.25rem 0.75rem;
+      background: rgba(201, 168, 76, 0.1);
+      border: 1px solid rgba(201, 168, 76, 0.25);
+      color: #E2C47A;
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="min-h-screen py-12">
+
+  <div class="max-w-5xl mx-auto px-6">
+    <!-- Page Header -->
+    <div class="text-center mb-16">
+      <h1 class="heading-font text-6xl font-light tracking-tight mb-3">Our Collection</h1>
+      <p class="text-gray-400 max-w-md mx-auto">20% EDP • Small Batch • South African Luxury</p>
+    </div>
+
+    <!-- Products List -->
+    <div class="space-y-4">
+
+      <!-- Feminine Row -->
+      <div class="product-row bg-[#0D1230] border border-[#C9A84C33] rounded-2xl p-6 flex items-center gap-6">
+        <div class="category-indicator bg-pink-500"></div>
+        <div class="flex-1">
+          <div class="uppercase text-xs tracking-widest text-pink-400 mb-1">FEMININE</div>
+          <h3 class="heading-font text-2xl font-light">Noir Romance</h3>
+          <div class="flex flex-wrap gap-2 mt-3">
+            <span class="scent-note">Blackcurrant</span>
+            <span class="scent-note">Bulgarian Rose</span>
+            <span class="scent-note">Madagascar Vanilla</span>
+          </div>
+        </div>
+        <div class="text-right">
+          <div class="text-3xl font-light text-gold">R40</div>
+          <div class="text-xs text-gray-400">from</div>
+        </div>
+        <button onclick="addToCart('Noir Romance')" 
+                class="ml-8 bg-gradient-to-r from-[#C9A84C] to-[#E2C47A] text-[#080B1A] px-10 py-4 text-sm font-medium tracking-widest hover:scale-105 transition">
+          BUY NOW
+        </button>
+      </div>
+
+      <!-- Feminine Row 2 -->
+      <div class="product-row bg-[#0D1230] border border-[#C9A84C33] rounded-2xl p-6 flex items-center gap-6">
+        <div class="category-indicator bg-pink-500"></div>
+        <div class="flex-1">
+          <div class="uppercase text-xs tracking-widest text-pink-400 mb-1">FEMININE</div>
+          <h3 class="heading-font text-2xl font-light">Velvet Bloom</h3>
+          <div class="flex flex-wrap gap-2 mt-3">
+            <span class="scent-note">Jasmine</span>
+            <span class="scent-note">Peony</span>
+            <span class="scent-note">White Musk</span>
+          </div>
+        </div>
+        <div class="text-right">
+          <div class="text-3xl font-light text-gold">R40</div>
+          <div class="text-xs text-gray-400">from</div>
+        </div>
+        <button onclick="addToCart('Velvet Bloom')" 
+                class="ml-8 bg-gradient-to-r from-[#C9A84C] to-[#E2C47A] text-[#080B1A] px-10 py-4 text-sm font-medium tracking-widest hover:scale-105 transition">
+          BUY NOW
+        </button>
+      </div>
+
+      <!-- Masculine Row -->
+      <div class="product-row bg-[#0D1230] border border-[#C9A84C33] rounded-2xl p-6 flex items-center gap-6">
+        <div class="category-indicator bg-blue-600"></div>
+        <div class="flex-1">
+          <div class="uppercase text-xs tracking-widest text-blue-400 mb-1">MASCULINE</div>
+          <h3 class="heading-font text-2xl font-light">Asad Lattafa</h3>
+          <div class="flex flex-wrap gap-2 mt-3">
+            <span class="scent-note">Spicy</span>
+            <span class="scent-note">Woody</span>
+            <span class="scent-note">Amber</span>
+          </div>
+        </div>
+        <div class="text-right">
+          <div class="text-3xl font-light text-gold">R40</div>
+          <div class="text-xs text-gray-400">from</div>
+        </div>
+        <button onclick="addToCart('Asad Lattafa')" 
+                class="ml-8 bg-gradient-to-r from-[#C9A84C] to-[#E2C47A] text-[#080B1A] px-10 py-4 text-sm font-medium tracking-widest hover:scale-105 transition">
+          BUY NOW
+        </button>
+      </div>
+
+      <!-- Unisex Row -->
+      <div class="product-row bg-[#0D1230] border border-[#C9A84C33] rounded-2xl p-6 flex items-center gap-6">
+        <div class="category-indicator bg-purple-600"></div>
+        <div class="flex-1">
+          <div class="uppercase text-xs tracking-widest text-purple-400 mb-1">UNISEX</div>
+          <h3 class="heading-font text-2xl font-light">Baccarat Rouge 540</h3>
+          <div class="flex flex-wrap gap-2 mt-3">
+            <span class="scent-note">Saffron</span>
+            <span class="scent-note">Amber</span>
+            <span class="scent-note">Cedar</span>
+          </div>
+        </div>
+        <div class="text-right">
+          <div class="text-3xl font-light text-gold">R40</div>
+          <div class="text-xs text-gray-400">from</div>
+        </div>
+        <button onclick="addToCart('Baccarat Rouge 540')" 
+                class="ml-8 bg-gradient-to-r from-[#C9A84C] to-[#E2C47A] text-[#080B1A] px-10 py-4 text-sm font-medium tracking-widest hover:scale-105 transition">
+          BUY NOW
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function addToCart(name) {
+      alert(`${name} has been added to your cart.`);
+    }
+  </script>
+
+</body>
+</html>
