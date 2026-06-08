@@ -21,6 +21,7 @@
     --muted: #9A9489;
     --border: rgba(201, 164, 111, 0.15);
     --border-light: rgba(201, 164, 111, 0.3);
+    --grad: linear-gradient(135deg, #FFC107 5%, #FFE68A 50%, #E89B00 95%);
 }
 
 html {
@@ -171,7 +172,7 @@ nav a:hover {
 .filters-bar {
     padding: 32px 60px;
     background: var(--light-grey);
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--grad);
     display: flex;
     gap: 8px;
     align-items: center;
@@ -180,7 +181,7 @@ nav a:hover {
 
 .filter-btn {
     padding: 9px 22px;
-    border: 1px solid var(--gold-light);
+    border: 1px solid var(--grad);
     background: transparent;
     color: var(--black);
     font-size: 0.85rem;
@@ -192,14 +193,14 @@ nav a:hover {
 }
 
 .filter-btn:hover {
-    border-color: var(--gold-light);
-    color: var(--gold-light);
+    border-color: var(--grad);
+    color: var(--grad);
 }
 
 .filter-btn.active {
-    background: var(--gold-light);
+    background: var(--grad);
     color: var(--black);
-    border-color: var(--gold-light);
+    border-color: var(--grad);
     font-weight: 700;
 }
 
@@ -231,7 +232,7 @@ nav a:hover {
     font-size: 1.05rem;
     font-family: 'Nunito Sans', system-ui, sans-serif;
     background: white;
-    border: 1px solid rgba(212, 168, 67, 0.3);
+    border: 1px solid var(--grad);
     border-radius: 50px;
     color: black;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -240,7 +241,7 @@ nav a:hover {
 
 #searchInput:focus {
     outline: none;
-    border-color: var(--gold);
+    border-color: var(--grad);
     background: white;
     box-shadow: 0 8px 35px rgba(212, 168, 67, 0.18);
     transform: translateY(-2px);
@@ -253,7 +254,7 @@ nav a:hover {
     top: 50%;
     transform: translateY(-50%);
     font-size: 1.35rem;
-    color: var(--gold);
+    color: var(--gold-light);
     opacity: 0.85;
     pointer-events: none;
 }
@@ -266,7 +267,7 @@ nav a:hover {
     background: none;
     border: none;
     font-size: 1.4rem;
-    color: #888;
+    color: black;
     cursor: pointer;
     opacity: 0;
     transition: all 0.3s ease;
@@ -277,7 +278,7 @@ nav a:hover {
 }
 
 .search-clear:hover {
-    color: var(--gold);
+    color: var(--gold-light);
     transform: translateY(-50%) scale(1.1);
 }
 
@@ -292,13 +293,13 @@ nav a:hover {
 
 /* PRODUCTS GRID */
 .products-section {
-    padding: 70px 60px;
+    padding: 25px 60px;
 }
 
 .products-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 25px;
+    gap: 20px;
 }
 
 /* PRODUCT CARD */
@@ -307,7 +308,7 @@ nav a:hover {
     transition: background 0.3s ease;
     position: relative;
     overflow: hidden;
-    border: 2px solid var(--border);
+    border: 1px solid var(--gold);
     border-radius: 20px;
 }
 
@@ -317,9 +318,9 @@ nav a:hover {
 
 .product-card-img-wrap {
     position: relative;
-    height: 80px;
+    height: 60px;
     overflow: hidden;
-    background: var(--mid);
+    background: var(--light-grey);
 }
 
 .product-card-img {
@@ -337,9 +338,9 @@ nav a:hover {
 
 .product-badge {
     position: absolute;
-    top: 22px;
-    left: 22px;
-    background: var(--gold-light);
+    top: 18px;
+    left: 18px;
+    background: var(--grad);
     border-radius: 12px;
     color: var(--black);
     font-size: 0.75rem;
@@ -353,10 +354,19 @@ nav a:hover {
     padding: 28px 28px 32px;
 }
 
+.product-category {
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-bottom: 8px;
+    display: block;
+}
+
 .product-name {
     font-family: 'Nunito Sans', serif;
     min-height: 3em; /* Ensure enough space for two lines */
-    font-size: 1.3rem;
+    font-size: 2rem;
     font-weight: 400;
     color: var(--black);
     margin-bottom: 6px;
@@ -380,10 +390,12 @@ nav a:hover {
 }
 
 .note-tag {
-    font-size: 0.6rem;
+    font-size: 0.8rem;
+    font-weight: 1000;
     letter-spacing: 0.1em;
     color: var(--black);
-    background: var(--border-light);
+    background: var(--gold);
+    border: 1px solid var(--gold);
     border-radius: 8px;
     padding: 4px 10px;
 }
@@ -396,17 +408,19 @@ nav a:hover {
 
 .product-price {
     font-family: 'Nunito Sans', serif;
-    font-size: 1.4rem;
-    color: var(--gold);
+    font-size: 2.1rem;
+    font-weight: 500;
+    color: var(--black);
     letter-spacing: 0.02em;
 }
 
 .add-btn {
     background: transparent;
-    border: 1px solid var(--border-light);
-    color: var(--gold);
+    border: 1px solid var(--gold-light);
+    border-radius: 50px;
+    color: var(--black);
     padding: 10px 20px;
-    font-size: 0.62rem;
+    font-size: 0.8rem;
     letter-spacing: 0.18em;
     text-transform: uppercase;
     font-family: 'Nunito Sans', sans-serif;
@@ -414,9 +428,9 @@ nav a:hover {
 }
 
 .add-btn:hover {
-    background: var(--gold);
+    background: var(--grad);
     color: var(--black);
-    border-color: var(--gold);
+    border-color: var(--gold-light);
 }
 
 /* PRODUCT DETAIL MODAL */
@@ -441,7 +455,7 @@ nav a:hover {
 }
 
 .modal {
-    background: var(--charcoal);
+    background: var(--light-grey);
     border: 1px solid var(--border);
     max-width: 900px;
     width: 100%;
@@ -473,13 +487,14 @@ nav a:hover {
     padding: 48px 40px;
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
 }
 
 .modal-close {
     align-self: flex-end;
     background: none;
     border: none;
-    color: var(--muted);
+    color: var(--black);
     font-size: 1.4rem;
     margin-bottom: 24px;
     transition: color 0.3s ease;
@@ -487,45 +502,50 @@ nav a:hover {
 }
 
 .modal-close:hover {
-    color: var(--gold);
+    color: var(--gold-light);
 }
 
 .modal-category {
     font-size: 0.6rem;
+    font-weight: 500;
     letter-spacing: 0.3em;
     text-transform: uppercase;
-    color: var(--gold);
+    color: var(--black);
+    background: var(--grad);
+    border-radius: 25px;
     margin-bottom: 12px;
+    padding: 5px 12px 5px 12px;
     display: block;
 }
 
 .modal-name {
     font-family: 'Nunito Sans', serif;
-    font-size: 1.8rem;
+    font-size: 2rem;
     font-weight: 400;
     line-height: 1.2;
     margin-bottom: 6px;
 }
 
 .modal-brand {
-    color: var(--muted);
-    font-size: 0.8rem;
+    color: var(--black);
+    font-size: 1rem;
     margin-bottom: 20px;
+    font-weight: 800;
 }
 
 .modal-desc {
     font-family: 'Nunito Sans', serif;
     font-size: 1.05rem;
-    color: var(--off-white);
+    color: var(--black);
     line-height: 1.8;
     margin-bottom: 24px;
 }
 
 .modal-notes-title {
-    font-size: 0.6rem;
+    font-size: 1rem;
     letter-spacing: 0.25em;
     text-transform: uppercase;
-    color: var(--gold);
+    color: var(--black);
     margin-bottom: 12px;
 }
 
@@ -537,28 +557,33 @@ nav a:hover {
 }
 
 .modal-note-tag {
-    font-size: 0.65rem;
+    font-size: 0.85rem;
+    font-weight: 1000;
+    letter-spacing: 0.1em;
     border: 1px solid var(--border-light);
-    color: var(--off-white);
+    border-radius: 15px;
+    background: var(--gold-light);
+    color: var(--black);
     padding: 5px 12px;
 }
 
 .modal-concentration {
     font-size: 0.72rem;
-    color: var(--muted);
+    color: var(--black);
     margin-bottom: 28px;
     letter-spacing: 0.05em;
 }
 
 .modal-concentration strong {
-    color: var(--gold);
+    color: var(--gold-light);
+    font-weight: 700;
 }
 
 .size-label {
-    font-size: 0.6rem;
+    font-size: 0.8rem;
     letter-spacing: 0.25em;
     text-transform: uppercase;
-    color: var(--gold);
+    color: var(--black);
     margin-bottom: 12px;
     display: block;
 }
@@ -572,10 +597,11 @@ nav a:hover {
 
 .size-btn {
     padding: 8px 16px;
-    border: 1px solid var(--border);
+    border: 2px solid var(--gold-light);
+    border-radius: 20px;
     background: transparent;
-    color: var(--muted);
-    font-size: 0.7rem;
+    color: var(--black);
+    font-size: 1.5rem;
     font-family: 'Nunito Sans', sans-serif;
     transition: all 0.3s ease;
     text-align: center;
@@ -584,20 +610,20 @@ nav a:hover {
 .size-btn .size-ml {
     display: block;
     font-size: 0.78rem;
-    color: var(--cream);
+    color: var(--black);
     margin-bottom: 2px;
 }
 
 .size-btn .size-price {
     display: block;
-    font-size: 0.65rem;
-    color: var(--gold);
+    font-size: 1.3rem;
+    color: var(--black);
 }
 
 .size-btn.selected,
 .size-btn:hover {
-    border-color: var(--gold);
-    background: rgba(201, 164, 111, 0.08);
+    border-color: var(--gold-light);
+    background: var(--grad);
 }
 
 .size-btn.selected {
@@ -605,11 +631,11 @@ nav a:hover {
 }
 
 .modal-add-btn {
-    background: var(--gold);
+    background: var(--grad);
     color: var(--black);
     border: none;
     padding: 16px 32px;
-    font-size: 0.72rem;
+    font-size: 0.82rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     font-family: 'Nunito Sans', sans-serif;
@@ -628,8 +654,9 @@ nav a:hover {
     top: 100px;
     right: 40px;
     z-index: 600;
-    background: var(--charcoal);
-    border: 1px solid var(--border-light);
+    background: var(--light-grey);
+    border: 1px solid var(--gold-light);
+    border-radius: 12px;
     padding: 28px 32px;
     min-width: 320px;
     transform: translateX(120%);
@@ -642,20 +669,20 @@ nav a:hover {
 
 .popup-check {
     font-size: 1.5rem;
-    color: var(--gold);
+    color: var(--gold-light);
     margin-bottom: 8px;
     display: block;
 }
 
 .popup-title {
     font-family: 'Nunito Sans', serif;
-    font-size: 1.1rem;
+    font-size: 1.3rem;
     margin-bottom: 4px;
 }
 
 .popup-sub {
     font-size: 0.78rem;
-    color: var(--muted);
+    color: var(--black);
     margin-bottom: 20px;
 }
 
@@ -666,7 +693,7 @@ nav a:hover {
 }
 
 .popup-cart-btn {
-    background: var(--gold);
+    background: var(--gold-light);
     color: var(--black);
     text-decoration: none;
     padding: 12px;
@@ -681,13 +708,13 @@ nav a:hover {
 }
 
 .popup-cart-btn:hover {
-    background: var(--gold-pale);
+    background: var(--grad);
 }
 
 .popup-continue-btn {
     background: transparent;
     border: 1px solid var(--border);
-    color: var(--muted);
+    color: var(--black);
     padding: 12px;
     font-size: 0.65rem;
     letter-spacing: 0.18em;
@@ -697,15 +724,15 @@ nav a:hover {
 }
 
 .popup-continue-btn:hover {
-    border-color: var(--gold);
-    color: var(--gold);
+    border-color: var(--gold-light);
+    color: var(--gold-light);
 }
 
 /* EMPTY / LOADING */
 .no-products {
     text-align: center;
     padding: 100px 40px;
-    color: var(--muted);
+    color: var(--black);
     font-family: 'Nunito Sans', serif;
     font-size: 1.3rem;
 }
@@ -720,8 +747,8 @@ footer {
 }
 
 footer p {
-    font-size: 0.72rem;
-    color: var(--muted);
+    font-size: 1.2rem;
+    color: var(--white);
 }
 
 .footer-links {
@@ -730,15 +757,15 @@ footer p {
 }
 
 .footer-links a {
-    color: var(--muted);
+    color: var(--white);
     text-decoration: none;
-    font-size: 0.72rem;
+    font-size: 1.2rem;
     letter-spacing: 0.1em;
     transition: color 0.3s ease;
 }
 
 .footer-links a:hover {
-    color: var(--gold);
+    color: var(--gold-light);
 }
 
 /* Phone */

@@ -17,8 +17,7 @@
     <a href="home-page.html" class="logo">Ely<span>s</span>ean</a>
     <nav>
       <a href="home-page.html">Home</a>
-      <a href="product-page.html">Collections</a>
-      <a href="product-grid-sample.html">Grid Sample</a>
+      <a href="product-page.html">Shop</a>
       <a href="cart-page.html" class="nav-cta">Cart (<span id="cart-count">0</span>)</a>
     </nav>
   </header>
@@ -52,7 +51,12 @@
       <div id="searchResultsCount" class="search-count"></div>
   </div>
 
-<!-- Product Card Template -->
+<!-- PRODUCTS SECTION -->
+<section class="products-section">
+    <div class="products-grid" id="products-grid"></div>
+</section>
+
+<!-- PRODUCT CARD TEMPLATE - Edit this freely -->
 <template id="product-card-template">
     <div class="product-card">
         <div class="product-card-img-wrap">
@@ -60,9 +64,10 @@
             <div class="product-badge"></div>
         </div>
         <div class="product-card-body">
-            <p class="product-brand"></p>
+      
+            <span class="product-category"></span>
             <h3 class="product-name"></h3>
-
+            <p class="product-brand"></p>
             <div class="product-notes"></div>
 
             <div class="product-price-row">
@@ -72,9 +77,6 @@
         </div>
     </div>
 </template>
-<section class="products-section">
-    <div class="products-grid" id="products-grid"></div>
-  </section>
 
   <!-- PRODUCT DETAIL MODAL -->
   <div class="modal-overlay" id="modalOverlay">

@@ -311,7 +311,7 @@ const PRODUCTS = [
     { id: 309, cat: 'unisex', name: 'Under The Leaves Fragrance', brand: 'Elysean Perfumes', desc: 'Fresh green earthy blend with leafy notes, moss, and soft woods.', notes: ['Green', 'Leafy', 'Moss', 'Woods', 'Earthy'], conc: 'Eau de Parfum — 20%', img: 'images/ProductCoverImage-Unisex.png', sizes: [{ ml: 'Sample', label: '', price: 40 }, { ml: '30ml', label: '', price: 127 }, { ml: '50ml', label: '', price: 175 }, { ml: '100ml', label: '', price: 266 }, { ml: '250ml', label: '', price: 487 }] },																									
     { id: 310, cat: 'unisex', name: 'Versace Atelier Versace Vanille Rouge', brand: 'Elysean Perfumes', desc: 'Luxurious warm blend with vanilla, red fruits, and dark woody amber.', notes: ['Vanilla', 'Red Fruits', 'Amber', 'Woods', 'Warm'], conc: 'Eau de Parfum — 20%', img: 'images/ProductCoverImage-Unisex.png', sizes: [{ ml: 'Sample', label: '', price: 40 }, { ml: '30ml', label: '', price: 173 }, { ml: '50ml', label: 'Best Seller', price: 260 }, { ml: '100ml', label: '', price: 453 }, { ml: '250ml', label: '', price: 952 }] },																																																																										
     ];
-
+// Global state
 let currentFilter = 'all';
 let selectedProduct = null;
 let selectedSize = null;
@@ -327,13 +327,13 @@ function addCursorHover(element) {
     });
 }
 
-// ─── RENDER PRODUCTS ───
+// ─── RENDER PRODUCTS USING TEMPLATE ───
 function renderProducts(filter) {
     const grid = document.getElementById('products-grid');
     const template = document.getElementById('product-card-template');
     
     if (!template) {
-        console.error("Product card template not found!");
+        console.error("❌ Product card template not found in HTML!");
         return;
     }
 
@@ -345,13 +345,13 @@ function renderProducts(filter) {
     grid.innerHTML = '';
 
     filtered.forEach((p, i) => {
-        const startPrice = p.sizes[0].price;
+        // Get 50ml price
+        let price50ml = p.sizes.find(size => size.ml === '50ml');
+        const displayPrice = price50ml ? price50ml.price : p.sizes[0].price;
         
-        // Clone the template
         const clone = template.content.cloneNode(true);
         const card = clone.querySelector('.product-card');
         
-        // Fill in the data
         card.style.animationDelay = (i * 0.08) + 's';
         
         card.querySelector('.product-card-img').src = p.img;
@@ -365,47 +365,34 @@ function renderProducts(filter) {
         
         const notesContainer = card.querySelector('.product-notes');
         notesContainer.innerHTML = p.notes.slice(0, 3)
-            .map(n => `<span class="note-tag">${n}</span>`)
-            .join('');
+            .map(n => `<span class="note-tag">${n}</span>`).join('');
         
-        card.querySelector('.product-price').textContent = `R${startPrice}`;
+        card.querySelector('.product-price').textContent = `R${displayPrice}`;
         card.querySelector('.add-btn').dataset.id = p.id;
 
-        // Append to grid
         grid.appendChild(clone);
     });
 
-    // Re-attach hover effects
-    document.querySelectorAll('a, button, .product-card').forEach(el => {
-        if (typeof addCursorHover === 'function') addCursorHover(el);
-    });
+    console.log(`✅ Rendered ${filtered.length} products (50ml prices)`);
 
-    // Re-attach Buy Now buttons
+    // Re-attach events
     grid.querySelectorAll('.add-btn').forEach(btn => {
         btn.addEventListener('click', e => {
             const id = parseInt(e.target.dataset.id);
             openModal(id);
         });
+        addCursorHover(btn);
     });
 }
 
-// ─── FILTERS ───
-document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentFilter = btn.dataset.cat;
-        renderProducts(currentFilter);
-    });
-    addCursorHover(btn);
-});
-
-// ─── MODAL ───
+// ─── MODAL FUNCTIONS ───
 function openModal(id) {
     const p = PRODUCTS.find(x => x.id === id);
     if (!p) return;
     selectedProduct = p;
-    selectedSize = p.sizes[3] || p.sizes[0]; // default 100ml
+    selectedSize = p.sizes.find(s => s.ml === '50ml') || p.sizes[0];
+    
+    // Fill modal (keep your existing modal code here)
     document.getElementById('modal-img').src = p.img;
     document.getElementById('modal-cat').textContent = p.cat;
     document.getElementById('modal-name').textContent = p.name;
@@ -413,46 +400,49 @@ function openModal(id) {
     document.getElementById('modal-desc').textContent = p.desc;
     document.getElementById('modal-conc').textContent = p.conc;
     document.getElementById('modal-notes').innerHTML = p.notes.map(n => `<span class="modal-note-tag">${n}</span>`).join('');
+    
+    // Size options...
     const sizeOpts = document.getElementById('size-options');
     sizeOpts.innerHTML = p.sizes.map((s, i) => `
-        <button class="size-btn ${i === 3 || i === p.sizes.length - 1 ? 'selected' : ''}" data-idx="${i}">
-          <span class="size-ml">${s.ml}</span>
-          <span class="size-price">R${s.price}</span>
-          ${s.label ? `<span style="font-size:0.52rem;color:var(--gold);letter-spacing:0.1em;">${s.label}</span>` : ''}
+        <button class="size-btn ${s.ml === '50ml' ? 'selected' : ''}" data-idx="${i}">
+            <span class="size-ml">${s.ml}</span>
+            <span class="size-price">R${s.price}</span>
+            ${s.label ? `<span style="font-size:0.52rem;color:var(--gold);letter-spacing:0.1em;">${s.label}</span>` : ''}
         </button>
-      `).join('');
+    `).join('');
+    
+    // Add click handlers for sizes...
     sizeOpts.querySelectorAll('.size-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             sizeOpts.querySelectorAll('.size-btn').forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
             selectedSize = p.sizes[parseInt(btn.dataset.idx)];
         });
-        addCursorHover(btn);
     });
+    
     document.getElementById('modalOverlay').classList.add('open');
     document.body.style.overflow = 'hidden';
 }
 
-document.getElementById('modalClose').addEventListener('click', closeModal);
-document.getElementById('modalOverlay').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
 function closeModal() {
     document.getElementById('modalOverlay').classList.remove('open');
     document.body.style.overflow = '';
 }
 
-// ─── ADD TO CART ───
+// ─── CART & POPUP ───
 document.getElementById('modal-add-btn').addEventListener('click', () => {
     if (!selectedProduct || !selectedSize) return;
+    // ... your existing cart logic ...
     const cart = JSON.parse(localStorage.getItem('elyseanCart') || '[]');
     const key = `${selectedProduct.id}-${selectedSize.ml}`;
     const existing = cart.find(i => i.key === key);
-    if (existing) { existing.qty++; }
+    if (existing) existing.qty++;
     else {
         cart.push({
-            key, id: selectedProduct.id,
-            name: selectedProduct.name, brand: selectedProduct.brand,
-            img: selectedProduct.img, cat: selectedProduct.cat,
-            size: selectedSize.ml, price: selectedSize.price, qty: 1
+            key, id: selectedProduct.id, name: selectedProduct.name,
+            brand: selectedProduct.brand, img: selectedProduct.img,
+            cat: selectedProduct.cat, size: selectedSize.ml,
+            price: selectedSize.price, qty: 1
         });
     }
     localStorage.setItem('elyseanCart', JSON.stringify(cart));
@@ -461,154 +451,77 @@ document.getElementById('modal-add-btn').addEventListener('click', () => {
     showPopup(selectedProduct.name, selectedSize.ml);
 });
 
+function updateCartCount() {
+    const cart = JSON.parse(localStorage.getItem('elyseanCart') || '[]');
+    const countEl = document.getElementById('cart-count');
+    if (countEl) countEl.textContent = cart.reduce((sum, item) => sum + item.qty, 0);
+}
+
 function showPopup(name, size) {
-    document.getElementById('popup-sub').textContent = `${name} — ${size}`;
     const popup = document.getElementById('cartPopup');
+    document.getElementById('popup-sub').textContent = `${name} — ${size}`;
     popup.classList.add('show');
     setTimeout(() => popup.classList.remove('show'), 5000);
 }
-document.getElementById('popupContinue').addEventListener('click', () => {
-    document.getElementById('cartPopup').classList.remove('show');
-});
 
-function updateCartCount() {
-    const cart = JSON.parse(localStorage.getItem('elyseanCart') || '[]');
-    document.getElementById('cart-count').textContent = cart.reduce((s, i) => s + i.qty, 0);
-}
-
-// ─── URL FILTER ───
-const urlCat = new URLSearchParams(window.location.search).get('cat');
-if (urlCat) {
-    const btn = document.querySelector(`[data-cat="${urlCat}"]`);
-    if (btn) { document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); currentFilter = urlCat; }
-}
-
-renderProducts(currentFilter);
-updateCartCount();
-
-// ─── SEARCH FUNCTIONALITY ───
-function setupSearch() {
-    const searchInput = document.getElementById('searchInput');
-    const searchClear = document.getElementById('searchClear');
-    const countDisplay = document.getElementById('searchResultsCount');
-
-    if (!searchInput) return;
-
-    function performSearch() {
-        const term = searchInput.value.toLowerCase().trim();
-        
-        let filtered = PRODUCTS;
-
-        if (term !== '') {
-            filtered = PRODUCTS.filter(product => 
-                product.name.toLowerCase().includes(term) ||
-                product.brand.toLowerCase().includes(term) ||
-                (product.desc && product.desc.toLowerCase().includes(term)) ||
-                (product.notes && product.notes.some(note => note.toLowerCase().includes(term)))
-            );
-        }
-
-        // Update count
-        countDisplay.textContent = `${filtered.length} results found`;
-
-        // Render the filtered products
-        renderProductsWithArray(filtered);
-    }
-
-    searchInput.addEventListener('input', performSearch);
-
-    searchClear.addEventListener('click', () => {
-        searchInput.value = '';
-        performSearch();
-        searchClear.classList.remove('visible');
-    });
-
-    searchInput.addEventListener('input', () => {
-        searchClear.classList.toggle('visible', searchInput.value.length > 0);
-    });
-}
-
-// New function to render any array of products
-function renderProductsWithArray(productsArray) {
-    const grid = document.getElementById('products-grid');
-    if (!grid) return;
-
-    grid.innerHTML = '';
-
-    if (productsArray.length === 0) {
-        grid.innerHTML = `
-            <div style="grid-column: 1/-1; text-align: center; padding: 100px 20px; color: #666;">
-                <h3>No matching perfumes found</h3>
-                <p>Try searching for "Oud", "Vanilla", "Chanel", "Diesel", etc.</p>
-            </div>`;
-        return;
-    }
-
-    productsArray.forEach((p, i) => {
-        const startPrice = p.sizes[0].price;
-        const card = document.createElement('div');
-        card.className = 'product-card';
-        card.style.animationDelay = (i * 0.05) + 's';
-        
-        card.innerHTML = `
-            <div class="product-card-img-wrap">
-                <img src="${p.img}" alt="${p.name}" class="product-card-img" loading="lazy"/>
-                <div class="product-badge">${p.cat.charAt(0).toUpperCase() + p.cat.slice(1)}</div>
-                <button class="quick-view" data-id="${p.id}">Quick View</button>
-            </div>
-            <div class="product-card-body">
-                <span class="product-category">${p.cat}</span>
-                <h3 class="product-name">${p.name}</h3>
-                <p class="product-brand">${p.brand}</p>
-                <div class="product-notes">
-                    ${p.notes.slice(0, 3).map(n => `<span class="note-tag">${n}</span>`).join('')}
-                </div>
-                <div class="product-price-row">
-                    <div class="product-price">R${startPrice}<span>from</span></div>
-                    <button class="add-btn" data-id="${p.id}">Select Size</button>
-                </div>
-            </div>
-        `;
-        grid.appendChild(card);
-    });
-
-    // Re-attach event listeners
-    attachProductListeners();
-}
-
-// Helper to attach click listeners
-function attachProductListeners() {
-    document.querySelectorAll('.quick-view, .add-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const id = parseInt(e.target.dataset.id);
-            openModal(id);
+// ─── FILTERS & SEARCH & INIT ───
+document.addEventListener('DOMContentLoaded', () => {
+    // Filters
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentFilter = btn.dataset.cat;
+            renderProducts(currentFilter);
         });
     });
-}
 
-// Update your original renderProducts to use the new function
-function renderProducts(filter) {
-    let filtered = filter === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.cat === filter);
-    renderProductsWithArray(filtered);
-}
+    // URL param
+    const urlCat = new URLSearchParams(window.location.search).get('cat');
+    if (urlCat) {
+        const btn = document.querySelector(`[data-cat="${urlCat}"]`);
+        if (btn) btn.click();
+    }
 
-// Initialize everything
-document.addEventListener('DOMContentLoaded', () => {
     renderProducts(currentFilter);
-    setupSearch();
     updateCartCount();
+
+    // Header scroll
+    window.addEventListener('scroll', () => {
+        const header = document.getElementById('header');
+        if (header) {
+            header.classList.toggle('scrolled', window.scrollY > 80);
+        }
+    });
 });
 
-window.addEventListener('scroll', () => {
-    const header = document.getElementById('header');
-    
-    if (window.scrollY > 80) {
-        header.classList.add('scrolled');
+// ─── MODAL CLOSE FIX ───
+function closeModal() {
+    const modalOverlay = document.getElementById('modalOverlay');
+    if (modalOverlay) {
+        modalOverlay.classList.remove('open');
+    }
+    document.body.style.overflow = ''; // restore scrolling
+    console.log('✅ Modal closed');
+}
+
+// Make sure listeners are attached after DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    const modalCloseBtn = document.getElementById('modalClose');
+    const modalOverlay = document.getElementById('modalOverlay');
+
+    if (modalCloseBtn) {
+        modalCloseBtn.addEventListener('click', closeModal);
+        console.log('✅ Modal close button listener attached');
     } else {
-        header.classList.remove('scrolled');
+        console.error('❌ #modalClose button not found in HTML!');
+    }
+
+    if (modalOverlay) {
+        modalOverlay.addEventListener('click', function(e) {
+            if (e.target === modalOverlay) {  // Clicked outside content
+                closeModal();
+            }
+        });
     }
 });
-
-    // ─── HERO BG ───
-    const heroBg = document.getElementById('heroBg');
-    setTimeout(() => heroBg.classList.add('loaded'), 100);
