@@ -330,37 +330,58 @@ function addCursorHover(element) {
 // ─── RENDER PRODUCTS ───
 function renderProducts(filter) {
     const grid = document.getElementById('products-grid');
-    const filtered = filter === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.cat === filter);
+    const template = document.getElementById('product-card-template');
+    
+    if (!template) {
+        console.error("Product card template not found!");
+        return;
+    }
+
+    const filtered = filter === 'all' 
+        ? PRODUCTS 
+        : PRODUCTS.filter(p => p.cat === filter);
+
     document.getElementById('filter-count').textContent = filtered.length + ' fragrances';
     grid.innerHTML = '';
+
     filtered.forEach((p, i) => {
         const startPrice = p.sizes[0].price;
-        const card = document.createElement('div');
-        card.className = 'product-card';
+        
+        // Clone the template
+        const clone = template.content.cloneNode(true);
+        const card = clone.querySelector('.product-card');
+        
+        // Fill in the data
         card.style.animationDelay = (i * 0.08) + 's';
-        card.innerHTML = `
-          <div class="product-card-img-wrap">
-            <img src="${p.img}" alt="${p.name}" class="product-card-img" loading="lazy"/>
-            <div class="product-badge">${p.cat.charAt(0).toUpperCase() + p.cat.slice(1)}</div>
-          </div>
-          <div class="product-card-body">
-            <h3 class="product-name">${p.name}</h3>
-            <p class="product-brand">${p.brand}</p>
+        
+        card.querySelector('.product-card-img').src = p.img;
+        card.querySelector('.product-card-img').alt = p.name;
+        
+        card.querySelector('.product-badge').textContent = 
+            p.cat.charAt(0).toUpperCase() + p.cat.slice(1);
+        
+        card.querySelector('.product-brand').textContent = p.brand;
+        card.querySelector('.product-name').textContent = p.name;
+        
+        const notesContainer = card.querySelector('.product-notes');
+        notesContainer.innerHTML = p.notes.slice(0, 3)
+            .map(n => `<span class="note-tag">${n}</span>`)
+            .join('');
+        
+        card.querySelector('.product-price').textContent = `R${startPrice}`;
+        card.querySelector('.add-btn').dataset.id = p.id;
 
-            <div class="product-notes">${p.notes.slice(0, 3).map(n => `<span class="note-tag">${n}</span>`).join('')}</div>
-
-            <div class="product-price-row">
-              <div class="product-price"><span>from</span>R${startPrice}</div>
-              <button class="add-btn" data-id="${p.id}">Buy Now</button>
-            </div>
-          </div>
-        `;
-        grid.appendChild(card);
+        // Append to grid
+        grid.appendChild(clone);
     });
-    // re-attach hover for cursor
-    document.querySelectorAll('a, button, .product-card').forEach(el => addCursorHover(el));
-    // events
-    grid.querySelectorAll('.quick-view, .add-btn').forEach(btn => {
+
+    // Re-attach hover effects
+    document.querySelectorAll('a, button, .product-card').forEach(el => {
+        if (typeof addCursorHover === 'function') addCursorHover(el);
+    });
+
+    // Re-attach Buy Now buttons
+    grid.querySelectorAll('.add-btn').forEach(btn => {
         btn.addEventListener('click', e => {
             const id = parseInt(e.target.dataset.id);
             openModal(id);

@@ -52,7 +52,27 @@
       <div id="searchResultsCount" class="search-count"></div>
   </div>
 
-  <section class="products-section">
+<!-- Product Card Template -->
+<template id="product-card-template">
+    <div class="product-card">
+        <div class="product-card-img-wrap">
+            <img src="" alt="" class="product-card-img" loading="lazy"/>
+            <div class="product-badge"></div>
+        </div>
+        <div class="product-card-body">
+            <p class="product-brand"></p>
+            <h3 class="product-name"></h3>
+
+            <div class="product-notes"></div>
+
+            <div class="product-price-row">
+                <div class="product-price"></div>
+                <button class="add-btn" data-id="">Buy Now</button>
+            </div>
+        </div>
+    </div>
+</template>
+<section class="products-section">
     <div class="products-grid" id="products-grid"></div>
   </section>
 

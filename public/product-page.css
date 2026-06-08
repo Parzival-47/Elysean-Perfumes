@@ -401,13 +401,6 @@ nav a:hover {
     letter-spacing: 0.02em;
 }
 
-.product-price span {
-    font-size: 0.75rem;
-    color: var(--muted);
-    font-family: 'Nunito Sans', sans-serif;
-    margin-left: 4px;
-}
-
 .add-btn {
     background: transparent;
     border: 1px solid var(--border-light);
@@ -775,7 +768,7 @@ footer p {
 /* Extra Large Screens */
 @media (min-width: 1280px) {
     .products-grid {
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(4, 1fr);
         gap: 30px;
     }
 }
