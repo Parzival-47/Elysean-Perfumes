@@ -8,7 +8,7 @@
 
 :root {
     --black: #0A0A0A;
-    --dark: #0F0F0F;
+    --dark: hsl(0, 0%, 36%);
     --light-grey: #F4F4F4;
     --white: #FFFFFF;
     --charcoal: #1A1A1A;
@@ -99,14 +99,15 @@ nav a:hover {
 
 .nav-cta {
     color: var(--black) !important;
-    border: 1px solid var(--black) !important;
+    border: 1px solid var(--gold-light) !important;
+    Border-radius: 50px !important;
     padding: 10px 24px;
     transition: all 0.3s ease !important;
     background: transparent !important;
 }
 
 .nav-cta:hover {
-    background: var(--gold-light) !important;
+    background: var(--grad) !important;
     color: var(--black) !important;
 }
 
@@ -351,7 +352,7 @@ nav a:hover {
 }
 
 .product-card-body {
-    padding: 28px 28px 32px;
+    padding: 6px 12px 12px 12px;
 }
 
 .product-category {
@@ -366,9 +367,9 @@ nav a:hover {
 .product-name {
     font-family: 'Nunito Sans', serif;
     min-height: 3em; /* Ensure enough space for two lines */
-    font-size: 2rem;
+    font-size: 1.8rem;
     font-weight: 400;
-    color: var(--black);
+    color: var(--dark);
     margin-bottom: 6px;
     line-height: 1.3;
     animation: none;
@@ -390,14 +391,15 @@ nav a:hover {
 }
 
 .note-tag {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     font-weight: 1000;
     letter-spacing: 0.1em;
     color: var(--black);
     background: var(--gold);
     border: 1px solid var(--gold);
     border-radius: 8px;
-    padding: 4px 10px;
+    padding: 6px;
+    min-height: 3em; /* Ensure enough space for two lines */
 }
 
 .product-price-row {
@@ -408,7 +410,7 @@ nav a:hover {
 
 .product-price {
     font-family: 'Nunito Sans', serif;
-    font-size: 2.1rem;
+    font-size: 1.6rem;
     font-weight: 500;
     color: var(--black);
     letter-spacing: 0.02em;
