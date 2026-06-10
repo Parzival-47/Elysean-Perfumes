@@ -65,7 +65,7 @@ header.scrolled .logo {
 
 .logo {
     font-family: 'Nunito Sans', serif;
-    font-size: 2rem;
+    font-size: 1.5rem;
     font-weight: 500;
     letter-spacing: 0.12em;
     color: var(--black);
@@ -86,7 +86,7 @@ nav {
 nav a {
     color: var(--black);
     text-decoration: none;
-    font-size: 1rem;
+    font-size: 0.85rem;
     letter-spacing: 0.18em;
     text-transform: uppercase;
     transition: color 0.3s ease;
