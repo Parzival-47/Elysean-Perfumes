@@ -682,3 +682,76 @@ nav a:hover {
         display: none;
     }
 }
+
+/* ─── MOBILE FIRST IMPROVEMENTS ─── */
+@media (max-width: 768px) {
+    body {
+        font-size: 16px; /* Base font for readability */
+    }
+
+    header {
+        padding: 18px 20px !important;
+    }
+
+    .logo {
+        font-size: 24px !important;
+    }
+
+    section, .hero-content {
+        padding: 60px 20px !important;
+    }
+
+    .hero {
+        height: 100dvh;
+        min-height: 620px;
+    }
+
+    .hero-title {
+        font-size: clamp(2.8rem, 10vw, 4.5rem) !important;
+    }
+
+    .hero-sub {
+        font-size: 1.05rem !important;
+        max-width: 100% !important;
+    }
+
+    .categories-grid {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+    }
+
+    .cat-card {
+        height: 280px !important;
+    }
+
+    .product-card {
+        margin-bottom: 20px;
+    }
+
+    /* Better spacing in cart */
+    .cart-item {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 16px;
+    }
+
+    .cart-item-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        padding: 16px 16px !important;
+    }
+
+    .hero-content {
+        padding: 0 16px 80px !important;
+    }
+
+    .btn {
+        padding: 14px 28px !important;
+        font-size: 0.95rem !important;
+    }
+}
