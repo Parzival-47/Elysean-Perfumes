@@ -1,11 +1,11 @@
-   // ─── MOBILE NAV ───
+// ─── MOBILE NAV ───
 const navToggle = document.getElementById('navToggle');
 const mobileNav = document.getElementById('mobileNav');
 const mobileOverlay = document.getElementById('mobileOverlay');
 
-// Safety check — only run if elements exist
+// Only run if all elements exist
 if (navToggle && mobileNav && mobileOverlay) {
-
+    
     function openMobileNav() {
         navToggle.classList.add('open');
         mobileNav.classList.add('open');
@@ -20,63 +20,23 @@ if (navToggle && mobileNav && mobileOverlay) {
         document.body.style.overflow = '';
     }
 
+    // Toggle on hamburger click
     navToggle.addEventListener('click', () => {
-        navToggle.classList.contains('open') ? closeMobileNav() : openMobileNav();
-    });
-
-    mobileOverlay.addEventListener('click', closeMobileNav);
-
-    mobileNav.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', closeMobileNav);
-    });
-}
-
-function openMobileNav() {
-    navToggle.classList.add('open');
-    mobileNav.classList.add('open');
-    mobileOverlay.classList.add('open');
-    document.body.style.overflow = 'hidden';
-}
-
-function closeMobileNav() {
-    navToggle.classList.remove('open');
-    mobileNav.classList.remove('open');
-    mobileOverlay.classList.remove('open');
-    document.body.style.overflow = '';
-}
-
-navToggle.addEventListener('click', () => {
-    navToggle.classList.contains('open') ? closeMobileNav() : openMobileNav();
-});
-
-mobileOverlay.addEventListener('click', closeMobileNav);
-mobileNav.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', closeMobileNav);
-});
-
-    window.addEventListener('scroll', () => {
-        const header = document.getElementById("header");
-        if (window.scrollY > 80) {
-            header.classList.add('scrolled');
+        if (navToggle.classList.contains('open')) {
+            closeMobileNav();
         } else {
-            header.classList.remove('scrolled');
+            openMobileNav();
         }
     });
 
-    // ─── HERO BG ───
-    const heroBg = document.getElementById('heroBg');
-    setTimeout(() => heroBg.classList.add('loaded'), 100);
+    // Close when clicking overlay
+    mobileOverlay.addEventListener('click', closeMobileNav);
 
-    // ─── REVEAL ON SCROLL ───
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    // Close when clicking any link
+    mobileNav.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', closeMobileNav);
+    });
 
-    // ─── CART COUNT ───
-    function updateCartCount() {
-      const cart = JSON.parse(localStorage.getItem('elyseanCart') || '[]');
-      const total = cart.reduce((s, i) => s + i.qty, 0);
-      document.getElementById('cart-count').textContent = total;
-    }
-    updateCartCount();
+} else {
+    console.warn("Mobile nav elements not found. Check HTML IDs.");
+}
