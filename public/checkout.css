@@ -11,6 +11,7 @@
     --dark: #0F0F0F;
     --charcoal: #1A1A1A;
     --light-grey: #F4F4F4;
+    --grey: #BEBEBE;
     --white: #FFFFFF;
     --mid: #2A2A2A;
     --navy: #1A1F2E;
@@ -308,7 +309,7 @@ nav a:hover {
     position: fixed;
     inset: 0;
     z-index: 200;
-    background: var(--dark);
+    background: var(--black);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -326,7 +327,7 @@ nav a:hover {
 .success-ring {
     width: 100px;
     height: 100px;
-    border: 1px solid var(--border-light);
+    border: 1px solid var(--gold-light);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -358,6 +359,7 @@ nav a:hover {
     font-weight: 400;
     margin-bottom: 12px;
     text-align: center;
+    color: var(--white);
 }
 
 .success-overlay h2 em {
@@ -366,9 +368,9 @@ nav a:hover {
 }
 
 .success-overlay p {
-    color: var(--muted);
+    color: var(--white);
     font-family: 'Nunito Sans', serif;
-    font-size: 1.1rem;
+    font-size: 1.3rem;
     margin-bottom: 40px;
     text-align: center;
     max-width: 360px;
@@ -376,23 +378,23 @@ nav a:hover {
 }
 
 .success-redirect {
-    font-size: 0.65rem;
+    font-size: 1.2rem;
     letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: var(--muted);
+    color: var(--white);
 }
 
 .redirect-bar {
     width: 200px;
     height: 2px;
-    background: var(--mid);
+    background: var(--black);
     margin: 16px auto 0;
     overflow: hidden;
 }
 
 .redirect-progress {
     height: 100%;
-    background: var(--gold);
+    background: var(--gold-light);
     width: 0%;
     animation: progress 3s ease forwards;
     animation-play-state: paused;
@@ -411,16 +413,20 @@ nav a:hover {
 /* RIGHT PANEL */
 .checkout-right {
     padding: 60px 40px;
-    background: var(--charcoal);
+    background: var(--white);
+    position: sticky;
+    top: 88px;
+    align-self: start;
 }
 
 .order-title {
     font-family: 'Nunito Sans', serif;
-    font-size: 1.1rem;
+    font-size: 2rem;
     font-weight: 400;
     margin-bottom: 28px;
     padding-bottom: 20px;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--gold-light);
+    color: var(--black);
 }
 
 .order-items {
@@ -430,15 +436,15 @@ nav a:hover {
 }
 
 .order-items::-webkit-scrollbar {
-    width: 2px;
+    width: 5px;
 }
 
 .order-items::-webkit-scrollbar-track {
-    background: var(--mid);
+    background: var(--white);
 }
 
 .order-items::-webkit-scrollbar-thumb {
-    background: var(--gold);
+    background: var(--gold-light);
 }
 
 .order-item {
@@ -446,7 +452,7 @@ nav a:hover {
     gap: 16px;
     align-items: center;
     padding: 16px 0;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--muted);
 }
 
 .order-item:last-child {
@@ -469,23 +475,24 @@ nav a:hover {
     font-size: 0.95rem;
     font-weight: 400;
     margin-bottom: 3px;
+    color: var(--black);
 }
 
 .order-item-size {
-    font-size: 0.68rem;
-    color: var(--muted);
+    font-size: 0.7rem;
+    color: var(--black);
 }
 
 .order-item-qty {
-    font-size: 0.68rem;
-    color: var(--muted);
+    font-size: 0.7rem;
+    color: var(--black);
     margin-top: 2px;
 }
 
 .order-item-price {
     font-family: 'Nunito Sans', serif;
-    font-size: 1.1rem;
-    color: var(--gold);
+    font-size: 1.2rem;
+    color: var(--black);
     white-space: nowrap;
 }
 
@@ -503,28 +510,58 @@ nav a:hover {
 }
 
 .order-row.muted {
-    color: var(--muted);
+    color: var(--black);
+    font-size: 0.9rem;
 }
 
 .order-total {
     display: flex;
     justify-content: space-between;
     font-family: 'Nunito Sans', serif;
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     font-weight: 400;
     margin-top: 16px;
     padding-top: 16px;
-    border-top: 1px solid var(--border);
+    border-top: 1px solid var(--muted);
 }
 
 .order-total-amount {
-    color: var(--gold);
+    color: var(--black);
 }
 
 .trust-section {
     margin-top: 36px;
     padding-top: 28px;
-    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    margin-top: 16px;
+}
+
+.trust-image {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+}
+
+.yoco-image {
+    width: 100px;
+    height: 70px;
+    object-fit: contain;
+    justify-content: center;
+}
+
+.accepted-payments {
+    width: 220px;
+    height: 80px;
+    object-fit: contain;
+    justify-content: center;
 }
 
 .trust-label {

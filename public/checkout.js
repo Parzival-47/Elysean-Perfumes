@@ -9,7 +9,6 @@ if (orderList) {
     } else {
         orderList.innerHTML = cart.map(item => `
             <div class="order-item">
-                <img src="${item.img}" alt="${item.name}" class="order-item-img"/>
                 <div class="order-item-info">
                     <p class="order-item-name">${item.name}</p>
                     <p class="order-item-size">${item.size} · EDP 20%</p>
@@ -23,8 +22,9 @@ if (orderList) {
 
 // ─── CALCULATE TOTALS ───
 const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
-const tax = Math.round(subtotal * 0.15);
-const total = subtotal + tax;
+const tax = Math.round(subtotal * 0);
+const shipping = cart.length > 0 ? 50 : 0; // R50 shipping if cart not empty
+const total = subtotal + tax + shipping;
 const totalInCents = total * 100;
 
 // Update display
