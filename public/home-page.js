@@ -1,11 +1,15 @@
 // ─── MOBILE NAV ───
-const navToggle = document.getElementById('navToggle');
-const mobileNav = document.getElementById('mobileNav');
-const mobileOverlay = document.getElementById('mobileOverlay');
+document.addEventListener('DOMContentLoaded', () => {
+    const navToggle = document.getElementById('navToggle');
+    const mobileNav = document.getElementById('mobileNav');
+    const mobileOverlay = document.getElementById('mobileOverlay');
 
-// Only run if all elements exist
-if (navToggle && mobileNav && mobileOverlay) {
-    
+    // Safety check
+    if (!navToggle || !mobileNav || !mobileOverlay) {
+        console.warn("Mobile nav elements not found. Check HTML IDs: navToggle, mobileNav, mobileOverlay");
+        return;
+    }
+
     function openMobileNav() {
         navToggle.classList.add('open');
         mobileNav.classList.add('open');
@@ -22,21 +26,16 @@ if (navToggle && mobileNav && mobileOverlay) {
 
     // Toggle on hamburger click
     navToggle.addEventListener('click', () => {
-        if (navToggle.classList.contains('open')) {
-            closeMobileNav();
-        } else {
-            openMobileNav();
-        }
+        navToggle.classList.contains('open') ? closeMobileNav() : openMobileNav();
     });
 
     // Close when clicking overlay
     mobileOverlay.addEventListener('click', closeMobileNav);
 
-    // Close when clicking any link
+    // Close when clicking any mobile link
     mobileNav.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', closeMobileNav);
     });
 
-} else {
-    console.warn("Mobile nav elements not found. Check HTML IDs.");
-}
+    console.log("✅ Mobile nav initialized successfully");
+});

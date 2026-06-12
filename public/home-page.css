@@ -14,7 +14,6 @@
     --mid: #2A2A2A;
     --gold: #D4A843;
     --gold-light: #ffc107;
-    --gold-light: #ffc107;
     --gold-pale: #F0D080;
     --gold-dim: #A07830;
     --cream: #F8F4ED;
@@ -23,7 +22,6 @@
     --purple: #5B21B6;
     --border: rgba(212, 168, 67, 0.15);
     --border-light: rgba(212, 168, 67, 0.35);
-    --grad: linear-gradient(135deg, #FFC107 5%, #FFE68A 50%, #E89B00 95%);
     --grad: linear-gradient(135deg, #FFC107 5%, #FFE68A 50%, #E89B00 95%);
     --grad-subtle: linear-gradient(135deg, rgba(212,168,67,0.15) 0%, rgba(240,208,128,0.08) 100%);
     --grad-border: linear-gradient(135deg, #D4A843, #F0D080, #C8860A);
@@ -36,11 +34,11 @@ html {
 }
 
 body {
-    background: var(--light-gray);
-    color: var(--white);
+    background: var(--light-grey);
+    color: var(--black);
     font-family: 'Nunito Sans', sans-serif;
     background: var(--light-grey);
-    color: var(--white);
+    color: var(--black);
     font-family: 'Nunito Sans', sans-serif;
     font-weight: 300;
     line-height: 1.7;
