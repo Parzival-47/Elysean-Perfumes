@@ -39,3 +39,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     console.log("✅ Mobile nav initialized successfully");
 });
+
+// ─── REVEAL ON SCROLL (Add at the very end) ───
+document.addEventListener('DOMContentLoaded', () => {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                // Optional: stop observing after reveal
+                // observer.unobserve(entry.target);
+            }
+        });
+    }, { 
+        threshold: 0.15,
+        rootMargin: "0px 0px -80px 0px"
+    });
+
+    document.querySelectorAll('.reveal').forEach(el => {
+        observer.observe(el);
+    });
+
+    console.log(`✅ Reveal system active — ${document.querySelectorAll('.reveal').length} elements observed`);
+});
