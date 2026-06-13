@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Elysean Perfumes — South Africa's luxury fragrance house. Handcrafted with rare ingredients and 20% EDP concentration for exceptional longevity. Discover bold masculine, elegant feminine, and sophisticated unisex scents.">
   <title>Secure Checkout — Elysean Perfumes</title>
   <link rel="icon" type="image/png" href="images/Favicon-main.png">
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -10,6 +11,19 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Cormorant+Garamond:wght@300;400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@200;300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href='/checkout.css'/>
+
+    <!-- === SOCIAL MEDIA / OPEN GRAPH TAGS (Add these) === -->
+  <meta property="og:title" content="Elysean Perfumes — South Africa's Luxury Fragrance House">
+  <meta property="og:description" content="Handcrafted luxury fragrances with rare ingredients. Bold, elegant, and timeless.">
+  <meta property="og:image" content="https://elyseanperfumes.co.za/images/ep-snippet.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:url" content="https://elyseanperfumes.co.za">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Elysean Perfumes">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://elyseanperfumes.co.za/images/ep-snippet.png">
 </head>
 <body>
 
@@ -31,7 +45,26 @@
       <a href="product-page.html">Shop</a>
       <a href="cart-page.html" class="nav-active nav-active:hover">Cart</a>
     </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
   </header>
+
+  <!-- Mobile nav overlay -->
+<div class="mobile-nav-overlay" id="mobileOverlay"></div>
+
+<!-- Mobile nav drawer -->
+<div class="mobile-nav" id="mobileNav">
+  <div class="mobile-nav-header">
+    <a href="home-page.html" class="logo">Ely<span>s</span>ean</a>
+    <button class="mobile-close-btn" id="mobileCloseBtn" aria-label="Close Menu">✕</button>
+  </div>
+  <a href="home-page.html">Home</a>
+  <a href="product-page.html">Shop</a>
+  <a href="cart-page.html">Cart</a>
+</div>
 
   <div class="checkout-page">
     <!-- LEFT: FORM -->

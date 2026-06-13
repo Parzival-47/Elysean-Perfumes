@@ -65,37 +65,191 @@ header {
     color: var(--gold-light);
 }
 
+/* Desktop Navigation */
 nav {
     display: flex;
-    gap: 44px;
+    gap: 2.75rem;
     align-items: center;
 }
 
 nav a {
-    color: var(--white);
+    color: var(--white) !important;
     text-decoration: none;
-    font-size: 0.85rem;
+    font-size: 0.875rem;
     letter-spacing: 0.18em;
     text-transform: uppercase;
+    font-weight: 500;
     transition: color 0.3s ease;
-    font-weight: 400;
 }
 
 nav a:hover {
+    color: var(--gold) !important;
+}
+
+/* Nav CTA Button */
+.nav-cta {
+    color: var(--gold-light) !important;
+    padding: 10px 24px;
+    border: 1px solid var(--gold-light);
+    border-radius: 50px;
+    background: transparent;
+    transition: all 0.3s ease;
+}
+
+.nav-cta:hover {
+    background: var(--grad) !important;
+    color: var(--black) !important;
+    border-color: var(--gold);
+}
+
+/* Scrolled State */
+header.scrolled .logo {
+    color: var(--black) !important;
+}
+
+header.scrolled .logo span {
+    color: var(--gold-light) !important;
+}
+
+header.scrolled nav a {
+    color: #444444 !important;
+}
+
+header.scrolled nav a:hover {
+    color: var(--gold) !important;
+}
+
+header.scrolled .nav-cta {
+    color: var(--black) !important;
+}
+
+/* ─── LUXURY MOBILE NAV ─── */
+.nav-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    z-index: 200;
+}
+
+@media (max-width: 768px) {
+    .nav-toggle { display: flex !important; }
+    nav { display: none !important; }
+}
+
+.nav-toggle span {
+    display: block;
+    width: 28px;
+    height: 2.5px;
+    background: var(--white);
+    transition: all 0.4s ease;
+}
+
+header.scrolled .nav-toggle span {
+    background: var(--black);
+}
+
+/* Luxury Mobile Drawer */
+.mobile-nav {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 300px;
+    max-width: 88vw;
+    background: rgba(15, 15, 15, 0.96);     /* Deep elegant black with slight transparency */
+    backdrop-filter: blur(20px);
+    z-index: 150;
+    transform: translateX(100%);
+    transition: transform 0.6s cubic-bezier(0.32, 0.72, 0, 1);
+    padding: 120px 40px 60px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -10px 0 40px rgba(0, 0, 0, 0.6);
+    border-left: 1px solid rgba(212, 168, 67, 0.2);
+}
+
+.mobile-nav.open {
+    transform: translateX(0);
+}
+
+.mobile-nav a {
+    color: var(--white);
+    text-decoration: none;
+    font-size: 1.25rem;
+    font-weight: 400;
+    padding: 18px 0;
+    border-bottom: 1px solid rgba(212, 168, 67, 0.15);
+    transition: all 0.4s ease;
+    letter-spacing: 0.04em;
+}
+
+.mobile-nav a:hover {
+    color: var(--gold-light);
+    padding-left: 12px;
+    border-bottom-color: var(--gold);
+}
+
+.mobile-nav a::after {
+    content: '→';
+    float: right;
+    opacity: 0;
+    transition: all 0.4s ease;
     color: var(--gold-light);
 }
 
-.nav-active {
-    color: var(--gold-light) !important;
-    border: 1px solid var(--gold-light);
-    padding: 6px 12px;
-    border-radius: 20px;
+.mobile-nav a:hover::after {
+    opacity: 1;
 }
 
-.nav-active:hover {
-    background: var(--grad);
-    color: var(--black) !important;
-    border-color: transparent;
+/* Overlay */
+.mobile-nav-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 10, 10, 0.75);
+    backdrop-filter: blur(8px);
+    z-index: 140;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+}
+
+.mobile-nav-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.mobile-nav-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(212, 168, 67, 0.2);
+}
+
+.mobile-close-btn {
+    background: none;
+    border: none;
+    color: var(--white);
+    font-size: 2rem;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    opacity: 0.8;
+}
+
+.mobile-close-btn:hover {
+    color: var(--gold-light);
+    opacity: 1;
+    transform: rotate(90deg);
 }
 
 /* MAIN */

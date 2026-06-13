@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Elysean Perfumes — South Africa's luxury fragrance house. Handcrafted with rare ingredients and 20% EDP concentration for exceptional longevity. Discover bold masculine, elegant feminine, and sophisticated unisex scents.">
   <title>Cart — Elysean Perfumes</title>
   <link rel="icon" type="image/png" href="images/Favicon-main.png">
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -10,6 +11,19 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Cormorant+Garamond:wght@300;400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@200;300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href='/cart-page.css'/>
+
+  <!-- === SOCIAL MEDIA / OPEN GRAPH TAGS (Add these) === -->
+  <meta property="og:title" content="Elysean Perfumes — South Africa's Luxury Fragrance House">
+  <meta property="og:description" content="Handcrafted luxury fragrances with rare ingredients. Bold, elegant, and timeless.">
+  <meta property="og:image" content="https://elyseanperfumes.co.za/images/ep-snippet.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:url" content="https://elyseanperfumes.co.za">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Elysean Perfumes">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://elyseanperfumes.co.za/images/ep-snippet.png">
 </head>
 <body>
 
@@ -20,7 +34,26 @@
       <a href="product-page.html">Shop</a>
       <a href="cart-page.html" class="nav-active nav-active:hover">Cart</a>
     </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
   </header>
+
+  <!-- Mobile nav overlay -->
+<div class="mobile-nav-overlay" id="mobileOverlay"></div>
+
+<!-- Mobile nav drawer -->
+<div class="mobile-nav" id="mobileNav">
+  <div class="mobile-nav-header">
+    <a href="home-page.html" class="logo">Ely<span>s</span>ean</a>
+    <button class="mobile-close-btn" id="mobileCloseBtn" aria-label="Close Menu">✕</button>
+  </div>
+  <a href="home-page.html">Home</a>
+  <a href="product-page.html">Shop</a>
+  <a href="cart-page.html">Cart</a>
+</div>
 
   <!-- SUCCESS BANNER -->
   <div class="success-banner" id="successBanner">
@@ -118,13 +151,56 @@
   </div>
 
   <footer>
-    <p>© 2025 Elysean Perfumes. Crafted in South Africa.</p>
-    <div class="footer-links">
-      <a href="home-page.html">Home</a>
-      <a href="product-page.html">Collections</a>
-      <a href="#">Contact</a>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="home-page.html" class="logo">Ely<span>s</span>ean</a>
+      <p>A luxury fragrance house born in South Africa. Crafted for those who understand that scent is the most intimate form of self-expression.</p>
+      <div class="footer-social-row">
+        <a href="#" class="footer-social-btn" aria-label="Instagram">
+            <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                <circle cx="12" cy="12" r="4"/>
+                <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/>
+            </svg>
+        </a>
+        <a href="#" class="footer-social-btn" aria-label="Facebook">
+            <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/>
+            </svg>
+        </a>
+        <a href="#" class="footer-social-btn" aria-label="WhatsApp">
+            <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/>
+            </svg>
+        </a>
     </div>
-  </footer>
+    </div>
+    <div class="footer-col">
+      <h5>Collections</h5>
+      <a href="product-page.html?cat=masculine">Masculine</a>
+      <a href="product-page.html?cat=feminine">Feminine</a>
+      <a href="product-page.html?cat=unisex">Unisex</a>
+    </div>
+    <div class="footer-col">
+      <h5>Information</h5>
+      <a href="#">Shipping Info</a>
+      <a href="#">Returns</a>
+    </div>
+    <div class="footer-col">
+      <h5>Contact</h5>
+      <a href="mailto:info@elysean.co.za">info@elysean.co.za</a>
+      <a href="tel:+27648570979">064 857 0979</a>
+    </div>
+  </div>
+  <div class="footer-divider"></div>
+  <div class="footer-bottom">
+    <p>© 2026 Elysean Perfumes. All rights reserved. South Africa.</p>
+    <div class="footer-bottom-right">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms</a>
+    </div>
+  </div>
+</footer>
 
   <script src="/cart-page.js"></script>
   

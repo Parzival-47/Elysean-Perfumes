@@ -77,38 +77,191 @@ header.scrolled .logo {
     color: var(--gold-light);
 }
 
+/* Desktop Navigation */
 nav {
     display: flex;
-    gap: 44px;
+    gap: 2.75rem;
     align-items: center;
 }
 
 nav a {
-    color: var(--black);
+    color: var(--white) !important;
     text-decoration: none;
-    font-size: 0.85rem;
+    font-size: 0.875rem;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    transition: color 0.3s ease;
     font-weight: 500;
+    transition: color 0.3s ease;
 }
 
 nav a:hover {
-    color: var(--gold-light);
+    color: var(--gold) !important;
 }
 
+/* Nav CTA Button */
 .nav-cta {
-    color: var(--black) !important;
-    border: 1px solid var(--gold-light) !important;
-    Border-radius: 50px !important;
+    color: var(--gold-light) !important;
     padding: 10px 24px;
-    transition: all 0.3s ease !important;
-    background: transparent !important;
+    border: 1px solid var(--gold-light);
+    border-radius: 50px;
+    background: transparent;
+    transition: all 0.3s ease;
 }
 
 .nav-cta:hover {
     background: var(--grad) !important;
     color: var(--black) !important;
+    border-color: var(--gold);
+}
+
+/* Scrolled State */
+header.scrolled .logo {
+    color: var(--black) !important;
+}
+
+header.scrolled .logo span {
+    color: var(--gold-light) !important;
+}
+
+header.scrolled nav a {
+    color: #444444 !important;
+}
+
+header.scrolled nav a:hover {
+    color: var(--gold) !important;
+}
+
+header.scrolled .nav-cta {
+    color: var(--black) !important;
+}
+
+/* ─── LUXURY MOBILE NAV ─── */
+.nav-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    z-index: 200;
+}
+
+@media (max-width: 768px) {
+    .nav-toggle { display: flex !important; }
+    nav { display: none !important; }
+}
+
+.nav-toggle span {
+    display: block;
+    width: 28px;
+    height: 2.5px;
+    background: var(--white);
+    transition: all 0.4s ease;
+}
+
+header.scrolled .nav-toggle span {
+    background: var(--black);
+}
+
+/* Luxury Mobile Drawer */
+.mobile-nav {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 300px;
+    max-width: 88vw;
+    background: rgba(15, 15, 15, 0.96);     /* Deep elegant black with slight transparency */
+    backdrop-filter: blur(20px);
+    z-index: 150;
+    transform: translateX(100%);
+    transition: transform 0.6s cubic-bezier(0.32, 0.72, 0, 1);
+    padding: 120px 40px 60px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -10px 0 40px rgba(0, 0, 0, 0.6);
+    border-left: 1px solid rgba(212, 168, 67, 0.2);
+}
+
+.mobile-nav.open {
+    transform: translateX(0);
+}
+
+.mobile-nav a {
+    color: var(--white);
+    text-decoration: none;
+    font-size: 1.25rem;
+    font-weight: 400;
+    padding: 18px 0;
+    border-bottom: 1px solid rgba(212, 168, 67, 0.15);
+    transition: all 0.4s ease;
+    letter-spacing: 0.04em;
+}
+
+.mobile-nav a:hover {
+    color: var(--gold-light);
+    padding-left: 12px;
+    border-bottom-color: var(--gold);
+}
+
+.mobile-nav a::after {
+    content: '→';
+    float: right;
+    opacity: 0;
+    transition: all 0.4s ease;
+    color: var(--gold-light);
+}
+
+.mobile-nav a:hover::after {
+    opacity: 1;
+}
+
+/* Overlay */
+.mobile-nav-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 10, 10, 0.75);
+    backdrop-filter: blur(8px);
+    z-index: 140;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+}
+
+.mobile-nav-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.mobile-nav-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(212, 168, 67, 0.2);
+}
+
+.mobile-close-btn {
+    background: none;
+    border: none;
+    color: var(--white);
+    font-size: 2rem;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    opacity: 0.8;
+}
+
+.mobile-close-btn:hover {
+    color: var(--gold-light);
+    opacity: 1;
+    transform: rotate(90deg);
 }
 
 /* PAGE HERO */
@@ -739,34 +892,189 @@ nav a:hover {
     font-size: 1.3rem;
 }
 
+/* ─── FOOTER ─── */
 footer {
     background: var(--black);
-    border-top: 1px solid var(--border);
-    padding: 40px 60px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Top gradient line */
+footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 0.1rem;
+    background: var(--gold-light);
+}
+
+/* Subtle background glow */
+footer::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 37.5rem;
+    height: 18.75rem;
+    background: radial-gradient(ellipse, rgba(212,168,67,0.05) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.footer-top {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr 1fr;
+    gap: 3.75rem;
+    padding: 5rem 3.75rem 3.75rem;
+    position: relative;
+    z-index: 1;
+}
+
+.footer-brand .logo {
+    display: block;
+    margin-bottom: 1.25rem;
+}
+
+.footer-brand p {
+    font-family: 'Nunito Sans', serif;
+    color: var(--white);
+    font-size: 1rem;
+    line-height: 1.8;
+    max-width: 260px;
+    margin-bottom: 2rem;
+}
+
+.footer-social-row {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.footer-social-btn {
+    width: 2.375rem;
+    height: 2.375rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: var(--charcoal);
+    color: var(--white);
+    text-decoration: none;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.footer-social-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    background: var(--grad-border);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.footer-social-btn:hover {
+    color: var(--gold-light);
+    background: rgba(212, 168, 67, 0.08);
+}
+
+.footer-social-btn:hover::before {
+    opacity: 1;
+}
+
+.footer-col h5 {
+    font-size: 1rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    background: var(--grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1.75rem;
+    font-weight: 500;
+    display: block;
+}
+
+.footer-col a {
+    display: block;
+    color: var(--white);
+    text-decoration: none;
+    font-size: 0.83rem;
+    margin-bottom: 1.75rem;
+    transition: all 0.3s ease;
+    letter-spacing: 0.02em;
+    position: relative;
+    padding-left: 0;
+}
+
+.footer-col a::before {
+    content: '→';
+    position: absolute;
+    left: -16px;
+    opacity: 0;
+    color: var(--gold);
+    font-size: 0.7rem;
+    transition: all 0.3s ease;
+}
+
+.footer-col a:hover {
+    color: var(--gold-light);
+    padding-left: 16px;
+}
+
+.footer-col a:hover::before {
+    opacity: 1;
+}
+
+.footer-divider {
+    height: 1px;
+    background: var(--grad-border);
+    margin: 0 60px;
+    opacity: 0.3;
+    position: relative;
+    z-index: 1;
+}
+
+.footer-bottom {
+    padding: 28px 60px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: relative;
+    z-index: 1;
 }
 
-footer p {
-    font-size: 1.2rem;
+.footer-bottom p {
+    font-size: 0.72rem;
     color: var(--white);
+    letter-spacing: 0.05em;
 }
 
-.footer-links {
+.footer-bottom-right {
     display: flex;
     gap: 32px;
+    align-items: center;
 }
 
-.footer-links a {
+.footer-bottom-right a {
     color: var(--white);
     text-decoration: none;
-    font-size: 1.2rem;
-    letter-spacing: 0.1em;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
     transition: color 0.3s ease;
 }
 
-.footer-links a:hover {
+.footer-bottom-right a:hover {
     color: var(--gold-light);
 }
 
@@ -848,10 +1156,26 @@ footer p {
         min-width: unset;
     }
 
-    footer {
+    .footer-top {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        padding: 60px 24px 40px;
+    }
+
+    .footer-divider {
+        margin: 0 24px;
+    }
+
+    .footer-bottom {
         flex-direction: column;
         gap: 20px;
-        padding: 32px 24px;
+        padding: 24px;
+        text-align: center;
+    }
+
+    .footer-bottom-right {
+        flex-direction: column;
+        gap: 16px;
     }
 }
 
