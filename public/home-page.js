@@ -1,12 +1,11 @@
-// ─── MOBILE NAV ───
+// ─── MOBILE NAV (Clean & Reliable) ───
 document.addEventListener('DOMContentLoaded', () => {
     const navToggle = document.getElementById('navToggle');
     const mobileNav = document.getElementById('mobileNav');
     const mobileOverlay = document.getElementById('mobileOverlay');
 
-    // Safety check
     if (!navToggle || !mobileNav || !mobileOverlay) {
-        console.warn("Mobile nav elements not found. Check HTML IDs: navToggle, mobileNav, mobileOverlay");
+        console.error("❌ Mobile nav elements missing! Check HTML IDs.");
         return;
     }
 
@@ -24,20 +23,26 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.style.overflow = '';
     }
 
-    // Toggle on hamburger click
     navToggle.addEventListener('click', () => {
-        navToggle.classList.contains('open') ? closeMobileNav() : openMobileNav();
+        if (navToggle.classList.contains('open')) {
+            closeMobileNav();
+        } else {
+            openMobileNav();
+        }
     });
 
-    // Close when clicking overlay
+    const mobileCloseBtn = document.getElementById('mobileCloseBtn');
+    if (mobileCloseBtn) {
+        mobileCloseBtn.addEventListener('click', closeMobileNav);
+    }
+
     mobileOverlay.addEventListener('click', closeMobileNav);
 
-    // Close when clicking any mobile link
     mobileNav.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', closeMobileNav);
     });
 
-    console.log("✅ Mobile nav initialized successfully");
+    console.log("✅ Mobile Nav successfully initialized");
 });
 
 // ─── REVEAL ON SCROLL (Add at the very end) ───
@@ -60,4 +65,27 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     console.log(`✅ Reveal system active — ${document.querySelectorAll('.reveal').length} elements observed`);
+});
+
+// ─── HEADER SCROLL EFFECT ───
+document.addEventListener('DOMContentLoaded', () => {
+    const header = document.getElementById('header');
+
+    if (!header) {
+        console.warn("Header element not found");
+        return;
+    }
+
+    function handleScroll() {
+        if (window.scrollY > 80) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+    }
+
+    window.addEventListener('scroll', handleScroll);
+    
+    // Run once on load
+    handleScroll();
 });
