@@ -95,9 +95,8 @@ if (document.getElementById('payBtnAmount')) {
 // ─── CHECKOUT PAYMENT HANDLER ───
 document.addEventListener('DOMContentLoaded', () => {
     const payBtn = document.getElementById('payBtn');
-
     if (!payBtn) {
-        console.error("Pay button not found!");
+        console.error("❌ Pay button not found");
         return;
     }
 
@@ -107,29 +106,24 @@ document.addEventListener('DOMContentLoaded', () => {
         payBtn.classList.add('loading');
         if (btnText) btnText.textContent = 'PROCESSING...';
 
-        // Collect form data safely
-        const formData = {
-            firstName: document.getElementById('firstName')?.value.trim() || '',
-            lastName: document.getElementById('lastName')?.value.trim() || '',
-            email: document.getElementById('email')?.value.trim() || '',
-            phone: document.getElementById('phone')?.value.trim() || '',
-        };
+        // Safely get form values
+        const firstName = document.getElementById('firstName')?.value.trim() || '';
+        const lastName  = document.getElementById('lastName')?.value.trim() || '';
+        const email     = document.getElementById('email')?.value.trim() || '';
+        const phone     = document.getElementById('phone')?.value.trim() || '';
 
-        // Get total
+        console.log("📋 Form Values:", { firstName, lastName, email, phone });
+
         const totalStr = localStorage.getItem('elyseanTotal');
         const amountInCents = totalStr ? parseInt(totalStr) * 100 : 0;
 
-        console.log("Form Data:", formData);
-        console.log("Amount in cents:", amountInCents);
-
-        // Validation
         if (amountInCents <= 0) {
             alert("Cart total not found. Please go back to cart.");
             resetButton();
             return;
         }
 
-        if (!formData.firstName || !formData.lastName || !formData.email) {
+        if (!firstName || !lastName || !email) {
             alert("Please fill in First Name, Last Name and Email.");
             resetButton();
             return;
@@ -141,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     amountInCents: amountInCents,
-                    metadata: formData
+                    metadata: { firstName, lastName, email, phone }
                 })
             });
 
@@ -150,12 +144,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok && data.redirectUrl) {
                 window.location.href = data.redirectUrl;
             } else {
-                console.error("Backend response:", data);
-                alert("Could not start payment. Please try again.");
+                alert("Payment could not be started. Please try again.");
             }
         } catch (err) {
-            console.error("Fetch error:", err);
-            alert("Connection error. Please check your internet and try again.");
+            console.error("Error:", err);
+            alert("Could not connect to server. Please try again.");
         } finally {
             resetButton();
         }
