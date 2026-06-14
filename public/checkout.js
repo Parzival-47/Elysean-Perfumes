@@ -92,48 +92,79 @@ if (document.getElementById('payBtnAmount')) {
 // This sends the user to Yoco's payment page.
 // Yoco handles the payment and redirects back to your successUrl.
 // No timer or simulation needed here.
-document.getElementById('payBtn').addEventListener('click', async () => {
+// ─── CHECKOUT PAYMENT HANDLER ───
+document.addEventListener('DOMContentLoaded', () => {
     const payBtn = document.getElementById('payBtn');
-    payBtn.classList.add('loading');
 
-    // Collect form data
-    const formData = {
-        firstName: document.getElementById('firstName').value.trim(),
-        lastName: document.getElementById('lastName').value.trim(),
-        email: document.getElementById('email').value.trim(),
-        phone: document.getElementById('phone').value.trim(),
-        // Add more fields if needed
-    };
-
-    // Basic validation
-    if (!formData.email || !formData.firstName || !formData.lastName) {
-        alert("Please fill in all required fields");
-        payBtn.classList.remove('loading');
+    if (!payBtn) {
+        console.error("Pay button not found!");
         return;
     }
 
-    try {
-        const response = await fetch('/create-checkout', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                amountInCents: localStorage.getItem('elyseanTotal') * 100, // convert to cents
-                metadata: formData   // ← THIS IS THE KEY
-            })
-        });
+    payBtn.addEventListener('click', async () => {
+        const btnText = payBtn.querySelector('.btn-text') || payBtn;
+        
+        payBtn.classList.add('loading');
+        if (btnText) btnText.textContent = 'PROCESSING...';
 
-        const data = await response.json();
+        // Collect form data safely
+        const formData = {
+            firstName: document.getElementById('firstName')?.value.trim() || '',
+            lastName: document.getElementById('lastName')?.value.trim() || '',
+            email: document.getElementById('email')?.value.trim() || '',
+            phone: document.getElementById('phone')?.value.trim() || '',
+        };
 
-        if (data.redirectUrl) {
-            window.location.href = data.redirectUrl;
-        } else {
-            alert("Payment failed to start. Please try again.");
+        // Get total
+        const totalStr = localStorage.getItem('elyseanTotal');
+        const amountInCents = totalStr ? parseInt(totalStr) * 100 : 0;
+
+        console.log("Form Data:", formData);
+        console.log("Amount in cents:", amountInCents);
+
+        // Validation
+        if (amountInCents <= 0) {
+            alert("Cart total not found. Please go back to cart.");
+            resetButton();
+            return;
         }
-    } catch (err) {
-        console.error(err);
-        alert("Something went wrong. Please try again.");
-    } finally {
+
+        if (!formData.firstName || !formData.lastName || !formData.email) {
+            alert("Please fill in First Name, Last Name and Email.");
+            resetButton();
+            return;
+        }
+
+        try {
+            const response = await fetch('/create-checkout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    amountInCents: amountInCents,
+                    metadata: formData
+                })
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.redirectUrl) {
+                window.location.href = data.redirectUrl;
+            } else {
+                console.error("Backend response:", data);
+                alert("Could not start payment. Please try again.");
+            }
+        } catch (err) {
+            console.error("Fetch error:", err);
+            alert("Connection error. Please check your internet and try again.");
+        } finally {
+            resetButton();
+        }
+    });
+
+    function resetButton() {
         payBtn.classList.remove('loading');
+        const btnText = payBtn.querySelector('.btn-text');
+        if (btnText) btnText.textContent = 'PAY NOW';
     }
 });
 
