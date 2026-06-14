@@ -1,3 +1,50 @@
+// ─── MOBILE NAV (Clean & Reliable) ───
+document.addEventListener('DOMContentLoaded', () => {
+    const navToggle = document.getElementById('navToggle');
+    const mobileNav = document.getElementById('mobileNav');
+    const mobileOverlay = document.getElementById('mobileOverlay');
+
+    if (!navToggle || !mobileNav || !mobileOverlay) {
+        console.error("❌ Mobile nav elements missing! Check HTML IDs.");
+        return;
+    }
+
+    function openMobileNav() {
+        navToggle.classList.add('open');
+        mobileNav.classList.add('open');
+        mobileOverlay.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeMobileNav() {
+        navToggle.classList.remove('open');
+        mobileNav.classList.remove('open');
+        mobileOverlay.classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    navToggle.addEventListener('click', () => {
+        if (navToggle.classList.contains('open')) {
+            closeMobileNav();
+        } else {
+            openMobileNav();
+        }
+    });
+
+    const mobileCloseBtn = document.getElementById('mobileCloseBtn');
+    if (mobileCloseBtn) {
+        mobileCloseBtn.addEventListener('click', closeMobileNav);
+    }
+
+    mobileOverlay.addEventListener('click', closeMobileNav);
+
+    mobileNav.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', closeMobileNav);
+    });
+
+    console.log("✅ Mobile Nav successfully initialized");
+});
+
 // ─── CART PAGE JS ───
 document.addEventListener('DOMContentLoaded', () => {
 

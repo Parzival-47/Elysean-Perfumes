@@ -88,87 +88,54 @@ if (document.getElementById('payBtnAmount')) {
     document.getElementById('payBtnAmount').textContent = 'R' + total.toLocaleString();
 }
 
-// ─── CARD VISUAL FORMATTING ───
-const cardNumInput = document.getElementById('cardNumber');
-if (cardNumInput) {
-    cardNumInput.addEventListener('input', e => {
-        let val = e.target.value.replace(/\D/g, '');
-        val = val.match(/.{1,4}/g)?.join(' ') || val;
-        e.target.value = val;
-        document.getElementById('cardDisplay').textContent = val
-            ? val + '•••• •••• •••• ••••'.slice(val.length)
-            : '•••• •••• •••• ••••';
-    });
-}
-
-const cardNameInput = document.getElementById('cardName');
-if (cardNameInput) {
-    cardNameInput.addEventListener('input', e => {
-        document.getElementById('cardNameDisplay').textContent = e.target.value || 'Your Name';
-    });
-}
-
-const cardExpInput = document.getElementById('cardExp');
-if (cardExpInput) {
-    cardExpInput.addEventListener('input', e => {
-        let val = e.target.value.replace(/\D/g, '');
-        if (val.length > 2) val = val.slice(0, 2) + '/' + val.slice(2);
-        e.target.value = val;
-        document.getElementById('cardExpDisplay').textContent = val || 'MM/YY';
-    });
-}
-
 // ─── PAY BUTTON ───
 // This sends the user to Yoco's payment page.
 // Yoco handles the payment and redirects back to your successUrl.
 // No timer or simulation needed here.
-const payBtn = document.getElementById('payBtn');
-if (payBtn) {
-    payBtn.addEventListener('click', async () => {
+document.getElementById('payBtn').addEventListener('click', async () => {
+    const payBtn = document.getElementById('payBtn');
+    payBtn.classList.add('loading');
 
-        // Validate cart
-        if (cart.length === 0) {
-            alert('Your cart is empty. Please add items before checking out.');
-            return;
+    // Collect form data
+    const formData = {
+        firstName: document.getElementById('firstName').value.trim(),
+        lastName: document.getElementById('lastName').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        // Add more fields if needed
+    };
+
+    // Basic validation
+    if (!formData.email || !formData.firstName || !formData.lastName) {
+        alert("Please fill in all required fields");
+        payBtn.classList.remove('loading');
+        return;
+    }
+
+    try {
+        const response = await fetch('/create-checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                amountInCents: localStorage.getItem('elyseanTotal') * 100, // convert to cents
+                metadata: formData   // ← THIS IS THE KEY
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.redirectUrl) {
+            window.location.href = data.redirectUrl;
+        } else {
+            alert("Payment failed to start. Please try again.");
         }
-
-        // Validate total
-        if (totalInCents < 200) {
-            alert('Minimum payment amount is R2.00.');
-            return;
-        }
-
-        // Show loading state
-        payBtn.classList.add('loading');
-        const btnText = payBtn.querySelector('.btn-text');
-        if (btnText) btnText.textContent = 'Redirecting to Yoco...';
-
-        try {
-            // Call your backend to create a Yoco checkout session
-            const response = await fetch('/create-checkout', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ amountInCents: totalInCents })
-            });
-
-            const data = await response.json();
-
-            if (data.redirectUrl) {
-                // Send customer to Yoco's secure payment page.
-                // Yoco will redirect them back to your successUrl after payment.
-                window.location.href = data.redirectUrl;
-            } else {
-                throw new Error(data.error || 'Could not create checkout session.');
-            }
-
-        } catch (error) {
-            // Reset button and show error
-            payBtn.classList.remove('loading');
-            if (btnText) btnText.textContent = 'Pay Now — R' + total.toLocaleString();
-            alert('Payment error: ' + error.message + '\n\nPlease try again.');
-        }
-    });
-}
+    } catch (err) {
+        console.error(err);
+        alert("Something went wrong. Please try again.");
+    } finally {
+        payBtn.classList.remove('loading');
+    }
+});
 
 // ─── REVEAL ON SCROLL (Add at the very end) ───
 document.addEventListener('DOMContentLoaded', () => {

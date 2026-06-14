@@ -272,7 +272,7 @@ header.scrolled .nav-toggle span {
 }
 
 .mobile-nav a {
-    color: var(--black);
+    color: var(--white);
     text-decoration: none;
     font-size: 1.25rem;
     font-weight: 400;
@@ -400,55 +400,112 @@ header.scrolled .nav-toggle span {
     display: block;
 }
 
-/* STEP INDICATOR */
+/* ─── STEP INDICATOR ─── */
 .steps {
     display: flex;
-    gap: 0;
-    margin-bottom: 0;
-    padding-bottom: 0;
+    gap: 8px;
+    margin-bottom: 24px;
+    padding: 0 20px;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .step {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     flex: 1;
+    min-width: 140px;
+    justify-content: center;
 }
 
 .step:not(:last-child)::after {
     content: '→';
-    color: var(--black);
-    margin: 0 12px;
+    color: var(--gold);
+    font-size: 1.1rem;
+    margin: 0 8px;
+    opacity: 0.6;
 }
 
 .step-num {
-    width: 30px;
-    height: 30px;
-    border: 1px solid var(--gold-light);
+    width: 34px;
+    height: 34px;
+    border: 2px solid var(--gold-light);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 600;
     color: var(--black);
+    background: white;
+    flex-shrink: 0;
 }
 
 .step.active .step-num {
     background: var(--gold-light);
-    border-color: var(--gold-light);
+    border-color: var(--gold);
     color: var(--black);
-    font-weight: 500;
 }
 
 .step-label {
-    font-size: 0.65rem;
-    letter-spacing: 0.1em;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--black);
+    font-weight: 500;
+    white-space: nowrap;
 }
 
 .step.active .step-label {
-    color: var(--gold-light);
+    color: var(--gold);
+    font-weight: 600;
+}
+
+/* ─── MOBILE RESPONSIVE ─── */
+@media (max-width: 768px) {
+    .steps {
+        padding: 0 16px;
+        gap: 6px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .step {
+        min-width: auto;
+        flex: 1 1 auto;
+        gap: 6px;
+    }
+
+    .step:not(:last-child)::after {
+        display: none; /* Hide arrows on very small screens */
+    }
+
+    .step-num {
+        width: 30px;
+        height: 30px;
+        font-size: 0.78rem;
+    }
+
+    .step-label {
+        font-size: 0.65rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .steps {
+        gap: 4px;
+    }
+
+    .step {
+        flex-direction: column;
+        gap: 4px;
+        min-width: 70px;
+    }
+
+    .step:not(:last-child)::after {
+        content: none;
+    }
 }
 
 .page-hero h1 {
@@ -512,7 +569,7 @@ header.scrolled .nav-toggle span {
     color: var(--red);
 }
 
-/* CART ITEM ROW */
+/* CART ITEM ROW - DESKTOP FIRST */
 .cart-item {
     display: grid;
     grid-template-columns: 100px 1fr auto;
@@ -523,26 +580,17 @@ header.scrolled .nav-toggle span {
     animation: fadeIn 0.4s ease;
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
 .cart-item-img {
     width: 100px;
     height: 120px;
     object-fit: cover;
     filter: brightness(0.85);
+    border-radius: 8px;
 }
 
 .cart-item-details {
+    min-width: 0; /* Prevents text overflow */
+}
 
 .cart-item-cat {
     font-size: 0.58rem;
@@ -559,6 +607,7 @@ header.scrolled .nav-toggle span {
     color: var(--black);
     font-weight: 400;
     margin-bottom: 4px;
+    line-height: 1.3;
 }
 
 .cart-item-brand {
@@ -579,12 +628,12 @@ header.scrolled .nav-toggle span {
     align-items: flex-end;
     gap: 16px;
 }
-}
 
 .cart-item-price {
     font-family: 'Nunito Sans', sans-serif;
     font-size: 1.3rem;
     color: var(--black);
+    white-space: nowrap;
 }
 
 .qty-controls {
@@ -633,6 +682,46 @@ header.scrolled .nav-toggle span {
 
 .remove-btn:hover {
     color: var(--red);
+}
+
+/* ─── MOBILE RESPONSIVE ONLY ─── */
+@media (max-width: 768px) {
+    .cart-item {
+        grid-template-columns: 70px 1fr;   /* Smaller image */
+        gap: 16px;
+    }
+
+    .cart-item-img {
+        width: 70px;
+        height: 70px;
+    }
+
+    .cart-item-actions {
+        flex-direction: row;           /* Price and controls side by side */
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        margin-top: 12px;
+    }
+
+    .cart-item-price {
+        font-size: 1.2rem;
+    }
+
+    .qty-controls {
+        margin-left: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .cart-item {
+        gap: 12px;
+    }
+
+    .cart-item-img {
+        width: 65px;
+        height: 65px;
+    }
 }
 
 /* EMPTY STATE */

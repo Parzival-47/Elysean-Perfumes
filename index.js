@@ -39,6 +39,7 @@ app.post('/create-checkout', async (req, res) => {
                 successUrl: `https://elyseanperfumes.co.za/cart-page.html?success=true`,
                 cancelUrl: `https://elyseanperfumes.co.za/checkout.html`,
                 failureUrl: `https://elyseanperfumes.co.za/checkout.html`,
+                metadata: metadata || {}
             })
         });
         const data = await response.json();
@@ -55,12 +56,26 @@ app.post('/create-checkout', async (req, res) => {
 });
  
 app.post('/webhook', express.raw({ type: 'application/json' }), (req, res) => {
-    const event = JSON.parse(req.body);
-    console.log('Webhook received:', event);
-    if (event.type === 'payment.succeeded') {
-        console.log('Payment successful! ID:', event.payload.id);
+    try {
+        const event = JSON.parse(req.body);
+        console.log('Webhook received:', event);
+        if (event.type === 'payment.succeeded') {
+            const payment = event.payload;
+            const customerInfo = payment.metadata;
+
+            console.log('Payment successful! ID:', event.payload.id);
+            console.log('Customer Info:', customerInfo);
+            console.log('Amount:', payment.amount / 100, 'ZAR');
+        } else if (event.type === 'payment.failed') {
+            console.log('❌ Payment Failed:', event.payload);
+        }
+
+        // Always return 200 OK quickly
+        res.status(200).send('OK');
+    } catch (err) {
+        console.error('Webhook error:', err);
+        res.status(400).send('Error');
     }
-    res.status(200).json({ received: true });
 });
  
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));

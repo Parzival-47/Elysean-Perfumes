@@ -123,7 +123,7 @@ header.scrolled .nav-cta {
     color: var(--black) !important;
 }
 
-/* ─── LUXURY MOBILE NAV ─── */
+/* LUXURY MOBILE NAV */
 .nav-toggle {
     display: none;
     flex-direction: column;
@@ -160,7 +160,7 @@ header.scrolled .nav-toggle span {
     bottom: 0;
     width: 300px;
     max-width: 88vw;
-    background: rgba(15, 15, 15, 0.96);     /* Deep elegant black with slight transparency */
+    background: rgba(15, 15, 15, 0.96);
     backdrop-filter: blur(20px);
     z-index: 150;
     transform: translateX(100%);
@@ -491,15 +491,8 @@ header.scrolled .nav-toggle span {
 }
 
 @keyframes pulseRing {
-
-    0%,
-    100% {
-        box-shadow: 0 0 0 0 rgba(201, 164, 111, 0.2);
-    }
-
-    50% {
-        box-shadow: 0 0 0 20px rgba(201, 164, 111, 0);
-    }
+    0%, 100% { box-shadow: 0 0 0 0 rgba(201, 164, 111, 0.2); }
+    50% { box-shadow: 0 0 0 20px rgba(201, 164, 111, 0); }
 }
 
 .success-check {
@@ -559,9 +552,7 @@ header.scrolled .nav-toggle span {
 }
 
 @keyframes progress {
-    to {
-        width: 100%;
-    }
+    to { width: 100%; }
 }
 
 /* RIGHT PANEL */
@@ -795,117 +786,104 @@ header.scrolled .nav-toggle span {
     color: var(--gold-light);
 }
 
-@media(max-width:900px) {
+/* ─── MOBILE FIXES FOR IPHONE SE (375px) ─── */
+@media (max-width: 768px) {
     .checkout-page {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr !important;
+    }
+
+    .checkout-left,
+    .checkout-right {
+        padding: 32px 20px !important;
+        border-right: none !important;
     }
 
     .checkout-right {
+        position: static !important;
         order: -1;
-        padding: 40px 24px;
-    }
-
-    .checkout-left {
-        padding: 40px 24px;
     }
 
     header {
-        padding: 16px 24px;
-    }
-
-    .card-row {
-        grid-template-columns: 1fr 1fr;
-    }
-}
-
-@media(max-width:480px) {
-    .form-row {
-        grid-template-columns: 1fr;
-    }
-
-    .card-row {
-        grid-template-columns: 1fr;
+        padding: 16px 20px !important;
     }
 
     .steps {
         flex-direction: column;
         gap: 12px;
+        align-items: flex-start;
+        padding-bottom: 16px;
     }
 
-    .step::after {
+    .step:not(:last-child)::after {
         display: none;
     }
-}
 
-/* ─── MOBILE FIRST IMPROVEMENTS ─── */
-@media (max-width: 768px) {
-    body {
-        font-size: 16px; /* Base font for readability */
-    }
-
-    header {
-        padding: 18px 20px !important;
-    }
-
-    .logo {
-        font-size: 24px !important;
-    }
-
-    section, .hero-content {
-        padding: 60px 20px !important;
-    }
-
-    .hero {
-        height: 100dvh;
-        min-height: 620px;
-    }
-
-    .hero-title {
-        font-size: clamp(2.8rem, 10vw, 4.5rem) !important;
-    }
-
-    .hero-sub {
-        font-size: 1.05rem !important;
-        max-width: 100% !important;
-    }
-
-    .categories-grid {
+    .form-row {
         grid-template-columns: 1fr !important;
-        gap: 16px !important;
-    }
-
-    .cat-card {
-        height: 280px !important;
-    }
-
-    .product-card {
-        margin-bottom: 20px;
-    }
-
-    /* Better spacing in cart */
-    .cart-item {
-        flex-direction: column !important;
-        align-items: flex-start !important;
-        gap: 16px;
-    }
-
-    .cart-item-actions {
-        width: 100%;
-        justify-content: space-between;
     }
 }
 
 @media (max-width: 480px) {
-    header {
-        padding: 16px 16px !important;
+    .checkout-left,
+    .checkout-right {
+        padding: 24px 16px !important;
     }
 
-    .hero-content {
-        padding: 0 16px 80px !important;
+    body {
+        font-size: 15px;
     }
 
-    .btn {
-        padding: 14px 28px !important;
-        font-size: 0.95rem !important;
+    .checkout-left h2 {
+        font-size: 1.7rem;
+        margin-bottom: 28px;
+    }
+
+    .form-section {
+        margin-bottom: 24px;
+    }
+
+    .form-section-title {
+        font-size: 0.78rem;
+    }
+
+    .form-label {
+        font-size: 0.78rem;
+    }
+
+    .form-input {
+        padding: 12px 14px;
+        font-size: 0.95rem;
+    }
+
+    .pay-btn {
+        padding: 16px 20px;
+        font-size: 1.05rem;
+    }
+
+    .pay-btn-wrap {
+        margin-top: 28px;
+    }
+
+    .order-title {
+        font-size: 1.65rem;
+    }
+
+    .order-items {
+        max-height: 240px;
+    }
+}
+
+@media (max-width: 375px) {
+    .checkout-left,
+    .checkout-right {
+        padding: 20px 14px !important;
+    }
+
+    .form-input {
+        padding: 11px 12px;
+    }
+
+    .checkout-left h2 {
+        font-size: 1.6rem;
     }
 }
