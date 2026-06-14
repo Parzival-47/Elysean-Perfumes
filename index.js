@@ -39,7 +39,7 @@ app.post('/create-checkout', async (req, res) => {
                 successUrl: `https://elyseanperfumes.co.za/cart-page.html?success=true`,
                 cancelUrl: `https://elyseanperfumes.co.za/checkout.html`,
                 failureUrl: `https://elyseanperfumes.co.za/checkout.html`,
-                metadata: metadata || {}
+                metadata: metadata 
             })
         });
         const data = await response.json();
