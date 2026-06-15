@@ -210,3 +210,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize
     renderCart();
 });
+
+// Success page logic
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('success') === 'true') {
+    console.log("✅ Payment success page loaded");
+
+    // Optional: Show success message to user
+    const successBanner = document.getElementById('successBanner');
+    if (successBanner) successBanner.classList.add('show');
+
+    // Clear cart
+    localStorage.removeItem('elyseanCart');
+}
