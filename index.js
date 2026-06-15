@@ -23,9 +23,19 @@ app.get('/:page', (req, res) => {
         }
     });
 });
- 
+
 app.post('/create-checkout', async (req, res) => {
-    const { amountInCents } = req.body;
+    // ── Pull amount AND customer info from the request body ──
+    const { amountInCents, customerInfo } = req.body;
+
+    // ── Build metadata safely ──
+    const metadata = customerInfo ? {
+        firstName: customerInfo.firstName || '',
+        lastName: customerInfo.lastName || '',
+        email: customerInfo.email || '',
+        phone: customerInfo.phone || ''
+    } : {};
+
     try {
         const response = await fetch('https://payments.yoco.com/api/checkouts', {
             method: 'POST',
@@ -39,11 +49,13 @@ app.post('/create-checkout', async (req, res) => {
                 successUrl: `https://elyseanperfumes.co.za/cart-page.html?success=true`,
                 cancelUrl: `https://elyseanperfumes.co.za/checkout.html`,
                 failureUrl: `https://elyseanperfumes.co.za/checkout.html`,
-                metadata: metadata 
+                metadata: metadata
             })
         });
+
         const data = await response.json();
         console.log('Yoco response:', data);
+
         if (data.redirectUrl) {
             res.json({ redirectUrl: data.redirectUrl });
         } else {
@@ -54,29 +66,27 @@ app.post('/create-checkout', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
- 
+
 app.post('/webhook', express.raw({ type: 'application/json' }), (req, res) => {
     try {
         const event = JSON.parse(req.body);
         console.log('Webhook received:', event);
+
         if (event.type === 'payment.succeeded') {
             const payment = event.payload;
             const customerInfo = payment.metadata;
-
-            console.log('Payment successful! ID:', event.payload.id);
+            console.log('✅ Payment successful! ID:', event.payload.id);
             console.log('Customer Info:', customerInfo);
             console.log('Amount:', payment.amount / 100, 'ZAR');
         } else if (event.type === 'payment.failed') {
             console.log('❌ Payment Failed:', event.payload);
         }
 
-        // Always return 200 OK quickly
         res.status(200).send('OK');
     } catch (err) {
         console.error('Webhook error:', err);
         res.status(400).send('Error');
     }
 });
- 
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
 
+app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));

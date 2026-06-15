@@ -1,4 +1,4 @@
-// ─── MOBILE NAV (Clean & Reliable) ───
+// ─── MOBILE NAV ───
 document.addEventListener('DOMContentLoaded', () => {
     const navToggle = document.getElementById('navToggle');
     const mobileNav = document.getElementById('mobileNav');
@@ -70,7 +70,7 @@ if (orderList) {
 // ─── CALCULATE TOTALS ───
 const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
 const tax = Math.round(subtotal * 0);
-const shipping = cart.length > 0 ? 50 : 0; // R50 shipping if cart not empty
+const shipping = cart.length > 0 ? 50 : 0;
 const total = subtotal + tax + shipping;
 const totalInCents = total * 100;
 
@@ -88,10 +88,6 @@ if (document.getElementById('payBtnAmount')) {
     document.getElementById('payBtnAmount').textContent = 'R' + total.toLocaleString();
 }
 
-// ─── PAY BUTTON ───
-// This sends the user to Yoco's payment page.
-// Yoco handles the payment and redirects back to your successUrl.
-// No timer or simulation needed here.
 // ─── CHECKOUT PAYMENT HANDLER ───
 document.addEventListener('DOMContentLoaded', () => {
     const payBtn = document.getElementById('payBtn');
@@ -102,11 +98,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     payBtn.addEventListener('click', async () => {
         const btnText = payBtn.querySelector('.btn-text') || payBtn;
-        
+
         payBtn.classList.add('loading');
         if (btnText) btnText.textContent = 'PROCESSING...';
 
-        // Safely get form values
+        // Get form values
         const firstName = document.getElementById('firstName')?.value.trim() || '';
         const lastName  = document.getElementById('lastName')?.value.trim() || '';
         const email     = document.getElementById('email')?.value.trim() || '';
@@ -114,11 +110,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         console.log("📋 Form Values:", { firstName, lastName, email, phone });
 
-        const totalStr = localStorage.getItem('elyseanTotal');
-        const amountInCents = totalStr ? parseInt(totalStr) * 100 : 0;
-
-        if (amountInCents <= 0) {
-            alert("Cart total not found. Please go back to cart.");
+        // ── Use the totalInCents calculated above — no localStorage needed ──
+        if (totalInCents <= 0) {
+            alert("Your cart is empty. Please add items before checking out.");
             resetButton();
             return;
         }
@@ -134,20 +128,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    amountInCents: amountInCents,
-                    metadata: { firstName, lastName, email, phone }
+                    amountInCents: totalInCents,
+                    // ── Key fix: send as customerInfo to match index.js ──
+                    customerInfo: {
+                        firstName,
+                        lastName,
+                        email,
+                        phone
+                    }
                 })
             });
 
             const data = await response.json();
+            console.log("Checkout response:", data);
 
             if (response.ok && data.redirectUrl) {
                 window.location.href = data.redirectUrl;
             } else {
+                console.error("Checkout error details:", data);
                 alert("Payment could not be started. Please try again.");
             }
         } catch (err) {
-            console.error("Error:", err);
+            console.error("Network error:", err);
             alert("Could not connect to server. Please try again.");
         } finally {
             resetButton();
@@ -161,17 +163,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// ─── REVEAL ON SCROLL (Add at the very end) ───
+// ─── REVEAL ON SCROLL ───
 document.addEventListener('DOMContentLoaded', () => {
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('visible');
-                // Optional: stop observing after reveal
-                // observer.unobserve(entry.target);
             }
         });
-    }, { 
+    }, {
         threshold: 0.15,
         rootMargin: "0px 0px -80px 0px"
     });
