@@ -2,7 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const fetch = require('node-fetch');
-const SibApiV3Sdk = require('@getbrevo/brevo');
+const Brevo = require('@getbrevo/brevo');
+const SibApiV3Sdk = Brevo.default || Brevo;
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -10,7 +11,8 @@ const YOCO_SECRET_KEY = process.env.YOCO_SECRET_KEY;
 
 // ── Brevo API Setup ──
 const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
-apiInstance.authentications['apiKey'].apiKey = process.env.BREVO_API_KEY;
+const apiKey = apiInstance.authentications['api-key'];
+apiKey.apiKey = process.env.BREVO_API_KEY;
 
 // ── Email sending function ──
 async function sendOrderEmails(customerInfo, amountInCents, checkoutId) {
