@@ -163,7 +163,7 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res)
                             <!-- Contact -->
                             <p style="color: #555; font-size: 0.85rem; line-height: 1.8; margin-bottom: 30px;">
                                 Questions? Contact us at 
-                                <a href="mailto:info@elyseanperfumes.co.za" style="color: #C9A84C; text-decoration: none;">info@elyseanperfumes.co.za</a> 
+                                <a href="mailto:elyseanperfumes@gmail.com" style="color: #C9A84C; text-decoration: none;">elyseanperfumes@gmail.com</a> 
                                 or call <a href="tel:+27648570979" style="color: #C9A84C; text-decoration: none;">064 857 0979</a>.
                             </p>
 
