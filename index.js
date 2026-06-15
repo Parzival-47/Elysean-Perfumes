@@ -2,42 +2,57 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const fetch = require('node-fetch');
-const Brevo = require('@getbrevo/brevo');
-const SibApiV3Sdk = Brevo.default || Brevo;
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const YOCO_SECRET_KEY = process.env.YOCO_SECRET_KEY;
+const BREVO_API_KEY = process.env.BREVO_API_KEY;
+const BREVO_SENDER_EMAIL = process.env.BREVO_SENDER_EMAIL;
+const BREVO_SENDER_NAME = process.env.BREVO_SENDER_NAME || 'Elysean Perfumes';
 
-// ── Brevo API Setup ──
-const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
-const apiKey = apiInstance.authentications['api-key'];
-apiKey.apiKey = process.env.BREVO_API_KEY;
+// ── Send email via Brevo HTTP API (no SDK needed) ──
+async function sendEmail(to, toName, subject, htmlContent) {
+    const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+        method: 'POST',
+        headers: {
+            'accept': 'application/json',
+            'api-key': BREVO_API_KEY,
+            'content-type': 'application/json'
+        },
+        body: JSON.stringify({
+            sender: {
+                name: BREVO_SENDER_NAME,
+                email: BREVO_SENDER_EMAIL
+            },
+            to: [{ email: to, name: toName }],
+            subject: subject,
+            htmlContent: htmlContent
+        })
+    });
 
-// ── Email sending function ──
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(`Brevo API error: ${JSON.stringify(data)}`);
+    }
+
+    return data;
+}
+
+// ── Send both order emails ──
 async function sendOrderEmails(customerInfo, amountInCents, checkoutId) {
     const amountRands = (amountInCents / 100).toFixed(2);
-
-    const sender = {
-        name: process.env.BREVO_SENDER_NAME || 'Elysean Perfumes',
-        email: process.env.BREVO_SENDER_EMAIL
-    };
+    const customerName = `${customerInfo.firstName || ''} ${customerInfo.lastName || ''}`.trim();
 
     // ── Customer confirmation email ──
-    const customerEmail = new SibApiV3Sdk.SendSmtpEmail();
-    customerEmail.sender = sender;
-    customerEmail.to = [{ email: customerInfo.email, name: `${customerInfo.firstName || ''} ${customerInfo.lastName || ''}` }];
-    customerEmail.subject = 'Your Elysean Perfumes Order Confirmation ✦';
-    customerEmail.htmlContent = `
+    const customerHtml = `
         <div style="font-family: Georgia, serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; background: #ffffff;">
             
-            <!-- Header -->
             <div style="text-align: center; border-bottom: 1px solid #e8e0d0; padding-bottom: 30px; margin-bottom: 30px;">
                 <h1 style="font-size: 2rem; color: #0A0A0A; margin: 0 0 4px 0; letter-spacing: 0.1em;">ELYSEAN</h1>
                 <p style="color: #C9A84C; font-size: 0.7rem; letter-spacing: 0.35em; text-transform: uppercase; margin: 0;">Luxury Fragrance House</p>
             </div>
 
-            <!-- Greeting -->
             <p style="color: #0A0A0A; font-size: 1rem; line-height: 1.8; margin-bottom: 12px;">
                 Dear ${customerInfo.firstName || 'Valued Customer'},
             </p>
@@ -45,13 +60,12 @@ async function sendOrderEmails(customerInfo, amountInCents, checkoutId) {
                 Thank you for your order with Elysean Perfumes. We have received your payment and your fragrances are being carefully prepared for dispatch.
             </p>
 
-            <!-- Order Details Box -->
             <div style="background: #f9f7f4; border: 1px solid #e8e0d0; padding: 28px; margin-bottom: 30px;">
                 <p style="font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; color: #C9A84C; margin: 0 0 16px 0;">Order Details</p>
                 <table style="width: 100%; border-collapse: collapse;">
                     <tr>
                         <td style="padding: 6px 0; color: #777; font-size: 0.85rem;">Name</td>
-                        <td style="padding: 6px 0; color: #0A0A0A; font-size: 0.85rem; text-align: right;">${customerInfo.firstName || ''} ${customerInfo.lastName || ''}</td>
+                        <td style="padding: 6px 0; color: #0A0A0A; font-size: 0.85rem; text-align: right;">${customerName}</td>
                     </tr>
                     <tr>
                         <td style="padding: 6px 0; color: #777; font-size: 0.85rem;">Email</td>
@@ -72,7 +86,6 @@ async function sendOrderEmails(customerInfo, amountInCents, checkoutId) {
                 </table>
             </div>
 
-            <!-- What happens next -->
             <div style="margin-bottom: 30px;">
                 <p style="font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; color: #C9A84C; margin: 0 0 12px 0;">What Happens Next</p>
                 <p style="color: #555; font-size: 0.9rem; line-height: 1.9; margin: 0;">
@@ -82,14 +95,12 @@ async function sendOrderEmails(customerInfo, amountInCents, checkoutId) {
                 </p>
             </div>
 
-            <!-- Contact -->
             <p style="color: #555; font-size: 0.85rem; line-height: 1.8; margin-bottom: 30px;">
                 Questions? Contact us at 
                 <a href="mailto:info@elyseanperfumes.co.za" style="color: #C9A84C; text-decoration: none;">info@elyseanperfumes.co.za</a> 
                 or call <a href="tel:+27648570979" style="color: #C9A84C; text-decoration: none;">064 857 0979</a>.
             </p>
 
-            <!-- Footer -->
             <div style="border-top: 1px solid #e8e0d0; padding-top: 20px; text-align: center;">
                 <p style="color: #999; font-size: 0.75rem; margin: 0;">© 2026 Elysean Perfumes · South Africa</p>
                 <p style="color: #C9A84C; font-size: 0.65rem; letter-spacing: 0.2em; margin: 4px 0 0 0;">EDP 20% CONCENTRATION · HANDCRAFTED LUXURY</p>
@@ -99,14 +110,10 @@ async function sendOrderEmails(customerInfo, amountInCents, checkoutId) {
     `;
 
     // ── Owner notification email ──
-    const ownerEmail = new SibApiV3Sdk.SendSmtpEmail();
-    ownerEmail.sender = sender;
-    ownerEmail.to = [{ email: process.env.BREVO_SENDER_EMAIL, name: 'Elysean Perfumes Owner' }];
-    ownerEmail.subject = `✅ New Order — R${amountRands} — ${customerInfo.firstName || ''} ${customerInfo.lastName || ''}`;
-    ownerEmail.htmlContent = `
+    const ownerHtml = `
         <div style="font-family: Arial, sans-serif; max-width: 500px; padding: 30px; background: #fff;">
             <h2 style="color: #0A0A0A;">New Order Received</h2>
-            <p><strong>Name:</strong> ${customerInfo.firstName || ''} ${customerInfo.lastName || ''}</p>
+            <p><strong>Name:</strong> ${customerName}</p>
             <p><strong>Email:</strong> ${customerInfo.email}</p>
             <p><strong>Phone:</strong> ${customerInfo.phone || 'Not provided'}</p>
             <p><strong>Amount:</strong> R${amountRands}</p>
@@ -115,11 +122,20 @@ async function sendOrderEmails(customerInfo, amountInCents, checkoutId) {
         </div>
     `;
 
-    // ── Send both emails ──
-    await apiInstance.sendTransacEmail(customerEmail);
+    await sendEmail(
+        customerInfo.email,
+        customerName,
+        'Your Elysean Perfumes Order Confirmation ✦',
+        customerHtml
+    );
     console.log('✅ Confirmation email sent to customer:', customerInfo.email);
 
-    await apiInstance.sendTransacEmail(ownerEmail);
+    await sendEmail(
+        BREVO_SENDER_EMAIL,
+        'Elysean Perfumes Owner',
+        `✅ New Order — R${amountRands} — ${customerName}`,
+        ownerHtml
+    );
     console.log('✅ Notification email sent to owner');
 }
 
@@ -173,7 +189,6 @@ app.post('/create-checkout', async (req, res) => {
 
         if (data.redirectUrl) {
 
-            // ── Send emails immediately when checkout is created ──
             if (customerInfo?.email) {
                 try {
                     await sendOrderEmails(customerInfo, amountInCents, data.id);
@@ -192,7 +207,7 @@ app.post('/create-checkout', async (req, res) => {
     }
 });
 
-// ── Yoco Webhook (ready for when you upgrade) ──
+// ── Yoco Webhook ──
 app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
     try {
         const event = JSON.parse(req.body);
