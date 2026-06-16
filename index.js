@@ -7,6 +7,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const YOCO_SECRET_KEY = process.env.YOCO_SECRET_KEY;
 const BREVO_API_KEY = process.env.BREVO_API_KEY;
+console.log('🔑 BREVO_API_KEY loaded:', BREVO_API_KEY ? `${BREVO_API_KEY.substring(0, 10)}... (length: ${BREVO_API_KEY.length})` : 'MISSING');
 const BREVO_SENDER_EMAIL = process.env.BREVO_SENDER_EMAIL;
 const BREVO_SENDER_NAME = process.env.BREVO_SENDER_NAME || 'Elysean Perfumes';
 
