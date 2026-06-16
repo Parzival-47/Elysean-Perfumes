@@ -58,17 +58,32 @@
   <div class="page-hero">
     <div class="page-hero-bg" id="heroBg"></div>
     <div class="page-hero-text">
-      <span class="eyebrow"></span>
       <h1>Our <em>Collection</em></h1>
     </div>
   </div>
 
   <div class="filters-bar">
-    <button class="filter-btn active" data-cat="all">All</button>
-    <button class="filter-btn" data-cat="masculine">Masculine</button>
-    <button class="filter-btn" data-cat="feminine">Feminine</button>
-    <button class="filter-btn" data-cat="unisex">Unisex</button>
-    <span class="filter-count" id="filter-count">310 fragrances</span>
+    <div class="desktop-filters">
+      <button class="filter-btn active" data-cat="all">All</button>
+      <button class="filter-btn" data-cat="masculine">Masculine</button>
+      <button class="filter-btn" data-cat="feminine">Feminine</button>
+      <button class="filter-btn" data-cat="unisex">Unisex</button>
+    </div>
+
+    <!-- Mobile Dropdown -->
+    <div class="mobile-filters">
+        <button class="dropdown-btn" id="mobileFilterBtn" data-cat="all"> All <span class="arrow">↓</span></button>
+        <div class="dropdown-menu" id="filterDropdown">
+            <button class="filter-btn" data-cat="all">ALL</button>
+            <button class="filter-btn" data-cat="masculine">MASCULINE</button>
+            <button class="filter-btn" data-cat="feminine">FEMININE</button>
+            <button class="filter-btn" data-cat="unisex">UNISEX</button>
+        </div>
+    </div>
+
+    <div class="filter-count">
+        <span id="filter-count">310</span>
+    </div>
   </div>
 
   <!-- SEARCH BAR -->
@@ -77,8 +92,8 @@
           <input 
               type="text" 
               id="searchInput" 
-              placeholder="Search perfumes... (e.g. Oud, Chanel, Vanilla)" 
-              autocomplete="off">
+              placeholder="Search perfumes..." 
+              autocomplete="on">
           <button id="searchClear" class="search-clear">✕</button>
       </div>
       <div id="searchResultsCount" class="search-count"></div>
@@ -105,7 +120,7 @@
 
             <div class="product-price-row">
                 <div class="product-price"></div>
-                <button class="add-btn" data-id="">Buy Now</button>
+                <button class="add-btn" data-id="">Buy</button>
             </div>
         </div>
     </div>

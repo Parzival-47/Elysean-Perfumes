@@ -12,6 +12,7 @@
     --light-grey: #F4F4F4;
     --white: #FFFFFF;
     --charcoal: #1A1A1A;
+    --navy: #1A1F2E;
     --mid: #2A2A2A;
     --gold-light: #ffc107;
     --gold: #C9A46F;
@@ -292,25 +293,13 @@ header.scrolled .nav-toggle span {
     transform: scale(1);
 }
 
-.page-hero-text .eyebrow {
-    font-size: clamp(2.5rem, 10vw, 6.5rem);
-    letter-spacing: 0.35em;
-    text-transform: uppercase;
-    color: var(--white);
-    display: block;
-    text-align: center;
-    position: relative;
-    width: 100%;
-    z-index: 2;
-}
-
 .page-hero-text h1 {
     font-family: 'Nunito Sans', serif;
-    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-size: clamp(2.5rem, 5vw, 4rem) !important;
     font-weight: 600;
     line-height: 1.1;
     position: relative;
-    text-align: center;
+    text-align: left;
     margin-top: 120px;
     text-transform: uppercase;
     color: var(--white);
@@ -322,17 +311,76 @@ header.scrolled .nav-toggle span {
     color: var(--white);
 }
 
-/* FILTERS */
+/* FILTERS BAR */
 .filters-bar {
-    padding: 32px 60px;
+    padding: 20px 20px;
     background: var(--light-grey);
     border-bottom: 1px solid var(--grad);
     display: flex;
-    gap: 8px;
     align-items: center;
-    flex-wrap: wrap;
+    gap: 12px;
+    flex-wrap: nowrap;
+    position: relative;
 }
 
+.desktop-filters {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+/* Mobile Dropdown */
+.mobile-filters {
+    display: none;
+    position: relative;
+}
+
+.dropdown-btn {
+    display: flex;
+    font-size: 1rem;
+    padding: 9px 22px;
+    align-items: center;
+    gap: 8px;
+    background: var(--grad);
+    border: var(--grad);
+    border-radius: 25px;
+}
+
+.dropdown-btn:hover {
+    background: var(--gold-light);
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: var(--white);
+    align-content: left;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 8px 0;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    z-index: 100;
+    min-width: 180px;
+    margin-top: 8px;
+}
+
+.dropdown-menu.show {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+}
+
+.dropdown-menu .filter-btn {
+    text-align: left;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 0;
+    width: 100%;
+}
+
+/* Filter Button Styles */
 .filter-btn {
     padding: 9px 22px;
     border: 1px solid var(--grad);
@@ -344,11 +392,13 @@ header.scrolled .nav-toggle span {
     text-transform: uppercase;
     font-family: 'Nunito Sans', sans-serif;
     transition: all 0.3s ease;
+    white-space: nowrap;
 }
 
 .filter-btn:hover {
-    border-color: var(--grad);
-    color: var(--grad);
+    border-color: var(--gold-light);
+    color: var(--black);
+    background: var(--gold-light);
 }
 
 .filter-btn.active {
@@ -358,25 +408,76 @@ header.scrolled .nav-toggle span {
     font-weight: 700;
 }
 
+.mobile-filter-btn {
+    padding: 9px 22px;
+    border: 1px solid var(--grad);
+    background: transparent;
+    color: var(--black);
+    font-size: 0.85rem;
+    border-radius: 50px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-family: 'Nunito Sans', sans-serif;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.mobile-filter-btn:hover {
+    border-color: var(--gold-light);
+    color: var(--black);
+    background: var(--gold-light);
+}
+
+.mobile-filter-btn.active {
+    background: var(--grad);
+    color: var(--black);
+    border-color: var(--grad);
+    font-weight: 700;
+}
+
 .filter-count {
     margin-left: auto;
-    font-size: 1.2rem;
+    font-size: clamp(0.6rem, 5vw, 1.3rem);
     color: var(--black);
-    font-weight: 400;
+    font-weight: 200;
     text-transform: uppercase;
+    white-space: nowrap;
+}
+
+/* ─── MOBILE RESPONSIVE ─── */
+@media (max-width: 768px) {
+    .desktop-filters {
+        display: none;
+    }
+    
+    .mobile-filters {
+        display: block;
+    }
+
+    .filters-bar {
+        padding: 24px 20px;
+        gap: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .filters-bar {
+        padding: 20px 16px;
+    }
 }
 
 /* ─── PROFESSIONAL SEARCH BAR ─── */
 .search-container {
     max-width: 1100px;
     margin: 0 auto;
-    padding: 40px 60px 50px;
+    padding: 20px 30px;
     text-align: center;
 }
 
 .search-wrapper {
     position: relative;
-    max-width: 620px;
+    max-width: 850px !important;
+    width: 100% !important;
     margin: 0 auto;
 }
 
@@ -463,7 +564,7 @@ header.scrolled .nav-toggle span {
     position: relative;
     overflow: hidden;
     border: 1px solid var(--gold);
-    border-radius: 20px;
+    border-radius: 15px;
 }
 
 .product-card:hover {
@@ -492,8 +593,8 @@ header.scrolled .nav-toggle span {
 
 .product-badge {
     position: absolute;
-    top: 18px;
-    left: 18px;
+    top: 6px;
+    left: 6px;
     background: var(--grad);
     border-radius: 12px;
     color: var(--black);
@@ -520,7 +621,7 @@ header.scrolled .nav-toggle span {
 .product-name {
     font-family: 'Nunito Sans', serif;
     min-height: 3em; /* Ensure enough space for two lines */
-    font-size: 1.8rem;
+    font-size: 1.5rem;
     font-weight: 400;
     color: var(--dark);
     margin-bottom: 6px;
@@ -538,21 +639,20 @@ header.scrolled .nav-toggle span {
 
 .product-notes {
     display: flex;
-    gap: 8px;
+    gap: 4px;
     flex-wrap: wrap;
     margin-bottom: 20px;
+    align-items: center;
 }
 
 .note-tag {
     font-size: 0.7rem;
     font-weight: 1000;
     letter-spacing: 0.1em;
-    color: var(--black);
-    background: var(--gold);
-    border: 1px solid var(--gold);
+    color: var(--white);
+    background: var(--navy);
     border-radius: 8px;
-    padding: 6px;
-    min-height: 3em; /* Ensure enough space for two lines */
+    padding: 2px 6px;
 }
 
 .product-price-row {
@@ -570,13 +670,13 @@ header.scrolled .nav-toggle span {
 }
 
 .add-btn {
-    background: transparent;
+    background: var(--grad);
     border: 1px solid var(--gold-light);
     border-radius: 50px;
     color: var(--black);
-    padding: 10px 20px;
-    font-size: 0.8rem;
-    letter-spacing: 0.18em;
+    padding: 5px 15px;
+    font-size: 1.1rem;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     font-family: 'Nunito Sans', sans-serif;
     transition: all 0.3s ease;
@@ -639,7 +739,7 @@ header.scrolled .nav-toggle span {
 }
 
 .modal-body {
-    padding: 48px 40px;
+    padding: 10px 10px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -745,34 +845,40 @@ header.scrolled .nav-toggle span {
 
 .size-options {
     display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 4px;
+    flex-wrap: nowrap;
     margin-bottom: 28px;
+    width: 100%;
 }
 
 .size-btn {
-    padding: 8px 16px;
-    border: 2px solid var(--gold-light);
-    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;     /* Pushes label left, price right */
+    width: 100%;
+    padding: 14px 20px;
+    border: 1px solid var(--gold-light);
+    border-radius: 12px;
     background: transparent;
     color: var(--black);
-    font-size: 1.5rem;
     font-family: 'Nunito Sans', sans-serif;
     transition: all 0.3s ease;
-    text-align: center;
+    cursor: pointer;
+    min-height: 58px;                   /* Consistent height */
 }
 
 .size-btn .size-ml {
-    display: block;
-    font-size: 0.78rem;
-    color: var(--black);
-    margin-bottom: 2px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: inherit;
 }
 
 .size-btn .size-price {
-    display: block;
-    font-size: 1.3rem;
-    color: var(--black);
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: inherit;
+    text-align: right;
 }
 
 .size-btn.selected,
@@ -935,6 +1041,7 @@ footer::after {
 .footer-brand .logo {
     display: block;
     margin-bottom: 1.25rem;
+    color: var(--white);
 }
 
 .footer-brand p {
@@ -1037,7 +1144,7 @@ footer::after {
 
 .footer-divider {
     height: 1px;
-    background: var(--grad-border);
+    background: var(--grad);
     margin: 0 60px;
     opacity: 0.3;
     position: relative;

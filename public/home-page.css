@@ -434,7 +434,7 @@ header.scrolled .nav-toggle span {
     z-index: 1;
     border-top: 0.125rem solid var(--border);
     border-bottom: 0.125rem solid var(--border);
-    padding: 1rem 0;
+    padding: 10px 0;
     overflow: hidden;
     background: var(--gold-light);
 }
@@ -470,7 +470,7 @@ section {
 
 .section-label {
     font-size: 1rem;
-    letter-spacing: 0.25em;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
     background: var(--black);
     -webkit-background-clip: text;
@@ -528,16 +528,16 @@ section {
     color: var(--black);
     text-decoration: none;
     background: var(--grad);
-    padding: 0.6rem;
+    border-radius: 25px;
+    padding: 4px 12px;
     font-size: 0.9rem;
     font-weight: 400;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    padding-bottom: 0.25rem;
     transition: all 0.3s ease;
+    transform: translateY(-20px) !important;
     white-space: nowrap;
     align-self: flex-end;
-    position: relative;
 }
 
 .cat-view-all::after {
@@ -546,7 +546,7 @@ section {
     bottom: 0;
     left: 0;
     right: 0;
-    height: 1px;
+    height: 0;
     background: var(--grad-border);
 }
 
@@ -726,26 +726,33 @@ section {
     margin-bottom: 2.5rem;
 }
 
+/* STRIP STATS - Keep horizontal on all screens */
 .strip-stats {
     display: flex;
-    gap: 3rem;
+    justify-content: space-between;
+    gap: 40px;
     margin-bottom: 3rem;
     border-top: 1px solid var(--gold-light);
     padding-top: 2rem;
 }
 
+.stat {
+    flex: 1;
+    text-align: center;
+}
+
 .stat-num {
     font-family: 'Nunito Sans', sans-serif;
-    font-size: 2.2rem;
+    font-size: 2.4rem;
     font-weight: 400;
     color: var(--gold);
     display: block;
     line-height: 1;
-    margin-bottom: 0.375rem;
+    margin-bottom: 8px;
 }
 
 .stat-label {
-    font-size: 0.77rem;
+    font-size: 0.8rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--black);
@@ -781,32 +788,33 @@ section {
     border-radius: 4px;
 }
 
-/* ─── MOBILE RESPONSIVE ─── */
+/* ─── MOBILE RESPONSIVE - Shrink but stay in one row ─── */
 @media (max-width: 768px) {
-    .featured-strip {
-        padding: 60px 20px !important;
-        grid-template-columns: 1fr !important;
-        gap: 3rem;
-    }
-
-    .strip-image {
-        height: 320px !important;
-        order: -1; /* Puts image on top on mobile */
-    }
-
-    .strip-text p {
-        font-size: 1.15rem;
-    }
-
     .strip-stats {
-        gap: 2rem;
-        flex-wrap: wrap;
+        gap: 20px;
+        padding-top: 1.8rem;
+    }
+
+    .stat-num {
+        font-size: 2rem;
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
     }
 }
 
 @media (max-width: 480px) {
-    .strip-image {
-        height: 280px !important;
+    .strip-stats {
+        gap: 12px;
+    }
+
+    .stat-num {
+        font-size: 1.75rem;
+    }
+
+    .stat-label {
+        font-size: 0.7rem;
     }
 }
 
@@ -855,38 +863,72 @@ section {
     margin: 2.5rem auto;
 }
 
+/* ABOUT PILLARS - Force horizontal on all screens */
 .about-pillars {
     display: flex;
-    gap: 3.75rem;
+    gap: 20px;
     justify-content: center;
-    margin-top: 3.75rem;
+    align-items: stretch;
+    flex-wrap: nowrap;           /* ← This prevents wrapping */
 }
 
 .pillar {
+    flex: 1 1 0;                 /* Allow shrinking */
+    min-width: 0;
     text-align: center;
+    padding: 28px 16px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    transition: all 0.4s ease;
 }
 
-.pillar-icon {
-    font-size: 1.5rem;
-    margin-bottom: 16px;
-    display: block;
-    color: var(--gold-light);
+.pillar:hover {
+    transform: translateY(-6px);
 }
 
-.pillar h4 {
-    font-family: 'Nunito Sans', serif;
-    font-size: 1.5rem;
-    font-weight: 400;
-    color: var(--black);
-    margin-bottom: 0.5rem;
+/* ─── MOBILE - SHRINK BUT STAY HORIZONTAL ─── */
+@media (max-width: 768px) {
+    .about-pillars {
+        gap: 12px;
+    }
+
+    .pillar {
+        padding: 20px 10px;
+    }
+
+    .pillar-icon {
+        font-size: 1.9rem;
+        margin-bottom: 10px;
+    }
+
+    .pillar h4 {
+        font-size: 1.05rem;
+        margin-bottom: 8px;
+    }
+
+    .pillar p {
+        font-size: 0.85rem;
+        line-height: 1.5;
+    }
 }
 
-.pillar p {
-    font-size: 1.15rem;
-    color: var(--black);
-    margin: 0;
-    font-family: 'Nunito Sans', sans-serif;
-    line-height: 1.6;
+@media (max-width: 480px) {
+    .about-pillars {
+        gap: 10px;
+    }
+
+    .pillar {
+        padding: 18px 8px;
+    }
+
+    .pillar-icon {
+        font-size: 1.7rem;
+    }
+
+    .pillar h4 {
+        font-size: 1rem;
+    }
 }
 
 /* ─── FOOTER ─── */
@@ -1134,7 +1176,7 @@ header.scrolled .nav-toggle span {
 
 /* ─── REVEAL ─── */
 .reveal {
-    opacity: 0;
+    opacity: 1;
     transform: translateY(40px);
     transition: opacity 0.9s ease, transform 0.9s ease;
 }

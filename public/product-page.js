@@ -360,6 +360,7 @@ const PRODUCTS = [
     ];
 // Global state
 let currentFilter = 'all';
+let currentSearchTerm = '';
 let selectedProduct = null;
 let selectedSize = null;
 
@@ -375,7 +376,7 @@ function addCursorHover(element) {
 }
 
 // ─── RENDER PRODUCTS USING TEMPLATE ───
-function renderProducts(filter) {
+function renderProducts(filter = 'all', searchTerm = '') {
     const grid = document.getElementById('products-grid');
     const template = document.getElementById('product-card-template');
     
@@ -384,17 +385,35 @@ function renderProducts(filter) {
         return;
     }
 
-    const filtered = filter === 'all' 
+    let filtered = filter === 'all' 
         ? PRODUCTS 
         : PRODUCTS.filter(p => p.cat === filter);
 
-    document.getElementById('filter-count').textContent = filtered.length + ' fragrances';
+    // Apply search
+    if (searchTerm.trim() !== '') {
+        const term = searchTerm.toLowerCase().trim();
+        filtered = filtered.filter(p => {
+            return (
+                p.name.toLowerCase().includes(term) ||
+                p.brand.toLowerCase().includes(term) ||
+                p.desc.toLowerCase().includes(term) ||
+                p.notes.some(note => note.toLowerCase().includes(term))
+            );
+        });
+    }
+
+    // Update count
+    const countEl = document.getElementById('filter-count') || document.getElementById('searchResultsCount');
+    if (countEl) {
+        countEl.textContent = filtered.length + ' fragrances';
+    }
+
     grid.innerHTML = '';
 
     filtered.forEach((p, i) => {
-        // Get 50ml price
-        let price50ml = p.sizes.find(size => size.ml === '50ml');
-        const displayPrice = price50ml ? price50ml.price : p.sizes[0].price;
+        // Get 30ml price
+        let price30ml = p.sizes.find(size => size.ml === '30ml');
+        const displayPrice = price30ml ? price30ml.price : p.sizes[0].price;
         
         const clone = template.content.cloneNode(true);
         const card = clone.querySelector('.product-card');
@@ -420,7 +439,7 @@ function renderProducts(filter) {
         grid.appendChild(clone);
     });
 
-    console.log(`✅ Rendered ${filtered.length} products (50ml prices)`);
+    console.log(`✅ Rendered ${filtered.length} products (30ml prices)`);
 
     // Re-attach events
     grid.querySelectorAll('.add-btn').forEach(btn => {
@@ -437,7 +456,7 @@ function openModal(id) {
     const p = PRODUCTS.find(x => x.id === id);
     if (!p) return;
     selectedProduct = p;
-    selectedSize = p.sizes.find(s => s.ml === '50ml') || p.sizes[0];
+    selectedSize = p.sizes.find(s => s.ml === '30ml') || p.sizes[0];
     
     // Fill modal (keep your existing modal code here)
     document.getElementById('modal-img').src = p.img;
@@ -451,10 +470,9 @@ function openModal(id) {
     // Size options...
     const sizeOpts = document.getElementById('size-options');
     sizeOpts.innerHTML = p.sizes.map((s, i) => `
-        <button class="size-btn ${s.ml === '50ml' ? 'selected' : ''}" data-idx="${i}">
+        <button class="size-btn ${s.ml === '30ml' ? 'selected' : ''}" data-idx="${i}">
             <span class="size-ml">${s.ml}</span>
             <span class="size-price">R${s.price}</span>
-            ${s.label ? `<span style="font-size:0.52rem;color:var(--gold);letter-spacing:0.1em;">${s.label}</span>` : ''}
         </button>
     `).join('');
     
@@ -530,6 +548,30 @@ document.addEventListener('DOMContentLoaded', () => {
         if (btn) btn.click();
     }
 
+    // ─── SEARCH FUNCTIONALITY ───
+    const searchInput = document.getElementById('searchInput');
+    const searchClear = document.getElementById('searchClear');
+
+    if (searchInput) {
+        searchInput.addEventListener('input', () => {
+            currentSearchTerm = searchInput.value;
+            if (searchClear) {
+                searchClear.classList.toggle('visible', currentSearchTerm.length > 0);
+            }
+            renderProducts(currentFilter, currentSearchTerm);
+        });
+
+        if (searchClear) {
+            searchClear.addEventListener('click', () => {
+                searchInput.value = '';
+                currentSearchTerm = '';
+                searchClear.classList.remove('visible');
+                renderProducts(currentFilter, '');
+                searchInput.focus();
+            });
+        }
+    }
+
     renderProducts(currentFilter);
     updateCartCount();
 
@@ -541,16 +583,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
-
-// ─── MODAL CLOSE FIX ───
-function closeModal() {
-    const modalOverlay = document.getElementById('modalOverlay');
-    if (modalOverlay) {
-        modalOverlay.classList.remove('open');
-    }
-    document.body.style.overflow = ''; // restore scrolling
-    console.log('✅ Modal closed');
-}
 
 // Make sure listeners are attached after DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
@@ -593,4 +625,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     console.log(`✅ Reveal system active — ${document.querySelectorAll('.reveal').length} elements observed`);
+});
+
+// Mobile Filter Dropdown
+document.addEventListener('DOMContentLoaded', () => {
+    const dropdownBtn = document.getElementById('mobileFilterBtn');
+    const dropdownMenu = document.getElementById('filterDropdown');
+
+    if (dropdownBtn && dropdownMenu) {
+        dropdownBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdownMenu.classList.toggle('show');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', () => {
+            dropdownMenu.classList.remove('show');
+        });
+    }
 });
