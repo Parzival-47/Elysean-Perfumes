@@ -164,30 +164,29 @@ async function sendOrderEmails(customerInfo, amountInCents, checkoutId, cart, su
     const productRows = buildProductRows(cart);
 
     const customerHtml = `
-        <div style="font-family: Georgia, serif; max-width: 600px; margin: 0 auto; padding: 30px 16px; background: #0A0A0A; color: #fff; box-sizing: border-box;">
+        <div style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif, serif; max-width: 600px; margin: 0 auto; padding: 30px 16px; background: #fff; color: #000; box-sizing: border-box;">
 
-            <div style="text-align: center; border-bottom: 1px solid #333; padding-bottom: 24px; margin-bottom: 24px;">
+            <div style="text-align: center; border-bottom: 1px solid #000; padding-bottom: 24px; margin-bottom: 24px;">
                 <h1 style="font-size: 1.8rem; margin: 0 0 4px 0; letter-spacing: 0.1em;">ELYSEAN</h1>
-                <p style="color: #C9A84C; font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; margin: 0;">Luxury Fragrance House</p>
+                <p style="color: #ffc107; font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; margin: 0;">Luxury Fragrance House</p>
             </div>
 
             <p style="font-size: 0.95rem; line-height: 1.7; margin-bottom: 10px;">
                 Dear ${customerInfo.firstName || 'Valued Customer'},
             </p>
-            <p style="color: #ccc; font-size: 0.88rem; line-height: 1.7; margin-bottom: 24px;">
+            <p style="color: #000; font-size: 0.88rem; line-height: 1.7; margin-bottom: 24px;">
                 Thank you for your order. Here is your receipt.
             </p>
 
-            <div style="background: #181818; border: 1px solid #2a2a2a; border-radius: 8px; padding: 18px; margin-bottom: 20px; word-break: break-word;">
-                <p style="font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: #C9A84C; margin: 0 0 12px 0;">Order Details</p>
-                <p style="margin: 4px 0; font-size: 0.82rem; color: #ddd;">${customerName}</p>
-                <p style="margin: 4px 0; font-size: 0.82rem; color: #ddd; word-break: break-all;">${customerInfo.email}</p>
-                <p style="margin: 4px 0; font-size: 0.82rem; color: #ddd;">${customerInfo.phone || ''}</p>
-                <p style="margin: 10px 0 0 0; font-size: 0.7rem; color: #777; word-break: break-all;">Order #${checkoutId || 'N/A'}</p>
+            <div style="background: hsl(0, 0%, 95%); border: 1px solid #ffc107; border-radius: 8px; padding: 18px; margin-bottom: 20px; word-break: break-word;">
+                <p style="font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: #1A1F2E; margin: 0 0 12px 0; border-bottom: 1px solid #ffc107;">Your Information</p>
+                <p style="margin: 4px 0; font-size: 0.82rem; color: #000;">${customerName}</p>
+                <p style="margin: 4px 0; font-size: 0.82rem; color: #000; word-break: break-all;">${customerInfo.email}</p>
+                <p style="margin: 4px 0; font-size: 0.82rem; color: #000;">${customerInfo.phone || ''}</p>
             </div>
 
-            <div style="background: #181818; border: 1px solid #2a2a2a; border-radius: 8px; padding: 18px; margin-bottom: 20px;">
-                <p style="font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: #C9A84C; margin: 0 0 6px 0;">Your Order</p>
+            <div style="background: hsl(0, 0%, 95%); border: 1px solid #ffc107; border-radius: 8px; padding: 18px; margin-bottom: 20px;">
+                <p style="font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: #1A1F2E; margin: 0 0 6px 0; border-bottom: 1px solid #ffc107;">Your Order Details</p>
                 <table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
                     ${productRows}
                 </table>
@@ -196,34 +195,34 @@ async function sendOrderEmails(customerInfo, amountInCents, checkoutId, cart, su
             <div style="padding: 0 4px 20px 4px;">
                 <table style="width: 100%; border-collapse: collapse;">
                     <tr>
-                        <td style="padding: 4px 0; color: #999; font-size: 0.82rem;">Subtotal</td>
-                        <td style="padding: 4px 0; color: #ddd; font-size: 0.82rem; text-align: right;">R${(subtotal || 0).toLocaleString()}</td>
+                        <td style="padding: 4px 0; color: #000; font-size: 0.82rem;">Subtotal</td>
+                        <td style="padding: 4px 0; color: #000; font-size: 0.82rem; text-align: right;">R${(subtotal || 0).toLocaleString()}</td>
                     </tr>
                     <tr>
-                        <td style="padding: 4px 0; color: #999; font-size: 0.82rem;">Shipping</td>
-                        <td style="padding: 4px 0; color: #ddd; font-size: 0.82rem; text-align: right;">R${(shipping || 0).toLocaleString()}</td>
+                        <td style="padding: 4px 0; color: #000; font-size: 0.82rem;">Shipping</td>
+                        <td style="padding: 4px 0; color: #000; font-size: 0.82rem; text-align: right;">R${(shipping || 0).toLocaleString()}</td>
                     </tr>
                     ${tax ? `
                     <tr>
-                        <td style="padding: 4px 0; color: #999; font-size: 0.82rem;">Tax</td>
-                        <td style="padding: 4px 0; color: #ddd; font-size: 0.82rem; text-align: right;">R${tax.toLocaleString()}</td>
+                        <td style="padding: 4px 0; color: #000; font-size: 0.82rem;">Tax</td>
+                        <td style="padding: 4px 0; color: #000; font-size: 0.82rem; text-align: right;">R${tax.toLocaleString()}</td>
                     </tr>` : ''}
                     <tr style="border-top: 1px solid #2a2a2a;">
-                        <td style="padding: 12px 0 0 0; color: #fff; font-size: 1rem; font-weight: bold;">Total</td>
-                        <td style="padding: 12px 0 0 0; color: #C9A84C; font-size: 1.1rem; font-weight: bold; text-align: right;">R${amountRands}</td>
+                        <td style="padding: 12px 0 0 0; color: #000; font-size: 1rem; font-weight: bold;">Total</td>
+                        <td style="padding: 12px 0 0 0; color: #000; font-size: 1.1rem; font-weight: bold; text-align: right;">R${amountRands}</td>
                     </tr>
                 </table>
             </div>
 
-            <p style="color: #999; font-size: 0.78rem; line-height: 1.7; margin-bottom: 24px;">
-                Your fragrances are being prepared and will be with you shortly. Questions? Email
-                <a href="mailto:elyseanperfumes@gmail.com" style="color: #C9A84C; text-decoration: none;">elyseanperfumes@gmail.com</a>
-                or call <a href="tel:+27648570979" style="color: #C9A84C; text-decoration: none;">064 857 0979</a>.
+            <p style="color: #000; font-size: 0.78rem; line-height: 1.7; margin-bottom: 24px;">
+                Your fragrances are being prepared. Questions?<br>
+                Email Us: <a href="mailto:elyseanperfumes@gmail.com" style="color: #ffc107; text-decoration: none;">elyseanperfumes@gmail.com</a><br>
+                Call Us On: <a href="tel:+27648570979" style="color: #ffc107; text-decoration: none;">064 857 0979</a>.
             </p>
 
             <div style="border-top: 1px solid #2a2a2a; padding-top: 16px; text-align: center;">
-                <p style="color: #666; font-size: 0.7rem; margin: 0;">© 2026 Elysean Perfumes · South Africa</p>
-                <p style="color: #C9A84C; font-size: 0.6rem; letter-spacing: 0.2em; margin: 4px 0 0 0;">EDP 20% · HANDCRAFTED LUXURY</p>
+                <p style="color: #000; font-size: 0.7rem; margin: 0;">© 2026 Elysean Perfumes · South Africa</p>
+                <p style="color: #000; font-size: 0.6rem; letter-spacing: 0.2em; margin: 4px 0 0 0;">EDP 20% · HANDCRAFTED LUXURY</p>
             </div>
 
         </div>
@@ -245,10 +244,10 @@ async function sendOrderEmails(customerInfo, amountInCents, checkoutId, cart, su
         </div>
     `;
 
-    await sendEmail(customerInfo.email, customerName, 'Your Elysean Perfumes Order Confirmation ✦', customerHtml, 'elyseanperfumes@gmail.com');
+    await sendEmail(customerInfo.email, customerName, 'Order Confirmation | Elysean Perfumes', customerHtml, 'elyseanperfumes@gmail.com');
     console.log('✅ Confirmation email sent to customer:', customerInfo.email);
 
-    await sendEmail(BREVO_SENDER_EMAIL, 'Elysean Perfumes Owner', `✅ New Order — R${amountRands} — ${customerName}`, ownerHtml, 'elyseanperfumes@gmail.com');
+    await sendEmail(BREVO_SENDER_EMAIL, 'Elysean Perfumes Owner', `New Order | Elysean Perfumes — R${amountRands} — ${customerName}`, ownerHtml, 'elyseanperfumes@gmail.com');
     console.log('✅ Notification email sent to owner');
 }
 
