@@ -135,7 +135,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         lastName,
                         email,
                         phone
-                    }
+                    },
+                    cart: cart,
+                    subtotal: subtotal,
+                    shipping: shipping,
+                    tax: tax
                 })
             });
 
