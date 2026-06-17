@@ -1,14 +1,119 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
+const crypto = require('crypto');
 const fetch = require('node-fetch');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const YOCO_SECRET_KEY = process.env.YOCO_SECRET_KEY;
+const YOCO_WEBHOOK_SECRET = process.env.YOCO_WEBHOOK_SECRET; // e.g. whsec_xxxxx
 const BREVO_API_KEY = process.env.BREVO_API_KEY;
 const BREVO_SENDER_EMAIL = process.env.BREVO_SENDER_EMAIL;
 const BREVO_SENDER_NAME = process.env.BREVO_SENDER_NAME || 'Elysean Perfumes';
+
+// ── Temporary order storage (JSON file) ──
+// Stores cart/customer data per checkout ID until the webhook confirms payment.
+const ORDERS_FILE = path.join(__dirname, 'pending-orders.json');
+
+function loadOrders() {
+    try {
+        if (!fs.existsSync(ORDERS_FILE)) return {};
+        const raw = fs.readFileSync(ORDERS_FILE, 'utf8');
+        return raw ? JSON.parse(raw) : {};
+    } catch (err) {
+        console.error('❌ Failed to read orders file:', err);
+        return {};
+    }
+}
+
+function saveOrders(orders) {
+    try {
+        fs.writeFileSync(ORDERS_FILE, JSON.stringify(orders, null, 2));
+    } catch (err) {
+        console.error('❌ Failed to write orders file:', err);
+    }
+}
+
+function storeOrder(checkoutId, orderData) {
+    const orders = loadOrders();
+    orders[checkoutId] = { ...orderData, createdAt: Date.now() };
+    saveOrders(orders);
+}
+
+function getOrder(checkoutId) {
+    const orders = loadOrders();
+    return orders[checkoutId] || null;
+}
+
+function deleteOrder(checkoutId) {
+    const orders = loadOrders();
+    delete orders[checkoutId];
+    saveOrders(orders);
+}
+
+// ── Clean up orders older than 48 hours (abandoned checkouts) ──
+function cleanupOldOrders() {
+    const orders = loadOrders();
+    const now = Date.now();
+    const FORTY_EIGHT_HOURS = 48 * 60 * 60 * 1000;
+    let changed = false;
+
+    for (const checkoutId in orders) {
+        if (now - orders[checkoutId].createdAt > FORTY_EIGHT_HOURS) {
+            delete orders[checkoutId];
+            changed = true;
+        }
+    }
+
+    if (changed) saveOrders(orders);
+}
+
+// Run cleanup once on startup, then every 6 hours
+cleanupOldOrders();
+setInterval(cleanupOldOrders, 6 * 60 * 60 * 1000);
+
+// ── Verify the Yoco webhook signature ──
+function verifyWebhookSignature(webhookId, webhookTimestamp, rawBody, signatureHeader) {
+    if (!YOCO_WEBHOOK_SECRET) {
+        console.error('❌ YOCO_WEBHOOK_SECRET is not set — cannot verify signature');
+        return false;
+    }
+
+    // Reject events older than 3 minutes (replay attack protection)
+    const nowSeconds = Math.floor(Date.now() / 1000);
+    const tsSeconds = parseInt(webhookTimestamp, 10);
+    if (Math.abs(nowSeconds - tsSeconds) > 180) {
+        console.error('❌ Webhook timestamp outside acceptable window');
+        return false;
+    }
+
+    // Build the signed content: id.timestamp.rawBody
+    const signedContent = `${webhookId}.${webhookTimestamp}.${rawBody}`;
+
+    // Strip the "whsec_" prefix before using as HMAC key
+    const secretBytes = Buffer.from(YOCO_WEBHOOK_SECRET.replace('whsec_', ''), 'base64');
+
+    const expectedSignature = crypto
+        .createHmac('sha256', secretBytes)
+        .update(signedContent)
+        .digest('base64');
+
+    // webhook-signature header looks like: "v1,abc123 v1,def456"
+    const signatures = signatureHeader.split(' ').map(s => s.split(',')[1]);
+
+    return signatures.some(sig => {
+        try {
+            return crypto.timingSafeEqual(
+                Buffer.from(sig),
+                Buffer.from(expectedSignature)
+            );
+        } catch {
+            return false;
+        }
+    });
+}
 
 // ── Send email via Brevo HTTP API ──
 async function sendEmail(to, toName, subject, htmlContent) {
@@ -56,7 +161,6 @@ async function sendOrderEmails(customerInfo, amountInCents, checkoutId, cart, su
     const customerName = `${customerInfo.firstName || ''} ${customerInfo.lastName || ''}`.trim();
     const productRows = buildProductRows(cart);
 
-    // ── Customer confirmation email — mobile-safe, minimalist receipt style ──
     const customerHtml = `
         <div style="font-family: Georgia, serif; max-width: 600px; margin: 0 auto; padding: 30px 16px; background: #0A0A0A; color: #fff; box-sizing: border-box;">
 
@@ -72,7 +176,6 @@ async function sendOrderEmails(customerInfo, amountInCents, checkoutId, cart, su
                 Thank you for your order. Here is your receipt.
             </p>
 
-            <!-- CUSTOMER INFO -->
             <div style="background: #181818; border: 1px solid #2a2a2a; border-radius: 8px; padding: 18px; margin-bottom: 20px; word-break: break-word;">
                 <p style="font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: #C9A84C; margin: 0 0 12px 0;">Order Details</p>
                 <p style="margin: 4px 0; font-size: 0.82rem; color: #ddd;">${customerName}</p>
@@ -81,7 +184,6 @@ async function sendOrderEmails(customerInfo, amountInCents, checkoutId, cart, su
                 <p style="margin: 10px 0 0 0; font-size: 0.7rem; color: #777; word-break: break-all;">Order #${checkoutId || 'N/A'}</p>
             </div>
 
-            <!-- PRODUCTS -->
             <div style="background: #181818; border: 1px solid #2a2a2a; border-radius: 8px; padding: 18px; margin-bottom: 20px;">
                 <p style="font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: #C9A84C; margin: 0 0 6px 0;">Your Order</p>
                 <table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
@@ -89,7 +191,6 @@ async function sendOrderEmails(customerInfo, amountInCents, checkoutId, cart, su
                 </table>
             </div>
 
-            <!-- TOTALS -->
             <div style="padding: 0 4px 20px 4px;">
                 <table style="width: 100%; border-collapse: collapse;">
                     <tr>
@@ -126,7 +227,6 @@ async function sendOrderEmails(customerInfo, amountInCents, checkoutId, cart, su
         </div>
     `;
 
-    // ── Owner notification email ──
     const ownerHtml = `
         <div style="font-family: Arial, sans-serif; max-width: 500px; padding: 24px; background: #fff;">
             <h2 style="color: #0A0A0A; margin-bottom: 16px;">New Order Received</h2>
@@ -150,6 +250,66 @@ async function sendOrderEmails(customerInfo, amountInCents, checkoutId, cart, su
     console.log('✅ Notification email sent to owner');
 }
 
+// ── IMPORTANT: webhook route needs the RAW body for signature verification ──
+// This must be registered BEFORE express.json() so the body isn't parsed yet.
+app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+    try {
+        const webhookId = req.headers['webhook-id'];
+        const webhookTimestamp = req.headers['webhook-timestamp'];
+        const webhookSignature = req.headers['webhook-signature'];
+        const rawBody = req.body.toString('utf8');
+
+        const isValid = verifyWebhookSignature(webhookId, webhookTimestamp, rawBody, webhookSignature);
+
+        if (!isValid) {
+            console.error('❌ Invalid webhook signature — rejecting request');
+            return res.status(401).send('Invalid signature');
+        }
+
+        const event = JSON.parse(rawBody);
+        console.log('✅ Verified webhook received:', event.type);
+
+        if (event.type === 'payment.succeeded') {
+            const payment = event.payload;
+            const checkoutId = payment.metadata?.checkoutId || payment.id;
+
+            console.log('💰 Payment successful! Checkout ID:', checkoutId);
+
+            const order = getOrder(checkoutId);
+
+            if (order) {
+                try {
+                    await sendOrderEmails(
+                        order.customerInfo,
+                        order.amountInCents,
+                        checkoutId,
+                        order.cart,
+                        order.subtotal,
+                        order.shipping,
+                        order.tax
+                    );
+                    deleteOrder(checkoutId); // clean up after sending
+                } catch (emailError) {
+                    console.error('❌ Email error:', emailError);
+                }
+            } else {
+                console.warn('⚠️ No stored order found for checkout ID:', checkoutId);
+            }
+
+        } else if (event.type === 'payment.failed') {
+            console.log('❌ Payment Failed:', event.payload);
+            const checkoutId = event.payload.metadata?.checkoutId || event.payload.id;
+            deleteOrder(checkoutId); // clean up abandoned/failed orders
+        }
+
+        res.status(200).send('OK');
+    } catch (err) {
+        console.error('❌ Webhook error:', err);
+        res.status(400).send('Error');
+    }
+});
+
+// ── Regular JSON parsing for all other routes (must come AFTER the webhook route) ──
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -167,16 +327,9 @@ app.get('/:page', (req, res) => {
     });
 });
 
-// ── Create Yoco Checkout ──
+// ── Create Yoco Checkout (no email sent here anymore) ──
 app.post('/create-checkout', async (req, res) => {
     const { amountInCents, customerInfo, cart, subtotal, shipping, tax } = req.body;
-
-    const metadata = customerInfo ? {
-        firstName: customerInfo.firstName || '',
-        lastName: customerInfo.lastName || '',
-        email: customerInfo.email || '',
-        phone: customerInfo.phone || ''
-    } : {};
 
     try {
         const response = await fetch('https://payments.yoco.com/api/checkouts', {
@@ -191,7 +344,12 @@ app.post('/create-checkout', async (req, res) => {
                 successUrl: `https://elyseanperfumes.co.za/cart-page.html?success=true`,
                 cancelUrl: `https://elyseanperfumes.co.za/checkout.html`,
                 failureUrl: `https://elyseanperfumes.co.za/checkout.html`,
-                metadata: metadata
+                metadata: {
+                    firstName: customerInfo?.firstName || '',
+                    lastName: customerInfo?.lastName || '',
+                    email: customerInfo?.email || '',
+                    phone: customerInfo?.phone || ''
+                }
             })
         });
 
@@ -199,13 +357,17 @@ app.post('/create-checkout', async (req, res) => {
         console.log('Yoco response:', data);
 
         if (data.redirectUrl) {
-            if (customerInfo?.email) {
-                try {
-                    await sendOrderEmails(customerInfo, amountInCents, data.id, cart, subtotal, shipping, tax);
-                } catch (emailError) {
-                    console.error('❌ Email error:', emailError);
-                }
-            }
+            // ── Store the order temporarily, keyed by checkout ID ──
+            // The webhook will look this up once payment.succeeded fires.
+            storeOrder(data.id, {
+                customerInfo,
+                amountInCents,
+                cart,
+                subtotal,
+                shipping,
+                tax
+            });
+
             res.json({ redirectUrl: data.redirectUrl });
         } else {
             res.status(400).json({ error: 'Could not create checkout', details: data });
@@ -213,23 +375,6 @@ app.post('/create-checkout', async (req, res) => {
     } catch (error) {
         console.error('Checkout error:', error);
         res.status(500).json({ error: error.message });
-    }
-});
-
-// ── Yoco Webhook ──
-app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
-    try {
-        const event = JSON.parse(req.body);
-        console.log('Webhook received:', event.type);
-        if (event.type === 'payment.succeeded') {
-            console.log('✅ Payment confirmed via webhook:', event.payload.id);
-        } else if (event.type === 'payment.failed') {
-            console.log('❌ Payment Failed:', event.payload);
-        }
-        res.status(200).send('OK');
-    } catch (err) {
-        console.error('Webhook error:', err);
-        res.status(400).send('Error');
     }
 });
 
