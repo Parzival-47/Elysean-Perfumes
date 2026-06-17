@@ -129,6 +129,8 @@ async function sendEmail(to, toName, subject, htmlContent) {
             to: [{ email: to, name: toName }],
             subject: subject,
             htmlContent: htmlContent
+            ,
+            replyTo: replyTo ? { email: 'elyseanperfumes@gmail.com', name: BREVO_SENDER_NAME } : undefined
         })
     });
 
@@ -243,10 +245,10 @@ async function sendOrderEmails(customerInfo, amountInCents, checkoutId, cart, su
         </div>
     `;
 
-    await sendEmail(customerInfo.email, customerName, 'Your Elysean Perfumes Order Confirmation ✦', customerHtml);
+    await sendEmail(customerInfo.email, customerName, 'Your Elysean Perfumes Order Confirmation ✦', customerHtml, 'elyseanperfumes@gmail.com');
     console.log('✅ Confirmation email sent to customer:', customerInfo.email);
 
-    await sendEmail(BREVO_SENDER_EMAIL, 'Elysean Perfumes Owner', `✅ New Order — R${amountRands} — ${customerName}`, ownerHtml);
+    await sendEmail(BREVO_SENDER_EMAIL, 'Elysean Perfumes Owner', `✅ New Order — R${amountRands} — ${customerName}`, ownerHtml, 'elyseanperfumes@gmail.com');
     console.log('✅ Notification email sent to owner');
 }
 
