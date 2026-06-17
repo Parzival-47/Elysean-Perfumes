@@ -83,13 +83,16 @@ nav a {
 }
 
 nav a:hover {
-    color: var(--gold) !important;
+    color: var(--black) !important;
+    background: var(--grad);
+    border-radius: 20px;
+    padding: 5px 20px;
 }
 
 /* Nav CTA Button */
 .nav-cta {
-    color: var(--gold-light) !important;
-    padding: 10px 24px;
+    color: var(--white) !important;
+    padding: 5px 20px;
     border: 1px solid var(--gold-light);
     border-radius: 50px;
     background: transparent;
@@ -396,7 +399,7 @@ header.scrolled .nav-toggle span {
 
 .pay-btn {
     width: 100%;
-    background: var(--gold);
+    background: var(--grad);
     color: var(--black);
     border: none;
     padding: 20px;

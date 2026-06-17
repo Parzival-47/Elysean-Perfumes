@@ -97,13 +97,16 @@ nav a {
 }
 
 nav a:hover {
-    color: var(--gold) !important;
+    color: var(--black) !important;
+    background: var(--grad);
+    border-radius: 20px;
+    padding: 5px 20px;
 }
 
 /* CTA Button */
 .nav-cta {
-    color: var(--gold-light) !important;
-    padding: 10px 24px;
+    color: var(--white) !important;
+    padding: 5px 20px;
     border: 1px solid var(--gold-light);
     border-radius: 50px;
     background: transparent;
@@ -122,7 +125,7 @@ header.scrolled .logo span {
 }
 
 header.scrolled nav a {
-    color: #333 !important;
+    color: var(--white) !important;
 }
 
 header.scrolled .nav-cta {
@@ -137,25 +140,6 @@ header.scrolled .nav-cta {
 
 header.scrolled .nav-toggle span {
     background: var(--black);
-}
-
-/* Desktop Navigation */
-nav a {
-    color: var(--white) !important;
-    text-decoration: none;
-    font-size: 0.875rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    font-weight: 500;
-}
-
-/* CTA */
-.nav-cta {
-    color: var(--gold-light) !important;
-    padding: 10px 24px;
-    border: 1px solid var(--gold-light);
-    border-radius: 50px;
-    background: transparent;
 }
 
 header.scrolled .nav-cta {
@@ -170,43 +154,6 @@ header.scrolled .nav-cta {
 
 header.scrolled .nav-toggle span {
     background: var(--black);
-}
-
-/* Desktop Navigation */
-nav {
-    display: flex;
-    gap: 2.75rem;
-    align-items: center;
-}
-
-nav a {
-    color: var(--black) !important;
-    text-decoration: none;
-    font-size: 0.875rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    font-weight: 500;
-    transition: color 0.3s ease;
-}
-
-nav a:hover {
-    color: var(--gold) !important;
-}
-
-/* Nav CTA Button */
-.nav-cta {
-    color: var(--gold-light) !important;
-    padding: 10px 24px;
-    border: 1px solid var(--gold-light);
-    border-radius: 50px;
-    background: transparent;
-    transition: all 0.3s ease;
-}
-
-.nav-cta:hover {
-    background: var(--grad) !important;
-    color: var(--black) !important;
-    border-color: var(--gold);
 }
 
 /* Scrolled State */

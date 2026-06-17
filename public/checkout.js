@@ -182,3 +182,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     console.log(`✅ Reveal system active — ${document.querySelectorAll('.reveal').length} elements observed`);
 });
+
+// ─── CART COUNT FOR HOME PAGE ───
+function updateCartCount() {
+    const cart = JSON.parse(localStorage.getItem('elyseanCart') || '[]');
+    const countEl = document.getElementById('cart-count');
+    if (countEl) {
+        const totalItems = cart.reduce((sum, item) => sum + (item.qty || 0), 0);
+        countEl.textContent = totalItems;
+        console.log(`🛒 Home page cart count updated: ${totalItems}`);
+    }
+}
+
+// Run it when page loads and when cart changes
+document.addEventListener('DOMContentLoaded', () => {
+    updateCartCount();
+    
+    // Listen for changes from other pages
+    window.addEventListener('storage', updateCartCount);
+    
+    // Extra safety - run again after a short delay
+    setTimeout(updateCartCount, 500);
+});

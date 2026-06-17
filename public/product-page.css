@@ -86,7 +86,7 @@ nav {
 }
 
 nav a {
-    color: var(--white) !important;
+    color: var(--black) !important;
     text-decoration: none;
     font-size: 0.875rem;
     letter-spacing: 0.18em;
@@ -96,13 +96,16 @@ nav a {
 }
 
 nav a:hover {
-    color: var(--gold) !important;
+    color: var(--black) !important;
+    background: var(--grad);
+    border-radius: 20px;
+    padding: 5px 20px;
 }
 
 /* Nav CTA Button */
 .nav-cta {
-    color: var(--gold-light) !important;
-    padding: 10px 24px;
+    color: var(--black) !important;
+    padding: 5px 20px;
     border: 1px solid var(--gold-light);
     border-radius: 50px;
     background: transparent;
@@ -621,9 +624,9 @@ header.scrolled .nav-toggle span {
 .product-name {
     font-family: 'Nunito Sans', serif;
     min-height: 3em; /* Ensure enough space for two lines */
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: 400;
-    color: var(--dark);
+    color: var(--black);
     margin-bottom: 6px;
     line-height: 1.3;
     animation: none;
