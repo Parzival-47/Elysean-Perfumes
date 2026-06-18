@@ -107,8 +107,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const lastName  = document.getElementById('lastName')?.value.trim() || '';
         const email     = document.getElementById('email')?.value.trim() || '';
         const phone     = document.getElementById('phone')?.value.trim() || '';
+        const addressLine1 = document.getElementById('addressLine1')?.value.trim() || '';
+        const addressLine2 = document.getElementById('addressLine2')?.value.trim() || '';
+        const city         = document.getElementById('city')?.value.trim() || '';
+        const postalCode   = document.getElementById('postalCode')?.value.trim() || '';
+        const province     = document.getElementById('province')?.value.trim() || '';
 
-        console.log("📋 Form Values:", { firstName, lastName, email, phone });
+        console.log("📋 Form Values:", { firstName, lastName, email, phone, addressLine1, city, postalCode, province});
 
         // ── Use the totalInCents calculated above — no localStorage needed ──
         if (totalInCents <= 0) {
@@ -123,6 +128,12 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        if (!addressLine1 || !city || !postalCode || !province) {
+        alert("Please fill in your full delivery address.");
+        resetButton();
+        return;
+        }
+
         try {
             const response = await fetch('/create-checkout', {
                 method: 'POST',
@@ -134,7 +145,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         firstName,
                         lastName,
                         email,
-                        phone
+                        phone,
+                        addressLine1,
+                        addressLine2,
+                        city,
+                        postalCode,
+                        province
                     },
                     cart: cart,
                     subtotal: subtotal,

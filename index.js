@@ -185,6 +185,15 @@ async function sendOrderEmails(customerInfo, amountInCents, checkoutId, cart, su
                 <p style="margin: 4px 0; font-size: 0.82rem; color: #000;">${customerInfo.phone || ''}</p>
             </div>
 
+            <!-- NEW: Delivery Address Block -->
+            <div style="background: #181818; border: 1px solid #2a2a2a; border-radius: 8px; padding: 18px; margin-bottom: 20px; word-break: break-word;">
+                <p style="font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: #C9A84C; margin: 0 0 12px 0;">Delivery Address</p>
+                <p style="margin: 4px 0; font-size: 0.82rem; color: #ddd;">${customerInfo.addressLine1 || ''}</p>
+                ${customerInfo.addressLine2 ? `<p style="margin: 4px 0; font-size: 0.82rem; color: #ddd;">${customerInfo.addressLine2}</p>` : ''}
+                <p style="margin: 4px 0; font-size: 0.82rem; color: #ddd;">${customerInfo.city || ''}, ${customerInfo.postalCode || ''}</p>
+                <p style="margin: 4px 0; font-size: 0.82rem; color: #ddd;">${customerInfo.province || ''}</p>
+            </div>
+
             <div style="background: hsl(0, 0%, 95%); border: 1px solid #ffc107; border-radius: 8px; padding: 18px; margin-bottom: 20px;">
                 <p style="font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: #1A1F2E; margin: 0 0 6px 0; border-bottom: 1px solid #ffc107;">Your Order Details</p>
                 <table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
@@ -235,6 +244,12 @@ async function sendOrderEmails(customerInfo, amountInCents, checkoutId, cart, su
             <p style="margin: 4px 0;"><strong>Email:</strong> ${customerInfo.email}</p>
             <p style="margin: 4px 0;"><strong>Phone:</strong> ${customerInfo.phone || 'Not provided'}</p>
             <p style="margin: 4px 0;"><strong>Checkout ID:</strong> ${checkoutId || 'N/A'}</p>
+            <hr style="border: none; border-top: 1px solid #eee; margin: 16px 0;"/>
+            <p style="margin: 4px 0;"><strong>Delivery Address:</strong></p>
+            <p style="margin: 4px 0;">${customerInfo.addressLine1 || ''}</p>
+            ${customerInfo.addressLine2 ? `<p style="margin: 4px 0;">${customerInfo.addressLine2}</p>` : ''}
+            <p style="margin: 4px 0;">${customerInfo.city || ''}, ${customerInfo.postalCode || ''}</p>
+            <p style="margin: 4px 0;">${customerInfo.province || ''}</p>
             <hr style="border: none; border-top: 1px solid #eee; margin: 16px 0;"/>
             <table style="width: 100%; border-collapse: collapse;">${productRows}</table>
             <hr style="border: none; border-top: 1px solid #eee; margin: 16px 0;"/>
@@ -349,7 +364,11 @@ app.post('/create-checkout', async (req, res) => {
                     firstName: customerInfo?.firstName || '',
                     lastName: customerInfo?.lastName || '',
                     email: customerInfo?.email || '',
-                    phone: customerInfo?.phone || ''
+                    phone: customerInfo?.phone || '',
+                    addressLine1: customerInfo?.addressLine1 || '',
+                    city: customerInfo?.city || '',
+                    postalCode: customerInfo?.postalCode || '',
+                    province: customerInfo?.province || ''
                 }
             })
         });
