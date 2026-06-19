@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateTotals(cart) {
         const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
         const tax = subtotal * 0;
-        const shipping = cart.length > 0 ? 50 : 0;
+        const shipping = cart.length > 0 ? 95 : 0;
         const total = subtotal + tax + shipping;
 
         const subtotalEl = document.getElementById('subtotal');

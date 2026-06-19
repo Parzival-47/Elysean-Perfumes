@@ -1,0 +1,33 @@
+{
+  "ch_wxMZ21Bn5jZUkl0tqRvIWPpL": {
+    "customerInfo": {
+      "firstName": "Carel",
+      "lastName": "Badenhorst",
+      "email": "bcarel001@gmail.com",
+      "phone": "0648570979",
+      "addressLine1": "42 Palgrave Street",
+      "addressLine2": "1",
+      "city": "George",
+      "postalCode": "6529",
+      "province": "WC"
+    },
+    "amountInCents": 28100,
+    "cart": [
+      {
+        "key": "3-50ml",
+        "id": 3,
+        "name": "Armani Acqua Di Gio For Men",
+        "brand": "Elysean Perfumes",
+        "img": "images/ProductCoverImage-Fem.png",
+        "cat": "feminine",
+        "size": "50ml",
+        "price": 186,
+        "qty": 1
+      }
+    ],
+    "subtotal": 186,
+    "shipping": 95,
+    "tax": 0,
+    "createdAt": 1781866486552
+  }
+}
