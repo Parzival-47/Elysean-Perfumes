@@ -43,12 +43,26 @@ body {
 
 /* HEADER */
 header {
-    padding: 22px 60px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin-bottom: 10px;
+    z-index: 100;
+    padding: 28px 60px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid var(--gold-light);
+    background: black;
+    transition: all 0.5s ease;
+}
+
+header.scrolled {
     background: var(--black);
+    color: var(--white);
+    backdrop-filter: blur(20px);
+    padding: 18px 60px;
+    border-bottom: 1px solid var(--border);
 }
 
 .logo {
@@ -107,7 +121,7 @@ nav a:hover {
 
 /* Scrolled State */
 header.scrolled .logo {
-    color: var(--black) !important;
+    color: var(--white) !important;
 }
 
 header.scrolled .logo span {
@@ -115,15 +129,15 @@ header.scrolled .logo span {
 }
 
 header.scrolled nav a {
-    color: #444444 !important;
+    color: #fff !important;
 }
 
 header.scrolled nav a:hover {
-    color: var(--gold) !important;
+    color: var(--gold-light) !important;
 }
 
 header.scrolled .nav-cta {
-    color: var(--black) !important;
+    color: var(--white) !important;
 }
 
 /* LUXURY MOBILE NAV */
@@ -265,6 +279,7 @@ header.scrolled .nav-toggle span {
 /* LEFT PANEL */
 .checkout-left {
     padding: 60px;
+    margin-top: 70px;
     border-right: 1px solid var(--gold-light);
 }
 

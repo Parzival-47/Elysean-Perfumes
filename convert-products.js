@@ -1,53 +1,9 @@
-// ─── MOBILE NAV (Clean & Reliable) ───
-document.addEventListener('DOMContentLoaded', () => {
-    const navToggle = document.getElementById('navToggle');
-    const mobileNav = document.getElementById('mobileNav');
-    const mobileOverlay = document.getElementById('mobileOverlay');
+// convert-products.js  -  IMPROVED VERSION WITH PRICES
+const fs = require('fs');
 
-    if (!navToggle || !mobileNav || !mobileOverlay) {
-        console.error("❌ Mobile nav elements missing! Check HTML IDs.");
-        return;
-    }
-
-    function openMobileNav() {
-        navToggle.classList.add('open');
-        mobileNav.classList.add('open');
-        mobileOverlay.classList.add('open');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeMobileNav() {
-        navToggle.classList.remove('open');
-        mobileNav.classList.remove('open');
-        mobileOverlay.classList.remove('open');
-        document.body.style.overflow = '';
-    }
-
-    navToggle.addEventListener('click', () => {
-        if (navToggle.classList.contains('open')) {
-            closeMobileNav();
-        } else {
-            openMobileNav();
-        }
-    });
-
-    const mobileCloseBtn = document.getElementById('mobileCloseBtn');
-    if (mobileCloseBtn) {
-        mobileCloseBtn.addEventListener('click', closeMobileNav);
-    }
-
-    mobileOverlay.addEventListener('click', closeMobileNav);
-
-    mobileNav.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', closeMobileNav);
-    });
-
-    console.log("✅ Mobile Nav successfully initialized");
-});
-
-// ─── PRODUCTS DATA ───
-const PRODUCTS = [
-    { id: 1, cat: 'feminine', name: 'Andromeda Tiziana Terenzi', brand: 'Elysean Perfumes', desc: 'Celestial floral-woody fragrance with bright citrus and creamy sandalwood.', notes: ['Citrus', 'Floral', 'Sandalwood', 'Woody', 'Musk'], conc: 'Eau de Parfum — 20%', img: 'images/ProductCoverImage-Fem.png', sizes: [{ ml: 'Sample', label: '', price: 40 }, { ml: '30ml', label: '', price: 155 }, { ml: '50ml', label: '', price: 226 }, { ml: '100ml', label: '', price: 378 }, { ml: '250ml', label: '', price: 765 }] },																									
+// === PASTE YOUR FULL PRODUCTS ARRAY HERE ===
+const PRODUCTS = [ 
+  { id: 1, cat: 'feminine', name: 'Andromeda Tiziana Terenzi', brand: 'Elysean Perfumes', desc: 'Celestial floral-woody fragrance with bright citrus and creamy sandalwood.', notes: ['Citrus', 'Floral', 'Sandalwood', 'Woody', 'Musk'], conc: 'Eau de Parfum — 20%', img: 'images/ProductCoverImage-Fem.png', sizes: [{ ml: 'Sample', label: '', price: 40 }, { ml: '30ml', label: '', price: 155 }, { ml: '50ml', label: '', price: 226 }, { ml: '100ml', label: '', price: 378 }, { ml: '250ml', label: '', price: 765 }] },																									
     { id: 2, cat: 'feminine', name: 'Aqua Di Parma Colonia', brand: 'Elysean Perfumes', desc: 'Classic Italian citrus cologne with fresh neroli and warm woody base.', notes: ['Citrus', 'Neroli', 'Woody', 'Fresh', 'Warm'], conc: 'Eau de Parfum — 20%', img: 'images/ProductCoverImage-Fem.png', sizes: [{ ml: 'Sample', label: '', price: 40 }, { ml: '30ml', label: '', price: 135 }, { ml: '50ml', label: '', price: 188 }, { ml: '100ml', label: '', price: 295 }, { ml: '250ml', label: '', price: 560 }] },																									
     { id: 3, cat: 'feminine', name: 'Armani Acqua Di Gio For Men', brand: 'Elysean Perfumes', desc: 'Fresh aquatic fragrance with marine notes, jasmine, and cedarwood.', notes: ['Aquatic', 'Marine', 'Jasmine', 'Cedarwood', 'Fresh'], conc: 'Eau de Parfum — 20%', img: 'images/ProductCoverImage-Fem.png', sizes: [{ ml: 'Sample', label: '', price: 40 }, { ml: '30ml', label: '', price: 133 }, { ml: '50ml', label: '', price: 186 }, { ml: '100ml', label: '', price: 289 }, { ml: '250ml', label: '', price: 545 }] },																									
     { id: 4, cat: 'feminine', name: 'Armani Si', brand: 'Elysean Perfumes', desc: 'Elegant feminine scent with blackcurrant, rose, and warm vanilla musk.', notes: ['Blackcurrant', 'Rose', 'Vanilla', 'Musk', 'Warm'], conc: 'Eau de Parfum — 20%', img: 'images/ProductCoverImage-Fem.png', sizes: [{ ml: 'Sample', label: '', price: 40 }, { ml: '30ml', label: '', price: 137 }, { ml: '50ml', label: '', price: 193 }, { ml: '100ml', label: '', price: 305 }, { ml: '250ml', label: '', price: 586 }] },																									
@@ -356,314 +312,45 @@ const PRODUCTS = [
     { id: 307, cat: 'unisex', name: 'Tom Ford Tobacco Vanille Unisex', brand: 'Elysean Perfumes', desc: 'Rich warm blend of tobacco, vanilla, spices, and dark woods.', notes: ['Tobacco', 'Vanilla', 'Spice', 'Woods', 'Warm'], conc: 'Eau de Parfum — 20%', img: 'images/ProductCoverImage-Unisex.png', sizes: [{ ml: 'Sample', label: '', price: 40 }, { ml: '30ml', label: '', price: 131 }, { ml: '50ml', label: '', price: 181 }, { ml: '100ml', label: '', price: 279 }, { ml: '250ml', label: '', price: 520 }] },																									
     { id: 308, cat: 'unisex', name: 'Tom Ford Tuscan Leather', brand: 'Elysean Perfumes', desc: 'Rich leathery scent with raspberry, saffron, and warm dark leather.', notes: ['Raspberry', 'Saffron', 'Leather', 'Rich', 'Warm'], conc: 'Eau de Parfum — 20%', img: 'images/ProductCoverImage-Unisex.png', sizes: [{ ml: 'Sample', label: '', price: 40 }, { ml: '30ml', label: '', price: 148 }, { ml: '50ml', label: '', price: 213 }, { ml: '100ml', label: '', price: 350 }, { ml: '250ml', label: '', price: 695 }] },																									
     { id: 309, cat: 'unisex', name: 'Under The Leaves Fragrance', brand: 'Elysean Perfumes', desc: 'Fresh green earthy blend with leafy notes, moss, and soft woods.', notes: ['Green', 'Leafy', 'Moss', 'Woods', 'Earthy'], conc: 'Eau de Parfum — 20%', img: 'images/ProductCoverImage-Unisex.png', sizes: [{ ml: 'Sample', label: '', price: 40 }, { ml: '30ml', label: '', price: 127 }, { ml: '50ml', label: '', price: 175 }, { ml: '100ml', label: '', price: 266 }, { ml: '250ml', label: '', price: 487 }] },																									
-    { id: 310, cat: 'unisex', name: 'Versace Atelier Versace Vanille Rouge', brand: 'Elysean Perfumes', desc: 'Luxurious warm blend with vanilla, red fruits, and dark woody amber.', notes: ['Vanilla', 'Red Fruits', 'Amber', 'Woods', 'Warm'], conc: 'Eau de Parfum — 20%', img: 'images/ProductCoverImage-Unisex.png', sizes: [{ ml: 'Sample', label: '', price: 40 }, { ml: '30ml', label: '', price: 173 }, { ml: '50ml', label: 'Best Seller', price: 260 }, { ml: '100ml', label: '', price: 453 }, { ml: '250ml', label: '', price: 952 }] },																																																																										
-    ];
-// Global state
-let currentFilter = 'all';
-let currentSearchTerm = '';
-let selectedProduct = null;
-let selectedSize = null;
+    { id: 310, cat: 'unisex', name: 'Versace Atelier Versace Vanille Rouge', brand: 'Elysean Perfumes', desc: 'Luxurious warm blend with vanilla, red fruits, and dark woody amber.', notes: ['Vanilla', 'Red Fruits', 'Amber', 'Woods', 'Warm'], conc: 'Eau de Parfum — 20%', img: 'images/ProductCoverImage-Unisex.png', sizes: [{ ml: 'Sample', label: '', price: 40 }, { ml: '30ml', label: '', price: 173 }, { ml: '50ml', label: 'Best Seller', price: 260 }, { ml: '100ml', label: '', price: 453 }, { ml: '250ml', label: '', price: 952 }] },
+];
 
-// ─── CURSOR HOVER HELPER ───
-function addCursorHover(element) {
-    if (!element) return;
-    element.addEventListener('mouseenter', () => {
-        document.documentElement.style.setProperty('--cursor', 'pointer');
+function productsToCSV(products) {
+    const csvRows = [];
+
+    // Header
+    csvRows.push([
+        "id", "cat", "name", "brand", "desc", "notes", "conc", "img",
+        "sample_price", "30ml_price", "50ml_price", "100ml_price", "250ml_price"
+    ]);
+
+    products.forEach(p => {
+        const sample = p.sizes.find(s => s.ml === "Sample")?.price || "";
+        const p30   = p.sizes.find(s => s.ml === "30ml")?.price || "";
+        const p50   = p.sizes.find(s => s.ml === "50ml")?.price || "";
+        const p100  = p.sizes.find(s => s.ml === "100ml")?.price || "";
+        const p250  = p.sizes.find(s => s.ml === "250ml")?.price || "";
+
+        const row = [
+            p.id,
+            p.cat,
+            `"${p.name || ""}"`,
+            `"${p.brand || ""}"`,
+            `"${(p.desc || "").replace(/"/g, '""')}"`,
+            `"${(p.notes || []).join(", ")}"`,
+            `"${p.conc || ""}"`,
+            `"${p.img || ""}"`,
+            sample, p30, p50, p100, p250
+        ];
+
+        csvRows.push(row);
     });
-    element.addEventListener('mouseleave', () => {
-        document.documentElement.style.setProperty('--cursor', 'default');
-    });
+
+    const csvContent = csvRows.map(row => row.join(',')).join('\n');
+    fs.writeFileSync('products-full.csv', csvContent);
+    console.log(`✅ Successfully exported ${products.length} products to products-full.csv`);
+    console.log(`   Columns include all prices (Sample, 30ml, 50ml, 100ml, 250ml)`);
 }
 
-// ─── RENDER PRODUCTS USING TEMPLATE ───
-function renderProducts(filter = 'all', searchTerm = '') {
-    const grid = document.getElementById('products-grid');
-    const template = document.getElementById('product-card-template');
-    
-    if (!template) {
-        console.error("❌ Product card template not found in HTML!");
-        return;
-    }
-
-    let filtered = filter === 'all' 
-        ? PRODUCTS 
-        : PRODUCTS.filter(p => p.cat === filter);
-
-    // Apply search
-    if (searchTerm.trim() !== '') {
-        const term = searchTerm.toLowerCase().trim();
-        filtered = filtered.filter(p => {
-            return (
-                p.name.toLowerCase().includes(term) ||
-                p.brand.toLowerCase().includes(term) ||
-                p.desc.toLowerCase().includes(term) ||
-                p.notes.some(note => note.toLowerCase().includes(term))
-            );
-        });
-    }
-
-    // Update count
-    const countEl = document.getElementById('filter-count') || document.getElementById('searchResultsCount');
-    if (countEl) {
-        countEl.textContent = filtered.length + ' fragrances';
-    }
-
-    grid.innerHTML = '';
-
-    filtered.forEach((p, i) => {
-        // Get 30ml price
-        let price30ml = p.sizes.find(size => size.ml === '30ml');
-        const displayPrice = price30ml ? price30ml.price : p.sizes[0].price;
-        
-        const clone = template.content.cloneNode(true);
-        const card = clone.querySelector('.product-card');
-        
-        card.style.animationDelay = (i * 0.08) + 's';
-        
-        card.querySelector('.product-card-img').src = p.img;
-        card.querySelector('.product-card-img').alt = p.name;
-        
-        card.querySelector('.product-badge').textContent = 
-            p.cat.charAt(0).toUpperCase() + p.cat.slice(1);
-        
-        card.querySelector('.product-brand').textContent = p.brand;
-        card.querySelector('.product-name').textContent = p.name;
-        
-        const notesContainer = card.querySelector('.product-notes');
-        notesContainer.innerHTML = p.notes.slice(0, 3)
-            .map(n => `<span class="note-tag">${n}</span>`).join('');
-        
-        card.querySelector('.product-price').textContent = `R${displayPrice}`;
-        card.querySelector('.add-btn').dataset.id = p.id;
-
-        grid.appendChild(clone);
-    });
-
-    console.log(`✅ Rendered ${filtered.length} products (30ml prices)`);
-
-    // Re-attach events
-    grid.querySelectorAll('.add-btn').forEach(btn => {
-        btn.addEventListener('click', e => {
-            const id = parseInt(e.target.dataset.id);
-            openModal(id);
-        });
-        addCursorHover(btn);
-    });
-}
-
-// ─── MODAL FUNCTIONS ───
-function openModal(id) {
-    const p = PRODUCTS.find(x => x.id === id);
-    if (!p) return;
-    selectedProduct = p;
-    selectedSize = p.sizes.find(s => s.ml === '30ml') || p.sizes[0];
-    
-    // Fill modal (keep your existing modal code here)
-    document.getElementById('modal-img').src = p.img;
-    document.getElementById('modal-cat').textContent = p.cat;
-    document.getElementById('modal-name').textContent = p.name;
-    document.getElementById('modal-brand').textContent = p.brand;
-    document.getElementById('modal-desc').textContent = p.desc;
-    document.getElementById('modal-conc').textContent = p.conc;
-    document.getElementById('modal-notes').innerHTML = p.notes.map(n => `<span class="modal-note-tag">${n}</span>`).join('');
-    
-    // Size options...
-    const sizeOpts = document.getElementById('size-options');
-    sizeOpts.innerHTML = p.sizes.map((s, i) => `
-        <button class="size-btn ${s.ml === '30ml' ? 'selected' : ''}" data-idx="${i}">
-            <span class="size-ml">${s.ml}</span>
-            <span class="size-price">R${s.price}</span>
-        </button>
-    `).join('');
-    
-    // Add click handlers for sizes...
-    sizeOpts.querySelectorAll('.size-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            sizeOpts.querySelectorAll('.size-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            selectedSize = p.sizes[parseInt(btn.dataset.idx)];
-        });
-    });
-    
-    document.getElementById('modalOverlay').classList.add('open');
-    document.body.style.overflow = 'hidden';
-}
-
-function closeModal() {
-    document.getElementById('modalOverlay').classList.remove('open');
-    document.body.style.overflow = '';
-}
-
-// ─── CART & POPUP ───
-document.getElementById('modal-add-btn').addEventListener('click', () => {
-    if (!selectedProduct || !selectedSize) return;
-    // ... your existing cart logic ...
-    const cart = JSON.parse(localStorage.getItem('elyseanCart') || '[]');
-    const key = `${selectedProduct.id}-${selectedSize.ml}`;
-    const existing = cart.find(i => i.key === key);
-    if (existing) existing.qty++;
-    else {
-        cart.push({
-            key, id: selectedProduct.id, name: selectedProduct.name,
-            brand: selectedProduct.brand, img: selectedProduct.img,
-            cat: selectedProduct.cat, size: selectedSize.ml,
-            price: selectedSize.price, qty: 1
-        });
-    }
-    localStorage.setItem('elyseanCart', JSON.stringify(cart));
-    updateCartCount();
-    closeModal();
-    showPopup(selectedProduct.name, selectedSize.ml);
-});
-
-function updateCartCount() {
-    const cart = JSON.parse(localStorage.getItem('elyseanCart') || '[]');
-    const countEl = document.getElementById('cart-count');
-    if (countEl) countEl.textContent = cart.reduce((sum, item) => sum + item.qty, 0);
-}
-
-function showPopup(name, size) {
-    const popup = document.getElementById('cartPopup');
-    document.getElementById('popup-sub').textContent = `${name} — ${size}`;
-    popup.classList.add('show');
-    setTimeout(() => popup.classList.remove('show'), 5000);
-}
-
-// ─── FILTERS & SEARCH & INIT ───
-document.addEventListener('DOMContentLoaded', () => {
-    // Filters
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            currentFilter = btn.dataset.cat;
-            renderProducts(currentFilter);
-        });
-    });
-
-    // URL param
-    const urlCat = new URLSearchParams(window.location.search).get('cat');
-    if (urlCat) {
-        const btn = document.querySelector(`[data-cat="${urlCat}"]`);
-        if (btn) btn.click();
-    }
-
-    // ─── SEARCH FUNCTIONALITY ───
-    const searchInput = document.getElementById('searchInput');
-    const searchClear = document.getElementById('searchClear');
-
-    if (searchInput) {
-        searchInput.addEventListener('input', () => {
-            currentSearchTerm = searchInput.value;
-            if (searchClear) {
-                searchClear.classList.toggle('visible', currentSearchTerm.length > 0);
-            }
-            renderProducts(currentFilter, currentSearchTerm);
-        });
-
-        if (searchClear) {
-            searchClear.addEventListener('click', () => {
-                searchInput.value = '';
-                currentSearchTerm = '';
-                searchClear.classList.remove('visible');
-                renderProducts(currentFilter, '');
-                searchInput.focus();
-            });
-        }
-    }
-
-    renderProducts(currentFilter);
-    updateCartCount();
-
-    // Header scroll
-    window.addEventListener('scroll', () => {
-        const header = document.getElementById('header');
-        if (header) {
-            header.classList.toggle('scrolled', window.scrollY > 80);
-        }
-    });
-});
-
-// Make sure listeners are attached after DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-    const modalCloseBtn = document.getElementById('modalClose');
-    const modalOverlay = document.getElementById('modalOverlay');
-
-    if (modalCloseBtn) {
-        modalCloseBtn.addEventListener('click', closeModal);
-        console.log('✅ Modal close button listener attached');
-    } else {
-        console.error('❌ #modalClose button not found in HTML!');
-    }
-
-    if (modalOverlay) {
-        modalOverlay.addEventListener('click', function(e) {
-            if (e.target === modalOverlay) {  // Clicked outside content
-                closeModal();
-            }
-        });
-    }
-});
-
-// ─── REVEAL ON SCROLL (Add at the very end) ───
-document.addEventListener('DOMContentLoaded', () => {
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                // Optional: stop observing after reveal
-                // observer.unobserve(entry.target);
-            }
-        });
-    }, { 
-        threshold: 0.15,
-        rootMargin: "0px 0px -80px 0px"
-    });
-
-    document.querySelectorAll('.reveal').forEach(el => {
-        observer.observe(el);
-    });
-
-    console.log(`✅ Reveal system active — ${document.querySelectorAll('.reveal').length} elements observed`);
-});
-
-// Mobile Filter Dropdown
-document.addEventListener('DOMContentLoaded', () => {
-    const dropdownBtn = document.getElementById('mobileFilterBtn');
-    const dropdownMenu = document.getElementById('filterDropdown');
-
-    if (dropdownBtn && dropdownMenu) {
-        dropdownBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            dropdownMenu.classList.toggle('show');
-        });
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', () => {
-            dropdownMenu.classList.remove('show');
-        });
-    }
-});
-
-// ─── HEADER SCROLL EFFECT ───
-document.addEventListener('DOMContentLoaded', () => {
-    const header = document.getElementById('header');
-
-    if (!header) {
-        console.warn("Header element not found");
-        return;
-    }
-
-    function handleScroll() {
-        if (window.scrollY > 80) {
-            header.classList.add('scrolled');
-        } else {
-            header.classList.remove('scrolled');
-        }
-    }
-
-    window.addEventListener('scroll', handleScroll);
-    
-    // Run once on load
-    handleScroll();
-});
+// Run the conversion
+productsToCSV(PRODUCTS);

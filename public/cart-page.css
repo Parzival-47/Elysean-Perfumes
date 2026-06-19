@@ -59,7 +59,8 @@ header {
 }
 
 header.scrolled {
-    background: var(--white);
+    background: var(--black);
+    backdrop-filter: blur(20px);
     padding: 18px 60px;
     border-bottom: 1px solid var(--border);
 }
@@ -119,18 +120,13 @@ nav a:hover {
 }
 
 /* Scrolled State */
-header.scrolled .logo,
-header.scrolled .logo span {
-    color: var(--black) !important;
-}
-
 header.scrolled nav a {
     color: var(--white) !important;
 }
 
 header.scrolled .nav-cta {
-    color: var(--black) !important;
-    border-color: var(--gold);
+    color: var(--white) !important;
+    border-color: var(--gold-light);
 }
 
 /* Mobile Toggle */
@@ -139,11 +135,11 @@ header.scrolled .nav-cta {
 }
 
 header.scrolled .nav-toggle span {
-    background: var(--black);
+    background: var(--white);
 }
 
 header.scrolled .nav-cta {
-    color: var(--black) !important;
+    color: var(--white) !important;
     border-color: var(--gold-light);
 }
 
@@ -154,15 +150,6 @@ header.scrolled .nav-cta {
 
 header.scrolled .nav-toggle span {
     background: var(--black);
-}
-
-/* Scrolled State */
-header.scrolled .logo {
-    color: var(--black) !important;
-}
-
-header.scrolled .logo span {
-    color: var(--gold-light) !important;
 }
 
 /* ─── LUXURY MOBILE NAV ─── */

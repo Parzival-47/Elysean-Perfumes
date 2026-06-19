@@ -55,7 +55,7 @@ header {
 
 header.scrolled {
     background: var(--white);
-    backdrop-filter: blur(1.25rem);
+    backdrop-filter: blur(20px);
     padding: 18px 60px;
     border-bottom: 1px solid var(--border);
 }

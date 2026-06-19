@@ -224,3 +224,26 @@ document.addEventListener('DOMContentLoaded', () => {
     // Extra safety - run again after a short delay
     setTimeout(updateCartCount, 500);
 });
+
+// ─── HEADER SCROLL EFFECT ───
+document.addEventListener('DOMContentLoaded', () => {
+    const header = document.getElementById('header');
+
+    if (!header) {
+        console.warn("Header element not found");
+        return;
+    }
+
+    function handleScroll() {
+        if (window.scrollY > 80) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+    }
+
+    window.addEventListener('scroll', handleScroll);
+    
+    // Run once on load
+    handleScroll();
+});
