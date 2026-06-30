@@ -14771,6 +14771,7 @@ function renderProducts(filter = 'all', searchTerm = '') {
         
         card.querySelector('.product-brand').textContent = p.brand;
         card.querySelector('.product-name').textContent = p.name;
+        card.querySelector('.product-type').textContent = p.type
         
         const notesContainer = card.querySelector('.product-notes');
         notesContainer.innerHTML = p.notes.slice(0, 3)
