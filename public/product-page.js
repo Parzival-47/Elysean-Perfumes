@@ -67,7 +67,7 @@ const PRODUCTS = [
             {
                 "ml": "Sample",
                 "label": "",
-                "price": 50
+                "price": 6
             },
             {
                 "ml": "30ml",
