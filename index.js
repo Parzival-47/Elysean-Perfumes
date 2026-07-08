@@ -167,7 +167,7 @@ async function sendOrderEmails(customerInfo, amountInCents, checkoutId, cart, su
         <div style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif, serif; max-width: 600px; margin: 0 auto; padding: 30px 16px; background: #fff; color: #000; box-sizing: border-box;">
 
             <div style="text-align: center; border-bottom: 1px solid #000; padding-bottom: 24px; margin-bottom: 24px;">
-                <h1 style="font-size: 1.8rem; margin: 0 0 4px 0; letter-spacing: 0.1em;">ELYSEAN</h1>
+                <h1 style="font-size: 1.8rem; margin: 0 0 4px 0; letter-spacing: 0.1em;">ELYSEAN PERFUMES</h1>
                 <p style="color: #ffc107; font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; margin: 0;">Luxury Fragrance House</p>
             </div>
 
@@ -186,12 +186,12 @@ async function sendOrderEmails(customerInfo, amountInCents, checkoutId, cart, su
             </div>
 
             <!-- NEW: Delivery Address Block -->
-            <div style="background: #181818; border: 1px solid #2a2a2a; border-radius: 8px; padding: 18px; margin-bottom: 20px; word-break: break-word;">
-                <p style="font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: #C9A84C; margin: 0 0 12px 0;">Delivery Address</p>
-                <p style="margin: 4px 0; font-size: 0.82rem; color: #ddd;">${customerInfo.addressLine1 || ''}</p>
-                ${customerInfo.addressLine2 ? `<p style="margin: 4px 0; font-size: 0.82rem; color: #ddd;">${customerInfo.addressLine2}</p>` : ''}
-                <p style="margin: 4px 0; font-size: 0.82rem; color: #ddd;">${customerInfo.city || ''}, ${customerInfo.postalCode || ''}</p>
-                <p style="margin: 4px 0; font-size: 0.82rem; color: #ddd;">${customerInfo.province || ''}</p>
+            <div style="background: hsl(0, 0%, 95%); border: 1px solid #ffc107; border-radius: 8px; padding: 18px; margin-bottom: 20px; word-break: break-word;">
+                <p style="font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: #000; border-bottom: 1px solid #ffc107; margin: 0 0 12px 0;">Delivery Address</p>
+                <p style="margin: 4px 0; font-size: 0.82rem; color: #000;">${customerInfo.addressLine1 || ''}</p>
+                ${customerInfo.addressLine2 ? `<p style="margin: 4px 0; font-size: 0.82rem; color: #000;">${customerInfo.addressLine2}</p>` : ''}
+                <p style="margin: 4px 0; font-size: 0.82rem; color: #000;">${customerInfo.city || ''}, ${customerInfo.postalCode || ''}</p>
+                <p style="margin: 4px 0; font-size: 0.82rem; color: #000;">${customerInfo.province || ''}</p>
             </div>
 
             <div style="background: hsl(0, 0%, 95%); border: 1px solid #ffc107; border-radius: 8px; padding: 18px; margin-bottom: 20px;">
@@ -262,7 +262,7 @@ async function sendOrderEmails(customerInfo, amountInCents, checkoutId, cart, su
     await sendEmail(customerInfo.email, customerName, 'Order Confirmation | Elysean Perfumes', customerHtml, 'elyseanperfumes@gmail.com');
     console.log('✅ Confirmation email sent to customer:', customerInfo.email);
 
-    await sendEmail(BREVO_SENDER_EMAIL, 'Elysean Perfumes Owner', `New Order | Elysean Perfumes — R${amountRands} — ${customerName}`, ownerHtml, 'elyseanperfumes@gmail.com');
+    await sendEmail(process.env.OWNER_EMAIL, 'Elysean Perfumes Owner', `New Order | Elysean Perfumes — R${amountRands} — ${customerName}`, ownerHtml, 'elyseanperfumes@gmail.com');
     console.log('✅ Notification email sent to owner');
 }
 
