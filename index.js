@@ -116,7 +116,7 @@ function verifyWebhookSignature(webhookId, webhookTimestamp, rawBody, signatureH
 }
 
 // ── Send email via Brevo HTTP API ──
-async function sendEmail(to, toName, subject, htmlContent) {
+async function sendEmail(to, toName, subject, htmlContent, replyTo = null) {
     const response = await fetch('https://api.brevo.com/v3/smtp/email', {
         method: 'POST',
         headers: {
