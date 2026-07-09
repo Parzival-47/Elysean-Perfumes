@@ -262,7 +262,7 @@ async function sendOrderEmails(customerInfo, amountInCents, checkoutId, cart, su
     await sendEmail(customerInfo.email, customerName, 'Order Confirmation | Elysean Perfumes', customerHtml, 'elyseanperfumes@gmail.com');
     console.log('✅ Confirmation email sent to customer:', customerInfo.email);
 
-    await sendEmail(process.env.OWNER_EMAIL, 'Elysean Perfumes Owner', `New Order | Elysean Perfumes — R${amountRands} — ${customerName}`, ownerHtml, 'elyseanperfumes@gmail.com');
+    await sendEmail(process.env.OWNER_EMAIL, 'Elysean Perfumes Owner', `New Order | Elysean Perfumes`, ownerHtml, 'elyseanperfumes@gmail.com');
     console.log('✅ Notification email sent to owner');
 }
 
