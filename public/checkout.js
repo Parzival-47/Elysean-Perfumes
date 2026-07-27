@@ -70,7 +70,7 @@ if (orderList) {
 // ─── CALCULATE TOTALS ───
 const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
 const tax = Math.round(subtotal * 0);
-const shipping = cart.length > 0 ? 95 : 0;
+const shipping = cart.length > 0 ? 0 : 0;
 const total = subtotal + tax + shipping;
 const totalInCents = total * 100;
 
