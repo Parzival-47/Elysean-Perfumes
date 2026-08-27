@@ -70,7 +70,7 @@ if (orderList) {
 // ─── CALCULATE TOTALS ───
 const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
 const tax = Math.round(subtotal * 0);
-const shipping = cart.length > 0 ? 50 : 0;
+const shipping = cart.length > 0 ? 49 : 0;
 const total = subtotal + tax + shipping;
 const totalInCents = total * 100;
 
@@ -107,8 +107,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const lastName  = document.getElementById('lastName')?.value.trim() || '';
         const email     = document.getElementById('email')?.value.trim() || '';
         const phone     = document.getElementById('phone')?.value.trim() || '';
+        const addressLine1 = document.getElementById('addressLine1')?.value.trim() || '';
+        const addressLine2 = document.getElementById('addressLine2')?.value.trim() || '';
+        const city         = document.getElementById('city')?.value.trim() || '';
+        const postalCode   = document.getElementById('postalCode')?.value.trim() || '';
+        const province     = document.getElementById('province')?.value.trim() || '';
 
-        console.log("📋 Form Values:", { firstName, lastName, email, phone });
+        console.log("📋 Form Values:", { firstName, lastName, email, phone, addressLine1, city, postalCode, province});
 
         // ── Use the totalInCents calculated above — no localStorage needed ──
         if (totalInCents <= 0) {
@@ -123,6 +128,12 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        if (!addressLine1 || !city || !postalCode || !province) {
+        alert("Please fill in your full delivery address.");
+        resetButton();
+        return;
+        }
+
         try {
             const response = await fetch('/create-checkout', {
                 method: 'POST',
@@ -134,8 +145,17 @@ document.addEventListener('DOMContentLoaded', () => {
                         firstName,
                         lastName,
                         email,
-                        phone
-                    }
+                        phone,
+                        addressLine1,
+                        addressLine2,
+                        city,
+                        postalCode,
+                        province
+                    },
+                    cart: cart,
+                    subtotal: subtotal,
+                    shipping: shipping,
+                    tax: tax
                 })
             });
 
@@ -181,4 +201,49 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     console.log(`✅ Reveal system active — ${document.querySelectorAll('.reveal').length} elements observed`);
+});
+
+// ─── CART COUNT FOR HOME PAGE ───
+function updateCartCount() {
+    const cart = JSON.parse(localStorage.getItem('elyseanCart') || '[]');
+    const countEl = document.getElementById('cart-count');
+    if (countEl) {
+        const totalItems = cart.reduce((sum, item) => sum + (item.qty || 0), 0);
+        countEl.textContent = totalItems;
+        console.log(`🛒 Home page cart count updated: ${totalItems}`);
+    }
+}
+
+// Run it when page loads and when cart changes
+document.addEventListener('DOMContentLoaded', () => {
+    updateCartCount();
+    
+    // Listen for changes from other pages
+    window.addEventListener('storage', updateCartCount);
+    
+    // Extra safety - run again after a short delay
+    setTimeout(updateCartCount, 500);
+});
+
+// ─── HEADER SCROLL EFFECT ───
+document.addEventListener('DOMContentLoaded', () => {
+    const header = document.getElementById('header');
+
+    if (!header) {
+        console.warn("Header element not found");
+        return;
+    }
+
+    function handleScroll() {
+        if (window.scrollY > 80) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+    }
+
+    window.addEventListener('scroll', handleScroll);
+    
+    // Run once on load
+    handleScroll();
 });
