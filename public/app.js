@@ -18,23 +18,51 @@ const PRODUCTS = Array.isArray(window.ELYSEAN_PRODUCTS) ? window.ELYSEAN_PRODUCT
 let activeFilter = "all";
 let visibleLimit = CONFIG.initialProductLimit;
 let selectedProduct = null;
+let searchTimer = null;
+let lastTrackedSearch = "";
 
 function money(value) {
   return `R${Number(value).toLocaleString("en-ZA")}`;
 }
 
-function track(eventName, params = {}) {
+function trackingContext() {
+  const url = new URL(window.location.href);
+  return {
+    page_name: "october_same_scent_bogo",
+    campaign_source: url.searchParams.get("utm_source") || undefined,
+    campaign_medium: url.searchParams.get("utm_medium") || undefined,
+    campaign_name: url.searchParams.get("utm_campaign") || undefined,
+  };
+}
+
+function cleanParams(params) {
+  return Object.fromEntries(Object.entries(params).filter(([, value]) => value !== undefined && value !== null && value !== ""));
+}
+
+function track(eventName, params = {}, metaEventName = null) {
+  const eventParams = cleanParams({ ...trackingContext(), ...params });
   if (typeof window.fbq === "function") {
     const metaMap = {
-      page_view: "PageView",
       lead: "Lead",
+      contact: "Contact",
+      search: "Search",
       view_content: "ViewContent",
       initiate_checkout: "InitiateCheckout",
     };
-    window.fbq("track", metaMap[eventName] || eventName, params);
+    const metaName = metaEventName || metaMap[eventName];
+    if (metaName) {
+      window.fbq("track", metaName, eventParams);
+    } else {
+      window.fbq("trackCustom", eventName, eventParams);
+    }
   }
   if (typeof window.gtag === "function") {
-    window.gtag("event", eventName, params);
+    const googleMap = {
+      contact: "generate_lead",
+      view_content: "view_item",
+      initiate_checkout: "begin_checkout",
+    };
+    window.gtag("event", googleMap[eventName] || eventName, eventParams);
   }
 }
 
@@ -48,7 +76,19 @@ function bindWhatsAppLinks() {
     link.href = whatsappUrl(message);
     link.target = "_blank";
     link.rel = "noopener noreferrer";
-    link.addEventListener("click", () => track("lead", { source: link.dataset.track || "whatsapp_link" }));
+    link.addEventListener("click", () => {
+      const source = link.dataset.track || "whatsapp_link";
+      const sampleValues = {
+        sample_trio: CONFIG.sampleTrioDelivered,
+        sample_five: CONFIG.sampleFiveDelivered,
+      };
+      track("contact", {
+        contact_method: "whatsapp",
+        source,
+        value: sampleValues[source],
+        currency: sampleValues[source] ? "ZAR" : undefined,
+      });
+    });
   });
 }
 
@@ -160,8 +200,21 @@ function selectProduct(id) {
 
   track("view_content", {
     content_name: product.reference,
-    content_id: product.id,
+    content_ids: [String(product.id)],
+    content_type: "product",
+    item_id: String(product.id),
+    item_name: product.reference,
+    item_variant: product.variant,
+    items: [{
+      item_id: String(product.id),
+      item_name: product.reference,
+      item_variant: product.variant,
+      price: product.price100,
+      quantity: 1,
+    }],
     price: product.price100,
+    value: product.price100,
+    currency: "ZAR",
     offer: CONFIG.offerName,
   });
   showToast(`${product.reference} selected — your second matching 100ml bottle is free.`);
@@ -172,18 +225,35 @@ function setupCollection() {
   const minPrice = Math.min(...PRODUCTS.map((p) => p.price100));
   if ($("#price-from")) $("#price-from").textContent = money(minPrice);
 
-  $("#product-search")?.addEventListener("input", () => renderProducts(true));
+  $("#product-search")?.addEventListener("input", (event) => {
+    renderProducts(true);
+    window.clearTimeout(searchTimer);
+    const searchTerm = event.target.value.trim();
+    searchTimer = window.setTimeout(() => {
+      if (searchTerm.length >= 2 && searchTerm !== lastTrackedSearch) {
+        lastTrackedSearch = searchTerm;
+        const { items } = filteredProducts();
+        track("search", {
+          search_string: searchTerm,
+          search_term: searchTerm,
+          result_count: items.length,
+        });
+      }
+    }, 700);
+  });
   $$(".filter-pill").forEach((button) => {
     button.addEventListener("click", () => {
       activeFilter = button.dataset.filter;
       $$(".filter-pill").forEach((b) => b.classList.toggle("is-active", b === button));
       renderProducts(true);
+      track("fragrance_filter", { filter_name: activeFilter });
     });
   });
 
   $("#show-more")?.addEventListener("click", () => {
     visibleLimit += CONFIG.resultPageSize;
     renderProducts(false);
+    track("show_more_fragrances", { visible_limit: visibleLimit });
   });
 
   $("#clear-search")?.addEventListener("click", () => {
@@ -218,9 +288,21 @@ function setupCollection() {
 
     track("initiate_checkout", {
       content_name: selectedProduct.reference,
-      content_id: selectedProduct.id,
+      content_ids: [String(selectedProduct.id)],
+      content_type: "product",
+      item_id: String(selectedProduct.id),
+      item_name: selectedProduct.reference,
+      item_variant: selectedProduct.variant,
+      items: [{
+        item_id: String(selectedProduct.id),
+        item_name: selectedProduct.reference,
+        item_variant: selectedProduct.variant,
+        price: selectedProduct.price100,
+        quantity: 1,
+      }],
       value: total,
       currency: "ZAR",
+      contact_method: "whatsapp",
       offer: CONFIG.offerName,
     });
     window.open(whatsappUrl(message), "_blank", "noopener,noreferrer");
@@ -287,7 +369,23 @@ function setupReveal() {
 
 function setupTracking() {
   $$('[data-track]').forEach((el) => el.addEventListener("click", () => {
-    track("view_content", { action: el.dataset.track });
+    const action = el.dataset.track;
+    if (el.classList.contains("js-whatsapp")) return;
+    if (action === "phone_click" || action === "email_click") {
+      track("contact", { contact_method: action === "phone_click" ? "phone" : "email", source: action });
+      return;
+    }
+    if (action === "google_reviews") {
+      track("outbound_click", { link_name: "google_reviews", link_url: el.href });
+      return;
+    }
+    track("cta_click", { cta_name: action });
+  }));
+
+  $$("#faq details").forEach((item) => item.addEventListener("toggle", () => {
+    if (item.open) {
+      track("faq_open", { faq_question: $("summary", item)?.textContent.trim() });
+    }
   }));
 }
 
@@ -308,5 +406,4 @@ document.addEventListener("DOMContentLoaded", () => {
   setupMobileMenu();
   setupReveal();
   setupTracking();
-  track("page_view", { page: "october_same_scent_bogo" });
 });
