@@ -1,0 +1,66 @@
+ELYSEAN DISCOVERY SAMPLE PAGE
+
+1. Upload these NEW files into the same folder as your existing promo.html:
+   samples.html
+   samples.css
+   samples.js
+   sample-core.js
+   sample-products.js
+   sample-assets/ (upload this folder AND all three images inside it)
+
+Do not replace promo.css, app.js, products.js, or your existing assets folder.
+sample-products.js contains the same fragrance catalogue supplied for the offer.
+When your catalogue changes, update this copy too.
+
+2. In promo.html, find the link with data-track="sample_trio".
+Replace that entire <a ...>Choose my 3 samples</a> element with:
+
+<a class="btn btn--dark" href="samples.html?bundle=3" data-track="sample_trio">Choose my 3 samples</a>
+
+Find the link with data-track="sample_five".
+Replace that entire <a ...>Choose my 5 samples</a> element with:
+
+<a class="btn btn--gold" href="samples.html?bundle=5" data-track="sample_five">Choose my 5 samples</a>
+
+IMPORTANT: Remove js-whatsapp and data-message from those two links, as above.
+Otherwise the existing landing-page script may turn them back into WhatsApp links.
+Do not remove these attributes from OTHER WhatsApp buttons.
+
+3. Save and upload promo.html. Refresh the page.
+
+LIVE ADDRESSES AFTER UPLOAD
+https://elyseanperfumes.co.za/samples.html?bundle=3
+https://elyseanperfumes.co.za/samples.html?bundle=5
+
+BEHAVIOUR
+Trio = exactly 3 different fragrances, 2ml each, R219 delivered.
+Five = exactly 5 different fragrances, 2ml each, R299 delivered.
+Delivery means PUDO locker delivery. Availability/timing confirmed before payment.
+Selections save separately per bundle in this browser; no account required.
+Removing an item frees a slot. The same fragrance cannot be added twice.
+A missing/invalid bundle shows the bundle choices; no order can be submitted.
+The WhatsApp button only enables for a complete set, opens a prepared message,
+and the customer must tap Send in WhatsApp. It does not submit a paid order.
+The contact number is 27774638001 (077 463 8001).
+The photograph shows the existing 100ml bottle for atmosphere, NOT a sample bottle;
+the caption explicitly states discovery sets contain 2ml samples.
+
+TRACKING
+The new page includes one Meta Pixel base tag (1084792373896315) and one GA4
+base tag (G-NT5SEGTN2N). It deliberately does NOT load your existing app.js.
+Events cover bundle view, add/remove, search/filter and WhatsApp contact intent.
+WhatsApp records Contact in Meta and generate_lead in GA4, NOT Purchase.
+If you already inject tags globally or through a consent manager, use that same
+setup on this new page and remove its duplicate base tags before launch.
+The tags currently mirror your supplied landing-page installation; this page
+does not introduce a consent manager. Apply your site's consent rules here too.
+
+QUICK CHECK BEFORE SHARING WITH CUSTOMERS
+Open Trio, pick 3, verify a fourth cannot be added, then remove one and replace it.
+Repeat with Five. Refresh and check the selections remain.
+Search by fragrance name, notes and Elysean number.
+Check the WhatsApp recipient, full selection and bundle total before tapping Send.
+Check the page on your actual phone. This package has automated logic checks;
+live browser/phone visual testing was not performed here.
+
+tests.cjs is an optional developer test file; it does not need uploading.

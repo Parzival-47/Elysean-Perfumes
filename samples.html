@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en-ZA">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Choose your discovery samples | Elysean Perfumes</title>
+  <meta name="description" content="Build your Elysean Discovery Trio or Five. Choose your 2ml fragrance samples, review your selection and request your order on WhatsApp.">
+  <meta name="theme-color" content="#fffaf4">
+  <link rel="icon" href="sample-assets/favicon.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="samples.css">
+  <!-- Install once only. Existing site's app.js is deliberately not loaded here. -->
+  <script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','1084792373896315');fbq('track','PageView');</script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-NT5SEGTN2N"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-NT5SEGTN2N');</script>
+  <script defer src="sample-products.js"></script><script defer src="sample-core.js"></script><script defer src="samples.js"></script>
+</head>
+<body>
+  <noscript><p class="notice">Please enable JavaScript to choose your samples, or contact Elysean on WhatsApp at 077 463 8001.</p><img height="1" width="1" style="display:none" alt="" src="https://www.facebook.com/tr?id=1084792373896315&amp;ev=PageView&amp;noscript=1"></noscript>
+  <a class="skip" href="#picker">Skip to fragrance selection</a>
+  <div class="ribbon">DISCOVERY SETS · PUDO LOCKER DELIVERY INCLUDED</div>
+  <header class="site-header wrap"><a class="brand" href="promo.html"><img src="sample-assets/logo-stag.webp" width="44" height="44" alt=""><span>ELYSEAN<small>PERFUMES</small></span></a><a class="back" href="promo.html#samples">← Back to offer</a></header>
+  <main class="wrap">
+    <section class="intro" aria-labelledby="page-title">
+      <div><p class="eyebrow">YOUR SCENT JOURNEY STARTS HERE</p><h1 id="page-title">A little discovery.<br>A scent to call yours.</h1><p>Choose your 2ml samples. We’ll confirm your selection and send a secure payment link on WhatsApp.</p>
+      <nav class="bundles" aria-label="Choose your discovery bundle"><a href="samples.html?bundle=3" data-bundle="3">Trio <strong>3 × 2ml · R219</strong></a><a href="samples.html?bundle=5" data-bundle="5">Five <strong>5 × 2ml · R299</strong></a></nav></div>
+      <figure><img src="sample-assets/studio.webp" width="988" height="1592" alt="Elysean's full-size fragrance bottle photographed in a rose-toned studio"><figcaption>Our signature 100ml bottle pictured. Discovery sets contain 2ml samples.</figcaption></figure>
+    </section>
+    <p id="bundle-notice" class="notice" hidden>Choose Trio or Five above to start your selection.</p>
+    <p id="storage-notice" class="notice" hidden>Your browser cannot save these choices. Keep this page open until you send your order.</p>
+    <div id="workspace" class="workspace" hidden>
+      <section id="picker" aria-labelledby="picker-title">
+        <p class="eyebrow" id="bundle-label"></p><h2 id="picker-title">Find your favourites.</h2>
+        <label for="search">Search by scent reference, Elysean number or notes</label>
+        <div class="search-row"><input type="search" id="search" placeholder="Try Black Opium, vanilla or 164" autocomplete="off"><button class="text-button" id="clear-search" type="button">Clear</button></div>
+        <div class="filters" role="group" aria-label="Filter fragrance collection"><button type="button" data-filter="all" aria-pressed="true">All</button><button type="button" data-filter="feminine" aria-pressed="false">Feminine</button><button type="button" data-filter="masculine" aria-pressed="false">Masculine</button><button type="button" data-filter="unisex" aria-pressed="false">Unisex</button></div>
+        <p id="results-count" class="muted" aria-live="polite"></p>
+        <div id="products" class="products"></div>
+        <p id="empty" class="notice" hidden>No matches. Try a different name or note, or clear the filters.</p>
+        <button id="more" type="button" class="button outline">Show more fragrances</button>
+      </section>
+      <aside id="summary" class="summary" aria-labelledby="summary-title">
+        <p class="eyebrow">YOUR DISCOVERY SET</p><h2 id="summary-title" tabindex="-1">Your selection</h2>
+        <p id="remaining" role="status" aria-live="polite" aria-atomic="true"></p><progress id="progress" value="0" max="3" aria-label="Samples selected"></progress>
+        <ol id="chosen"></ol>
+        <dl class="totals"><div><dt id="total-label">Bundle</dt><dd id="total"></dd></div><div><dt>PUDO locker delivery</dt><dd>Included</dd></div></dl>
+        <p id="review-note">Your selected fragrances will appear here.</p>
+        <button id="send" type="button" class="button whatsapp" disabled>Confirm on WhatsApp ↗</button>
+        <p class="fine">WhatsApp opens with your complete selection. Tap Send there. We’ll confirm availability and dispatch timing before sending your Yoco payment link. No payment is taken on this page.</p>
+        <a class="edit-link" href="#picker">← Keep choosing / change a sample</a>
+        <figure class="mobile-photo"><img src="sample-assets/studio.webp" width="988" height="1592" loading="lazy" alt="Elysean's full-size fragrance bottle in a rose-toned studio"><figcaption>Our 100ml bottle pictured. Your discovery set contains 2ml samples.</figcaption></figure>
+      </aside>
+    </div>
+    <footer><p>Elysean Perfumes · George, Western Cape</p><p class="fine">Independent fragrance interpretations. Designer names are scent references only; Elysean is not affiliated with or endorsed by those brands.</p><a href="privacy-policy.html">Privacy policy</a></footer>
+  </main>
+  <div id="selection-bar" class="selection-bar" hidden><div><strong id="bar-count"></strong><small id="bar-remaining"></small></div><a href="#summary" class="button gold">Review selection</a></div>
+</body></html>
