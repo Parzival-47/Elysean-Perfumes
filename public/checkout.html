@@ -25,54 +25,19 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://elyseanperfumes.co.za/images/ep-snippet.png">
 
-<!-- Meta Pixel Code -->
-<script>
-!function(f,b,e,v,n,t,s)
-{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];
-s.parentNode.insertBefore(t,s)}(window,document,'script',
-'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init','1084792373896315');
-fbq('track','PageView');
-</script>
-
-<!-- End Meta Pixel Code -->
-
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-NT5SEGTN2N"></script>
-
-<script>
-window.dataLayer = window.dataLayer || [];
-
-function gtag() {
-  dataLayer.push(arguments);
-}
-
-gtag('js', new Date());
-gtag('config', 'G-NT5SEGTN2N');
-</script>
-
+  <!-- Both Meta Pixels and GA4 are configured once in this shared consent-aware file. -->
+  <link rel="stylesheet" href="tracking.css?v=20260904-1">
+  <script src="tracking.js?v=20260904-1"></script>
 </head>
 <body>
-<noscript>
-<img
-  height="1"
-  width="1"
-  style="display:none"
-  src="https://www.facebook.com/tr?id=1084792373896315&ev=PageView&noscript=1"
-  alt=""
-/>
-</noscript>
+
   <!-- SUCCESS OVERLAY -->
   <div class="success-overlay" id="successOverlay">
     <div class="success-ring">
       <span class="success-check">✦</span>
     </div>
     <h2>Payment <em>Successful</em></h2>
-    <p>Your order has been confirmed. Your fragrances will be carefully packaged and dispatched within 24 hours.</p>
+    <p>Please refer to your Yoco payment confirmation. We confirm availability, the expected dispatch date and PUDO locker details with you; there is no automatic 24-hour dispatch promise.</p>
     <span class="success-redirect">Redirecting you back...</span>
     <div class="redirect-bar"><div class="redirect-progress" id="redirectProgress"></div></div>
   </div>
@@ -155,6 +120,7 @@ gtag('config', 'G-NT5SEGTN2N');
       <!-- DELIVERY ADDRESS -->
       <div class="form-section">
         <p class="form-section-title">Delivery Address</p>
+        <p style="font-size:0.85rem;line-height:1.6;margin:0 0 16px;color:#625651;">Standard delivery is to a PUDO locker. Please <a href="https://wa.me/27774638001" style="color:#793246;text-decoration:underline;">confirm your preferred locker and dispatch timing on WhatsApp</a> before paying. The contact/address fields below remain part of the regular checkout.</p>
         <div class="form-row full">
           <div class="form-group">
             <label class="form-label">Street Address</label>
@@ -206,12 +172,12 @@ gtag('config', 'G-NT5SEGTN2N');
         <span id="right-subtotal">R0</span>
       </div>
       <div class="order-row muted">
-        <span>VAT (15%)</span>
+        <span>Additional tax</span>
         <span id="right-tax">R0</span>
       </div>
       <div class="order-row muted">
-        <span>Shipping</span>
-        <span style="color:var(--black);">R49</span>
+        <span>PUDO locker delivery</span>
+        <span style="color:var(--black);" id="right-shipping">R79</span>
       </div>
       <div class="order-total">
         <span>Total</span>
@@ -230,7 +196,7 @@ gtag('config', 'G-NT5SEGTN2N');
     </div>
   </div>
 
-  <script src="/checkout.js"></script>
+  <script src="/checkout.js?v=20260904-1"></script>
 
 </body>
 </html>

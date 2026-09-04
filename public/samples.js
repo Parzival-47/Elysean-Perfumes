@@ -13,7 +13,7 @@
  $('total-label').textContent=b.name+' · '+b.size+' × 2ml';$('total').textContent='R'+b.price;$('progress').max=b.size;
  const key='elysean-samples-v1-'+b.size;let ids=[],category='all',limit=12,timer;
  try{ids=core.clean(JSON.parse(localStorage.getItem(key)||'[]'),products,b.size);}catch{$('storage-notice').hidden=false;}
- const track=(name,extra={})=>{const data={bundle_name:b.name,sample_count:b.size,currency:'ZAR',value:b.price,...extra};try{if(typeof window.gtag==='function')window.gtag('event',name,data);if(typeof window.fbq==='function')window.fbq('trackCustom',name,data);}catch{/* Tracking must never block choosing or ordering. */}};
+ const track=(name,extra={})=>window.ElyseanTracking?.track(name,{bundle_name:b.name,sample_count:b.size,currency:'ZAR',value:b.price,...extra});
  const el=(tag,cls,text)=>{const x=document.createElement(tag);if(cls)x.className=cls;if(text!==undefined)x.textContent=text;return x;};
  function persist(){try{localStorage.setItem(key,JSON.stringify(ids));}catch{$('storage-notice').hidden=false;}}
  function change(id){const adding=!ids.includes(id);if(adding&&ids.length>=b.size)return;ids=core.toggle(ids,id,b.size);persist();render();track(adding?'sample_added':'sample_removed',{item_id:String(id)});if(adding&&ids.length===b.size){$('summary-title').focus({preventScroll:true});$('summary').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});}else{const button=document.querySelector('[data-add="'+id+'"]');if(button)button.focus({preventScroll:true});}}
@@ -26,15 +26,16 @@
   renderCards();const left=b.size-ids.length,complete=left===0;$('remaining').textContent=complete?'Your set is complete. Review your choices below.':ids.length+' of '+b.size+' selected · Choose '+left+' more';$('progress').value=ids.length;$('bar-count').textContent=ids.length+' of '+b.size+' selected';$('bar-remaining').textContent=complete?'Ready to review':left+' sample'+(left===1?'':'s')+' remaining';$('summary-title').textContent=complete?'Ready for your discovery?':'Your selection';$('send').disabled=!complete;$('review-note').textContent=complete?'Please check your choices before continuing.':'Choose exactly '+b.size+' samples to continue. You can remove or swap any choice.';
   const frag=document.createDocumentFragment();ids.forEach(id=>{const p=products.find(x=>x.id===id),li=el('li'),text=el('div');text.append(el('strong','','Elysean No. '+String(p.id).padStart(3,'0')),el('span','',p.reference),el('small','',p.variant+' · 2ml'));const remove=el('button','','×');remove.type='button';remove.setAttribute('aria-label','Remove Elysean No. '+p.id+', '+p.reference);remove.addEventListener('click',()=>change(id));li.append(text,remove);frag.append(li);});$('chosen').replaceChildren(frag);
  }
- $('search').addEventListener('input',()=>{limit=12;renderCards();clearTimeout(timer);timer=setTimeout(()=>track('search',{search_term:$('search').value.trim()}),800);});
- $('clear-search').addEventListener('click',()=>{$('search').value='';category='all';limit=12;document.querySelectorAll('[data-filter]').forEach(a=>a.setAttribute('aria-pressed',String(a.dataset.filter===category)));renderCards();$('search').focus();});
+ let lastSearch='';
+ $('search').addEventListener('input',()=>{limit=12;renderCards();clearTimeout(timer);timer=setTimeout(()=>{const term=$('search').value.trim();if(term.length>=2&&term!==lastSearch){lastSearch=term;track('search',{search_term:term,search_string:term,result_count:products.filter(p=>core.matches(p,term,category)).length});}},800);});
+ $('clear-search').addEventListener('click',()=>{clearTimeout(timer);lastSearch='';$('search').value='';category='all';limit=12;document.querySelectorAll('[data-filter]').forEach(a=>a.setAttribute('aria-pressed',String(a.dataset.filter===category)));renderCards();$('search').focus();});
  document.querySelectorAll('[data-filter]').forEach(a=>a.addEventListener('click',()=>{category=a.dataset.filter;limit=12;document.querySelectorAll('[data-filter]').forEach(x=>x.setAttribute('aria-pressed',String(x===a)));renderCards();track('sample_filter',{category});}));
  $('more').addEventListener('click',()=>{limit+=12;renderCards();});
  $('send').addEventListener('click',()=>{
   const items=ids.map(id=>products.find(p=>p.id===id));if(items.length!==b.size||items.some(p=>!p))return;
   const message=core.message(b,items);
-  // This records contact intent, not payment or a completed purchase.
-  try{if(typeof window.gtag==='function')window.gtag('event','generate_lead',{currency:'ZAR',value:b.price,bundle_name:b.name,item_ids:ids.join(',')});if(typeof window.fbq==='function')window.fbq('track','Contact',{content_name:b.name,content_ids:ids.map(String),currency:'ZAR',value:b.price});}catch{}
+  // A completed selection sent to WhatsApp is order intent, NOT a purchase.
+  track('initiate_checkout',{source:b.size===3?'sample_trio_order':'sample_five_order',contact_method:'whatsapp',content_name:b.name,content_type:'product',content_ids:ids.map(String),num_items:b.size,items:[{item_id:'discovery-'+b.size,item_name:b.name,price:b.price,quantity:1}]});
   location.href='https://wa.me/27774638001?text='+encodeURIComponent(message);
  });
  render();track('sample_bundle_view');

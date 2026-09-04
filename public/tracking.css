@@ -1,0 +1,30 @@
+/* Scoped privacy controls only: existing layout and order docks are unchanged. */
+.ep-consent[hidden], .ep-consent [hidden] { display: none !important; }
+.ep-consent {
+  position: fixed; inset: auto 16px 16px auto; z-index: 10020;
+  width: min(480px, calc(100vw - 32px)); max-height: min(460px, 50vh);
+  overflow: auto; overscroll-behavior: contain; padding: 18px;
+  color: #302420; background: #fffaf3; border: 1px solid #b6a38d;
+  border-radius: 16px; box-shadow: 0 6px 32px #30242030;
+  font-family: 'Montserrat', 'Nunito Sans', sans-serif; font-size: 13px; line-height: 1.55;
+  text-align: left; letter-spacing: normal; text-transform: none; box-sizing: border-box;
+}
+.ep-consent h2 { margin: 0 0 8px; color: #302420; font: 600 17px/1.3 'Montserrat', 'Nunito Sans', sans-serif; letter-spacing: normal; text-transform: none; }
+.ep-consent p { margin: 0 0 12px; color: #302420; font-size: 13px; line-height: 1.55; }
+.ep-consent a { color: #793246; text-decoration: underline; }
+.ep-consent-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.ep-consent button { cursor: pointer; min-height: 44px; padding: 8px 12px; border: 1px solid #793246; border-radius: 8px; background: #fffaf3; color: #642b3c; font: 600 12px/1.35 'Montserrat', 'Nunito Sans', sans-serif; letter-spacing: normal; text-transform: none; flex: 1 1 auto; }
+.ep-consent button:hover { background: #f0e3df; }
+.ep-consent :focus-visible, .ep-cookie-settings:focus-visible { outline: 3px solid #793246; outline-offset: 3px; }
+.ep-consent label { display: flex; gap: 10px; align-items: center; padding: 10px 0; color: #302420; font: inherit; letter-spacing: normal; text-transform: none; }
+.ep-consent input[type=checkbox] { appearance: auto; width: 20px; height: 20px; margin: 0; accent-color: #793246; flex: 0 0 20px; }
+.ep-consent [data-ep-options] { margin-top: 12px; border-top: 1px solid #b6a38d; padding-top: 4px; }
+.ep-cookie-settings { display: inline-block; padding: 10px 14px; margin: 12px; min-height: 44px; border: 1px solid #b6a38d; border-radius: 8px; background: #fffaf3; color: #642b3c; font: 500 12px/1.5 'Montserrat', 'Nunito Sans', sans-serif; cursor: pointer; letter-spacing: normal; text-transform: none; }
+@media (max-width: 700px) {
+  .ep-consent { inset: auto 10px calc(78px + env(safe-area-inset-bottom, 0px)) 10px; width: auto; padding: 12px; max-height: 36vh; max-height: 36dvh; }
+  .ep-consent h2 { font-size: 15px; }
+  .ep-consent p { font-size: 12px; margin-bottom: 8px; }
+  .ep-consent-actions { gap: 6px; }
+  .ep-consent button { padding: 7px 9px; font-size: 11px; }
+}
+@media (prefers-reduced-motion: reduce) { .ep-consent, .ep-consent * { scroll-behavior: auto; transition: none; } }

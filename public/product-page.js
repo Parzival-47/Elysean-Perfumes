@@ -14829,6 +14829,11 @@ function openModal(id) {
         });
     });
     
+    window.ElyseanTracking?.track('view_content', {
+        source: 'website_catalogue', content_ids: [String(p.id)], content_name: p.name,
+        content_type: 'product', value: selectedSize.price, currency: 'ZAR',
+        items: [{item_id: String(p.id), item_name: p.name, item_variant: selectedSize.ml, price: selectedSize.price, quantity: 1}]
+    });
     document.getElementById('modalOverlay').classList.add('open');
     document.body.style.overflow = 'hidden';
 }
@@ -14855,6 +14860,11 @@ document.getElementById('modal-add-btn').addEventListener('click', () => {
         });
     }
     localStorage.setItem('elyseanCart', JSON.stringify(cart));
+    window.ElyseanTracking?.track('add_to_cart', {
+        source: 'website_catalogue', content_ids: [String(selectedProduct.id)], content_name: selectedProduct.name,
+        content_type: 'product', value: selectedSize.price, currency: 'ZAR',
+        items: [{item_id: String(selectedProduct.id), item_name: selectedProduct.name, item_variant: selectedSize.ml, price: selectedSize.price, quantity: 1}]
+    });
     updateCartCount();
     closeModal();
     showPopup(selectedProduct.name, selectedSize.ml);
@@ -14881,6 +14891,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             currentFilter = btn.dataset.cat;
+            window.ElyseanTracking?.track('fragrance_filter', {category: currentFilter, source: 'website_catalogue'});
             renderProducts(currentFilter);
         });
     });
@@ -14896,9 +14907,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('searchInput');
     const searchClear = document.getElementById('searchClear');
 
+    let searchEventTimer, lastSearchEvent = '';
     if (searchInput) {
         searchInput.addEventListener('input', () => {
             currentSearchTerm = searchInput.value;
+            clearTimeout(searchEventTimer);
+            searchEventTimer = setTimeout(() => {
+                const term = searchInput.value.trim();
+                if (term.length >= 2 && term !== lastSearchEvent) {
+                    lastSearchEvent = term;
+                    window.ElyseanTracking?.track('search', {search_term: term, search_string: term, source: 'website_catalogue'});
+                }
+            }, 700);
             if (searchClear) {
                 searchClear.classList.toggle('visible', currentSearchTerm.length > 0);
             }
@@ -14907,6 +14927,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (searchClear) {
             searchClear.addEventListener('click', () => {
+                clearTimeout(searchEventTimer); lastSearchEvent = '';
                 searchInput.value = '';
                 currentSearchTerm = '';
                 searchClear.classList.remove('visible');

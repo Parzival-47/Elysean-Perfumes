@@ -70,11 +70,12 @@ if (orderList) {
 // ─── CALCULATE TOTALS ───
 const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
 const tax = Math.round(subtotal * 0);
-const shipping = cart.length > 0 ? 49 : 0;
+const shipping = cart.length > 0 ? 79 : 0;
 const total = subtotal + tax + shipping;
 const totalInCents = total * 100;
 
 // Update display
+if (document.getElementById('right-shipping')) document.getElementById('right-shipping').textContent = 'R' + shipping;
 if (document.getElementById('right-subtotal')) {
     document.getElementById('right-subtotal').textContent = 'R' + subtotal.toLocaleString();
 }
@@ -113,7 +114,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const postalCode   = document.getElementById('postalCode')?.value.trim() || '';
         const province     = document.getElementById('province')?.value.trim() || '';
 
-        console.log("📋 Form Values:", { firstName, lastName, email, phone, addressLine1, city, postalCode, province});
 
         // ── Use the totalInCents calculated above — no localStorage needed ──
         if (totalInCents <= 0) {
@@ -160,12 +160,12 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             const data = await response.json();
-            console.log("Checkout response:", data);
+
 
             if (response.ok && data.redirectUrl) {
                 window.location.href = data.redirectUrl;
             } else {
-                console.error("Checkout error details:", data);
+                console.error("Checkout could not start. HTTP status:", response.status);
                 alert("Payment could not be started. Please try again.");
             }
         } catch (err) {

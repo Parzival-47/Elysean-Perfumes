@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateTotals(cart) {
         const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
         const tax = subtotal * 0;
-        const shipping = cart.length > 0 ? 49 : 0;
+        const shipping = cart.length > 0 ? 79 : 0;
         const total = subtotal + tax + shipping;
 
         const subtotalEl = document.getElementById('subtotal');
@@ -191,6 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const totalEl = document.getElementById('total');
         const shippingEl = document.getElementById('shipping')
 
+        if (shippingEl) shippingEl.textContent = 'R' + shipping;
         if (subtotalEl) subtotalEl.textContent = 'R' + subtotal.toLocaleString();
         if (taxEl) taxEl.textContent = 'R' + Math.round(tax).toLocaleString();
         if (totalEl) totalEl.textContent = 'R' + Math.round(total).toLocaleString();
@@ -269,4 +270,13 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Run once on load
     handleScroll();
+});
+// Browsing a cart is not a paid order or a WhatsApp order confirmation.
+document.addEventListener('DOMContentLoaded', () => {
+    try {
+        const items = JSON.parse(localStorage.getItem('elyseanCart') || '[]');
+        window.ElyseanTracking?.track('view_cart', {source: 'website_cart', currency: 'ZAR',
+            value: items.reduce((sum, item) => sum + item.price * item.qty, 0),
+            items: items.map(item => ({item_id: String(item.id), item_name: item.name, item_variant: item.size, price: item.price, quantity: item.qty}))});
+    } catch (_) { /* Tracking must not affect cart access. */ }
 });

@@ -39,31 +39,8 @@ function cleanParams(params) {
   return Object.fromEntries(Object.entries(params).filter(([, value]) => value !== undefined && value !== null && value !== ""));
 }
 
-function track(eventName, params = {}, metaEventName = null) {
-  const eventParams = cleanParams({ ...trackingContext(), ...params });
-  if (typeof window.fbq === "function") {
-    const metaMap = {
-      lead: "Lead",
-      contact: "Contact",
-      search: "Search",
-      view_content: "ViewContent",
-      initiate_checkout: "InitiateCheckout",
-    };
-    const metaName = metaEventName || metaMap[eventName];
-    if (metaName) {
-      window.fbq("track", metaName, eventParams);
-    } else {
-      window.fbq("trackCustom", eventName, eventParams);
-    }
-  }
-  if (typeof window.gtag === "function") {
-    const googleMap = {
-      contact: "generate_lead",
-      view_content: "view_item",
-      initiate_checkout: "begin_checkout",
-    };
-    window.gtag("event", googleMap[eventName] || eventName, eventParams);
-  }
+function track(eventName, params = {}) {
+  window.ElyseanTracking?.track(eventName, cleanParams({ ...trackingContext(), ...params }));
 }
 
 function whatsappUrl(message) {
@@ -73,6 +50,7 @@ function whatsappUrl(message) {
 function bindWhatsAppLinks() {
   $$(".js-whatsapp").forEach((link) => {
     const message = link.dataset.message || `Hi Elysean Perfumes, I am interested in the ${CONFIG.offerName}.`;
+    link.setAttribute("data-ep-tracked", "true");
     link.href = whatsappUrl(message);
     link.target = "_blank";
     link.rel = "noopener noreferrer";
@@ -257,6 +235,8 @@ function setupCollection() {
   });
 
   $("#clear-search")?.addEventListener("click", () => {
+    window.clearTimeout(searchTimer);
+    lastTrackedSearch = "";
     $("#product-search").value = "";
     activeFilter = "all";
     $$(".filter-pill").forEach((b) => b.classList.toggle("is-active", b.dataset.filter === "all"));
@@ -287,6 +267,9 @@ function setupCollection() {
     ].join("\n");
 
     track("initiate_checkout", {
+      source: "bogo_order",
+      shipping: CONFIG.pudoDelivery,
+      num_items: 2,
       content_name: selectedProduct.reference,
       content_ids: [String(selectedProduct.id)],
       content_type: "product",

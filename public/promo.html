@@ -18,35 +18,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="promo.css" />
 
-  <!-- Meta Pixel Code -->
-  <script>
-  !function(f,b,e,v,n,t,s)
-  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-  n.queue=[];t=b.createElement(e);t.async=!0;
-  t.src=v;s=b.getElementsByTagName(e)[0];
-  s.parentNode.insertBefore(t,s)}(window, document,'script',
-  'https://connect.facebook.net/en_US/fbevents.js');
-  fbq('init', '1084792373896315');
-  fbq('track', 'PageView');
-  </script>
-  <!-- End Meta Pixel Code -->
-
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-NT5SEGTN2N"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-NT5SEGTN2N');
-  </script>
+  <!-- Both Meta Pixels and GA4 are configured once in this shared consent-aware file. -->
+  <link rel="stylesheet" href="tracking.css?v=20260904-1">
+  <script src="tracking.js?v=20260904-1"></script>
 </head>
 <body>
-  <noscript><img height="1" width="1" style="display:none"
-  src="https://www.facebook.com/tr?id=1084792373896315&amp;ev=PageView&amp;noscript=1"
-  alt=""
-  /></noscript>
+  
   <a class="skip-link" href="#main">Skip to content</a>
 
   <div class="offer-strip" id="offer-strip" role="region" aria-label="October offer">
@@ -73,8 +50,8 @@
       </nav>
 
       <div class="header-actions">
-        <a class="btn btn--ghost btn--small js-whatsapp" href="#" data-message="Hi Elysean Perfumes, I would like help choosing a fragrance for the October Buy One Get One Free offer." data-track="header_whatsapp">WhatsApp us</a>
-        <a class="btn btn--gold btn--small" href="#choose" data-track="header_choose">Choose my scent</a>
+        <a class="btn btn--ghost btn--small js-whatsapp" href="#" data-message="Hi Elysean Perfumes, I would like help choosing a fragrance for the October Buy One Get One Free offer." data-track="header_whatsapp" data-ep-tracked="true">WhatsApp us</a>
+        <a class="btn btn--gold btn--small" href="#choose" data-track="header_choose" data-ep-tracked="true">Choose my scent</a>
       </div>
 
       <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu">
@@ -104,8 +81,8 @@
           <p class="hero__support">You pay the listed 100ml price once. We blend two bottles of your chosen Elysean fragrance at 20% Eau de Parfum concentration.</p>
 
           <div class="hero__actions">
-            <a class="btn btn--gold btn--large" href="#choose" data-track="hero_choose">Choose my fragrance</a>
-            <a class="btn btn--text js-whatsapp" href="#" data-message="Hi Elysean Perfumes, I saw the October BOGO offer and need help choosing one fragrance." data-track="hero_help">Help me choose on WhatsApp →</a>
+            <a class="btn btn--gold btn--large" href="#choose" data-track="hero_choose" data-ep-tracked="true">Choose my fragrance</a>
+            <a class="btn btn--text js-whatsapp" href="#" data-message="Hi Elysean Perfumes, I saw the October BOGO offer and need help choosing one fragrance." data-track="hero_help" data-ep-tracked="true">Help me choose on WhatsApp →</a>
           </div>
 
           <div class="hero__facts" aria-label="Offer facts">
@@ -210,7 +187,7 @@
 
         <div class="collection-more reveal">
           <button class="btn btn--outline-light" id="show-more" type="button">Show more fragrances</button>
-          <a class="btn btn--text js-whatsapp" href="#" data-message="Hi Elysean Perfumes, I cannot find the fragrance I want on the October offer page. Can you help me?" data-track="collection_help">Can't find it? Ask us →</a>
+          <a class="btn btn--text js-whatsapp" href="#" data-message="Hi Elysean Perfumes, I cannot find the fragrance I want on the October offer page. Can you help me?" data-track="collection_help" data-ep-tracked="true">Can't find it? Ask us →</a>
         </div>
       </div>
     </section>
@@ -278,7 +255,7 @@
               <p>Three fragrance samples selected by you.</p>
             </div>
             <div class="sample-card__price"><strong>R219</strong><small>delivery included</small></div>
-            <a class="btn btn--dark" href="samples.html?bundle=3" data-track="sample_trio">Choose my 3 samples</a>
+            <a class="btn btn--dark" href="samples.html?bundle=3" data-track="sample_trio" data-ep-tracked="true">Choose my 3 samples</a>
           </article>
 
           <article class="sample-card sample-card--best">
@@ -289,7 +266,7 @@
               <p>Five fragrance samples for a wider scent journey.</p>
             </div>
             <div class="sample-card__price"><strong>R299</strong><small>delivery included</small></div>
-            <a class="btn btn--gold" href="samples.html?bundle=5" data-track="sample_five">Choose my 5 samples</a>
+            <a class="btn btn--gold" href="samples.html?bundle=5" data-track="sample_five" data-ep-tracked="true">Choose my 5 samples</a>
           </article>
         </div>
       </div>
@@ -344,7 +321,7 @@
         </div>
 
         <div class="reviews__cta reveal">
-          <a class="btn btn--outline-light" href="https://www.google.com/search?q=Elysean+Perfumes&stick=H4sIAAAAAAAA_-NgU1I1qEg0NDc3SbIwNTG0NDFKTDG2MqgwskizNDc2NzQ3TUoxTjJNWsQq4JpTWZyamKcQkFqUVpqbWgwAdmF_zDwAAAA&hl=en-GB&mat=CQOS2AF3IA-vElcBa0lj_7u61sgIO8domErqTfHenRLX00dv_QlF1h0xcwyGyOvEHaNNndiVolg4igk2fKKrOl8nWdtu27hqwLkoZFO7oEC0dCTvPHz5DTfMHQ72_iobJr0&authuser=0&ved=2ahUKEwiT5qCWsK-WAxV3QkEAHTAvD3kQ-MgIegQIGBAf" target="_blank" rel="noopener noreferrer" data-track="google_reviews">View our Google reviews</a>
+          <a class="btn btn--outline-light" href="https://www.google.com/search?q=Elysean+Perfumes&stick=H4sIAAAAAAAA_-NgU1I1qEg0NDc3SbIwNTG0NDFKTDG2MqgwskizNDc2NzQ3TUoxTjJNWsQq4JpTWZyamKcQkFqUVpqbWgwAdmF_zDwAAAA&hl=en-GB&mat=CQOS2AF3IA-vElcBa0lj_7u61sgIO8domErqTfHenRLX00dv_QlF1h0xcwyGyOvEHaNNndiVolg4igk2fKKrOl8nWdtu27hqwLkoZFO7oEC0dCTvPHz5DTfMHQ72_iobJr0&authuser=0&ved=2ahUKEwiT5qCWsK-WAxV3QkEAHTAvD3kQ-MgIegQIGBAf" target="_blank" rel="noopener noreferrer" data-track="google_reviews" data-ep-tracked="true">View our Google reviews</a>
         </div>
       </div>
     </section>
@@ -368,7 +345,7 @@
           <span class="mini-kicker">BEFORE YOU ORDER</span>
           <h2>Questions, answered clearly.</h2>
           <p>If anything is still unclear, message Elysean directly on WhatsApp before paying.</p>
-          <a class="btn btn--gold js-whatsapp" href="#" data-message="Hi Elysean Perfumes, I have a question about the October BOGO offer." data-track="faq_whatsapp">Ask on WhatsApp</a>
+          <a class="btn btn--gold js-whatsapp" href="#" data-message="Hi Elysean Perfumes, I have a question about the October BOGO offer." data-track="faq_whatsapp" data-ep-tracked="true">Ask on WhatsApp</a>
         </div>
         <div class="faq__items reveal reveal--delay">
           <details open>
@@ -411,8 +388,8 @@
         <h2>Choose one scent.<br />Receive two 100ml bottles.</h2>
         <p>Pay the listed 100ml fragrance price once. Your second matching 100ml bottle is on us.</p>
         <div class="closing-cta__actions">
-          <a class="btn btn--gold btn--large" href="#choose" data-track="closing_choose">Choose my fragrance</a>
-          <a class="btn btn--ghost btn--large js-whatsapp" href="#" data-message="Hi Elysean Perfumes, I want to claim the October BOGO offer and need help choosing my fragrance." data-track="closing_whatsapp">Order with help</a>
+          <a class="btn btn--gold btn--large" href="#choose" data-track="closing_choose" data-ep-tracked="true">Choose my fragrance</a>
+          <a class="btn btn--ghost btn--large js-whatsapp" href="#" data-message="Hi Elysean Perfumes, I want to claim the October BOGO offer and need help choosing my fragrance." data-track="closing_whatsapp" data-ep-tracked="true">Order with help</a>
         </div>
       </div>
     </section>
@@ -442,9 +419,9 @@
       </div>
       <div>
         <h3>Contact</h3>
-        <a href="tel:+27774638001" data-track="phone_click">077 463 8001</a>
+        <a href="tel:+27774638001" data-track="phone_click" data-ep-tracked="true">077 463 8001</a>
         <a class="js-whatsapp" href="#" data-message="Hi Elysean Perfumes, I have a question.">WhatsApp us</a>
-        <a href="mailto:elyseanperfumes@gmail.com" data-track="email_click">elyseanperfumes@gmail.com</a>
+        <a href="mailto:elyseanperfumes@gmail.com" data-track="email_click" data-ep-tracked="true">elyseanperfumes@gmail.com</a>
       </div>
     </div>
     <div class="shell footer__bottom">
@@ -461,6 +438,6 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="products.js"></script>
-  <script src="app.js"></script>
+  <script src="app.js?v=20260904-1"></script>
 </body>
 </html>
