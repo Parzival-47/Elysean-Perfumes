@@ -199,7 +199,7 @@
     panel.setAttribute('aria-labelledby', 'ep-consent-title');
     panel.innerHTML = '<h2 id="ep-consent-title" tabindex="-1">Your privacy choices</h2>' +
       '<p>We use necessary storage for your cart and sample choices. Optional analytics help us understand visits; Meta tracking measures ads and order-interest clicks. <a href="privacy-policy.html">Privacy policy</a></p>' +
-      '<div class="ep-consent-actions"><button type="button" data-ep-action="accept">Accept optional</button><button type="button" data-ep-action="reject">Reject optional</button><button type="button" data-ep-action="manage">Choose cookies</button></div>' +
+      '<div class="ep-consent-actions"><button type="button" data-ep-action="accept">Accept</button><button type="button" data-ep-action="reject">Reject</button><button type="button" data-ep-action="manage">Choose cookies</button></div>' +
       '<div data-ep-options hidden><label><input type="checkbox" name="ep-analytics"> Analytics (Google Analytics)</label><label><input type="checkbox" name="ep-marketing"> Advertising (both Meta Pixels)</label><p>Necessary storage is always on. You can change these choices at any time.</p><div class="ep-consent-actions"><button type="button" data-ep-action="save">Save choices</button><button type="button" data-ep-action="close">Close</button></div></div>';
     panel.addEventListener('click', event => {
       const button = event.target.closest('[data-ep-action]'); if (!button) return;
