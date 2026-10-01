@@ -1,15 +1,15 @@
-// ── ONE-TIME SCRIPT — run this once from your terminal, then you can delete it ──
-// This registers your webhook URL with Yoco using their Webhooks Management API.
-// Docs: https://developer.yoco.com/online/api-reference/webhooks/
+// Optional Yoco helper. Prefer the Yoco portal steps in DEPLOYMENT-GUIDE.md.
+// Running without --register only lists webhooks and cannot create a duplicate.
 
 require('dotenv').config();
 const fetch = require('node-fetch');
 
 const YOCO_SECRET_KEY = process.env.YOCO_SECRET_KEY;
-const WEBHOOK_URL = 'https://elyseanperfumes.co.za/webhook';
+const WEBHOOK_URL = `${String(process.env.PUBLIC_BASE_URL || 'https://elyseanperfumes.co.za').replace(/\/$/, '')}/webhook`;
 
 async function registerWebhook() {
     try {
+        if (!YOCO_SECRET_KEY) throw new Error('YOCO_SECRET_KEY is not configured');
         const response = await fetch('https://payments.yoco.com/api/webhooks', {
             method: 'POST',
             headers: {
@@ -40,6 +40,7 @@ async function registerWebhook() {
 
 async function listWebhooks() {
     try {
+        if (!YOCO_SECRET_KEY) throw new Error('YOCO_SECRET_KEY is not configured');
         const response = await fetch('https://payments.yoco.com/api/webhooks', {
             method: 'GET',
             headers: {
@@ -49,15 +50,24 @@ async function listWebhooks() {
         const data = await response.json();
         console.log('📋 Currently registered webhooks:');
         console.log(JSON.stringify(data, null, 2));
+        return data;
     } catch (error) {
         console.error('❌ Error listing webhooks:', error);
     }
 }
 
-// ── Run both: first list existing, then register new one ──
 (async () => {
     console.log('Checking existing webhooks first...\n');
-    await listWebhooks();
-    console.log('\nNow registering new webhook...\n');
+    const existing = await listWebhooks();
+    if (!process.argv.includes('--register')) {
+        console.log('\nNo changes made. Use the Yoco portal, or rerun with --register only if this URL is not already registered.');
+        return;
+    }
+    const rows = Array.isArray(existing) ? existing : (Array.isArray(existing?.data) ? existing.data : []);
+    if (rows.some((item) => item.url === WEBHOOK_URL)) {
+        console.log(`\nWebhook already exists for ${WEBHOOK_URL}; nothing was created.`);
+        return;
+    }
+    console.log(`\nRegistering ${WEBHOOK_URL}...\n`);
     await registerWebhook();
 })();

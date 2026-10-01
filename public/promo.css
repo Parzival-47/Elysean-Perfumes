@@ -276,7 +276,7 @@ button { cursor: pointer; }
 .reveal--delay { transition-delay:.1s; }
 .reveal.is-visible { opacity:1; transform:none; }
 
-.offer-expired .js-bogo-select, .offer-expired #continue-whatsapp { opacity:.45; pointer-events:none; }
+.offer-expired .js-bogo-select, .offer-expired #continue-checkout { opacity:.45; pointer-events:none; }
 .offer-expired .closing-cta .btn--gold { opacity:.5; pointer-events:none; }
 
 @media (max-width:1100px) {
@@ -453,6 +453,10 @@ body { background:#fbf6ef; color:#2f221d; }
 .product-card__notes,.product-card__category,.product-card__price small { color:#76665d; }
 .product-card__bottom { border-top-color:rgba(91,53,37,.12); }
 .product-card__bogo { color:#60483b; }
+.product-card__stock { margin:8px 0 0; color:#39714d; font-size:8px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+.product-card__stock.is-unavailable { color:#9a3f4d; }
+.product-card.is-unavailable { opacity:.68; }
+.product-card .js-bogo-select:disabled { cursor:not-allowed; opacity:.52; box-shadow:none; }
 .no-results { border-color:rgba(91,53,37,.20); color:#6f5e55; }
 .no-results strong { color:#382920; }
 
@@ -575,7 +579,7 @@ body { background:#fbf6ef; color:#2f221d; }
     gap: 8px;
     align-items: stretch;
   }
-  .order-dock #continue-whatsapp {
+  .order-dock #continue-checkout {
     min-height: 44px;
     padding: 8px 10px;
     font-size: 10px;

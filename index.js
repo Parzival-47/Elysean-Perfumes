@@ -1,401 +1,508 @@
+'use strict';
+
 require('dotenv').config();
+
+const crypto = require('crypto');
 const express = require('express');
 const path = require('path');
-const fs = require('fs');
-const crypto = require('crypto');
 const fetch = require('node-fetch');
 
+const db = require('./db');
+const { products, productsById } = require('./catalog');
+const { productsById: regularProductsById } = require('./legacy-catalog');
+const { findLocker, searchLockers } = require('./pudo');
+const { sendCustomerEmail, sendOwnerEmail } = require('./email');
+const { OFFER_DEADLINE, MAX_BOGO_SETS, isOfferActive, shippingForBottles } = require('./shop-config');
+
 const app = express();
-const PORT = process.env.PORT || 3000;
-const YOCO_SECRET_KEY = process.env.YOCO_SECRET_KEY;
-const YOCO_WEBHOOK_SECRET = process.env.YOCO_WEBHOOK_SECRET; // e.g. whsec_xxxxx
-const BREVO_API_KEY = process.env.BREVO_API_KEY;
-const BREVO_SENDER_EMAIL = process.env.BREVO_SENDER_EMAIL;
-const BREVO_SENDER_NAME = process.env.BREVO_SENDER_NAME || 'Elysean Perfumes';
+const PORT = Number(process.env.PORT || 3000);
+const PUBLIC_BASE_URL = String(process.env.PUBLIC_BASE_URL || 'https://elyseanperfumes.co.za').replace(/\/$/, '');
+const BUSINESS_PHONE = '077 463 8001';
+const BUSINESS_PHONE_E164 = '27774638001';
 
-// ── Temporary order storage (JSON file) ──
-// Stores cart/customer data per checkout ID until the webhook confirms payment.
-const ORDERS_FILE = path.join(__dirname, 'pending-orders.json');
-
-function loadOrders() {
-    try {
-        if (!fs.existsSync(ORDERS_FILE)) return {};
-        const raw = fs.readFileSync(ORDERS_FILE, 'utf8');
-        return raw ? JSON.parse(raw) : {};
-    } catch (err) {
-        console.error('❌ Failed to read orders file:', err);
-        return {};
-    }
+function timingSafeTextEqual(left, right) {
+  const a = crypto.createHash('sha256').update(String(left || '')).digest();
+  const b = crypto.createHash('sha256').update(String(right || '')).digest();
+  return crypto.timingSafeEqual(a, b);
 }
 
-function saveOrders(orders) {
-    try {
-        fs.writeFileSync(ORDERS_FILE, JSON.stringify(orders, null, 2));
-    } catch (err) {
-        console.error('❌ Failed to write orders file:', err);
-    }
+function cookieMap(header = '') {
+  return Object.fromEntries(header.split(';').map((part) => {
+    const index = part.indexOf('=');
+    return index < 0 ? ['', ''] : [part.slice(0, index).trim(), decodeURIComponent(part.slice(index + 1).trim())];
+  }).filter(([key]) => key));
 }
 
-function storeOrder(checkoutId, orderData) {
-    const orders = loadOrders();
-    orders[checkoutId] = { ...orderData, createdAt: Date.now() };
-    saveOrders(orders);
+function adminToken() {
+  const secret = process.env.SESSION_SECRET;
+  if (!secret) throw new Error('SESSION_SECRET is not configured');
+  const payload = Buffer.from(JSON.stringify({ exp: Date.now() + 12 * 60 * 60 * 1000 })).toString('base64url');
+  const signature = crypto.createHmac('sha256', secret).update(payload).digest('base64url');
+  return `${payload}.${signature}`;
 }
 
-function getOrder(checkoutId) {
-    const orders = loadOrders();
-    return orders[checkoutId] || null;
+function verifyAdminToken(token) {
+  try {
+    const [payload, suppliedSignature] = String(token || '').split('.');
+    if (!payload || !suppliedSignature || !process.env.SESSION_SECRET) return false;
+    const expected = crypto.createHmac('sha256', process.env.SESSION_SECRET).update(payload).digest('base64url');
+    if (!timingSafeTextEqual(suppliedSignature, expected)) return false;
+    const decoded = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'));
+    return Number(decoded.exp) > Date.now();
+  } catch (_) {
+    return false;
+  }
 }
 
-function deleteOrder(checkoutId) {
-    const orders = loadOrders();
-    delete orders[checkoutId];
-    saveOrders(orders);
+function requireAdmin(req, res, next) {
+  const token = cookieMap(req.headers.cookie).elysean_stock_admin;
+  if (!verifyAdminToken(token)) return res.status(401).json({ error: 'Authentication required' });
+  return next();
 }
 
-// ── Clean up orders older than 48 hours (abandoned checkouts) ──
-function cleanupOldOrders() {
-    const orders = loadOrders();
+function rateLimiter({ windowMs, max }) {
+  const requests = new Map();
+  return (req, res, next) => {
+    const key = req.ip || req.socket.remoteAddress || 'unknown';
     const now = Date.now();
-    const FORTY_EIGHT_HOURS = 48 * 60 * 60 * 1000;
-    let changed = false;
-
-    for (const checkoutId in orders) {
-        if (now - orders[checkoutId].createdAt > FORTY_EIGHT_HOURS) {
-            delete orders[checkoutId];
-            changed = true;
-        }
+    const current = requests.get(key);
+    if (!current || current.resetAt <= now) {
+      requests.set(key, { count: 1, resetAt: now + windowMs });
+      return next();
     }
-
-    if (changed) saveOrders(orders);
+    current.count += 1;
+    if (current.count > max) return res.status(429).json({ error: 'Too many attempts. Please wait and try again.' });
+    return next();
+  };
 }
 
-// Run cleanup once on startup, then every 6 hours
-cleanupOldOrders();
-setInterval(cleanupOldOrders, 6 * 60 * 60 * 1000);
+const adminLoginLimit = rateLimiter({ windowMs: 15 * 60 * 1000, max: 8 });
+const checkoutLimit = rateLimiter({ windowMs: 10 * 60 * 1000, max: 12 });
 
-// ── Verify the Yoco webhook signature ──
 function verifyWebhookSignature(webhookId, webhookTimestamp, rawBody, signatureHeader) {
-    if (!YOCO_WEBHOOK_SECRET) {
-        console.error('❌ YOCO_WEBHOOK_SECRET is not set — cannot verify signature');
-        return false;
-    }
+  if (!process.env.YOCO_WEBHOOK_SECRET || !webhookId || !webhookTimestamp || !signatureHeader) return false;
+  const timestamp = Number(webhookTimestamp);
+  if (!Number.isFinite(timestamp) || Math.abs(Math.floor(Date.now() / 1000) - timestamp) > 180) return false;
 
-    // Reject events older than 3 minutes (replay attack protection)
-    const nowSeconds = Math.floor(Date.now() / 1000);
-    const tsSeconds = parseInt(webhookTimestamp, 10);
-    if (Math.abs(nowSeconds - tsSeconds) > 180) {
-        console.error('❌ Webhook timestamp outside acceptable window');
-        return false;
-    }
+  const secretBytes = Buffer.from(process.env.YOCO_WEBHOOK_SECRET.replace(/^whsec_/, ''), 'base64');
+  const expected = crypto.createHmac('sha256', secretBytes)
+    .update(`${webhookId}.${webhookTimestamp}.${rawBody}`)
+    .digest('base64');
 
-    // Build the signed content: id.timestamp.rawBody
-    const signedContent = `${webhookId}.${webhookTimestamp}.${rawBody}`;
-
-    // Strip the "whsec_" prefix before using as HMAC key
-    const secretBytes = Buffer.from(YOCO_WEBHOOK_SECRET.replace('whsec_', ''), 'base64');
-
-    const expectedSignature = crypto
-        .createHmac('sha256', secretBytes)
-        .update(signedContent)
-        .digest('base64');
-
-    // webhook-signature header looks like: "v1,abc123 v1,def456"
-    const signatures = signatureHeader.split(' ').map(s => s.split(',')[1]);
-
-    return signatures.some(sig => {
-        try {
-            return crypto.timingSafeEqual(
-                Buffer.from(sig),
-                Buffer.from(expectedSignature)
-            );
-        } catch {
-            return false;
-        }
-    });
-}
-
-// ── Send email via Brevo HTTP API ──
-async function sendEmail(to, toName, subject, htmlContent, replyTo = null) {
-    const response = await fetch('https://api.brevo.com/v3/smtp/email', {
-        method: 'POST',
-        headers: {
-            'accept': 'application/json',
-            'api-key': BREVO_API_KEY,
-            'content-type': 'application/json'
-        },
-        body: JSON.stringify({
-            sender: { name: BREVO_SENDER_NAME, email: BREVO_SENDER_EMAIL },
-            to: [{ email: to, name: toName }],
-            subject: subject,
-            htmlContent: htmlContent
-            ,
-            replyTo: replyTo ? { email: 'elyseanperfumes@gmail.com', name: BREVO_SENDER_NAME } : undefined
-        })
-    });
-
-    const data = await response.json();
-    if (!response.ok) {
-        throw new Error(`Brevo API error: ${JSON.stringify(data)}`);
-    }
-    return data;
-}
-
-// ── Build the product list rows for the email ──
-function buildProductRows(cart) {
-    if (!cart || cart.length === 0) return '';
-    return cart.map(item => `
-        <tr>
-            <td style="padding: 10px 0; color: #0A0A0A; font-size: 0.88rem;">
-                ${item.name}
-                <span style="color: #999; font-size: 0.75rem; display: block;">${item.size}${item.qty > 1 ? ` · Qty ${item.qty}` : ''}</span>
-            </td>
-            <td style="padding: 10px 0; color: #0A0A0A; font-size: 0.88rem; text-align: right; white-space: nowrap;">
-                R${(item.price * item.qty).toLocaleString()}
-            </td>
-        </tr>
-    `).join('');
-}
-
-// ── Send both order emails ──
-async function sendOrderEmails(customerInfo, amountInCents, checkoutId, cart, subtotal, shipping, tax) {
-    const amountRands = (amountInCents / 100).toFixed(2);
-    const customerName = `${customerInfo.firstName || ''} ${customerInfo.lastName || ''}`.trim();
-    const productRows = buildProductRows(cart);
-
-    const customerHtml = `
-        <div style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif, serif; max-width: 600px; margin: 0 auto; padding: 30px 16px; background: #fff; color: #000; box-sizing: border-box;">
-
-            <div style="text-align: center; border-bottom: 1px solid #000; padding-bottom: 24px; margin-bottom: 24px;">
-                <h1 style="font-size: 1.8rem; margin: 0 0 4px 0; letter-spacing: 0.1em;">ELYSEAN PERFUMES</h1>
-                <p style="color: #ffc107; font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; margin: 0;">Luxury Fragrance House</p>
-            </div>
-
-            <p style="font-size: 0.95rem; line-height: 1.7; margin-bottom: 10px;">
-                Dear ${customerInfo.firstName || 'Valued Customer'},
-            </p>
-            <p style="color: #000; font-size: 0.88rem; line-height: 1.7; margin-bottom: 24px;">
-                Thank you for your order. Here is your receipt.
-            </p>
-
-            <div style="background: hsl(0, 0%, 95%); border: 1px solid #ffc107; border-radius: 8px; padding: 18px; margin-bottom: 20px; word-break: break-word;">
-                <p style="font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: #1A1F2E; margin: 0 0 12px 0; border-bottom: 1px solid #ffc107;">Your Information</p>
-                <p style="margin: 4px 0; font-size: 0.82rem; color: #000;">${customerName}</p>
-                <p style="margin: 4px 0; font-size: 0.82rem; color: #000; word-break: break-all;">${customerInfo.email}</p>
-                <p style="margin: 4px 0; font-size: 0.82rem; color: #000;">${customerInfo.phone || ''}</p>
-            </div>
-
-            <!-- NEW: Delivery Address Block -->
-            <div style="background: hsl(0, 0%, 95%); border: 1px solid #ffc107; border-radius: 8px; padding: 18px; margin-bottom: 20px; word-break: break-word;">
-                <p style="font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: #000; border-bottom: 1px solid #ffc107; margin: 0 0 12px 0;">Delivery Address</p>
-                <p style="margin: 4px 0; font-size: 0.82rem; color: #000;">${customerInfo.addressLine1 || ''}</p>
-                ${customerInfo.addressLine2 ? `<p style="margin: 4px 0; font-size: 0.82rem; color: #000;">${customerInfo.addressLine2}</p>` : ''}
-                <p style="margin: 4px 0; font-size: 0.82rem; color: #000;">${customerInfo.city || ''}, ${customerInfo.postalCode || ''}</p>
-                <p style="margin: 4px 0; font-size: 0.82rem; color: #000;">${customerInfo.province || ''}</p>
-            </div>
-
-            <div style="background: hsl(0, 0%, 95%); border: 1px solid #ffc107; border-radius: 8px; padding: 18px; margin-bottom: 20px;">
-                <p style="font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: #1A1F2E; margin: 0 0 6px 0; border-bottom: 1px solid #ffc107;">Your Order Details</p>
-                <table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
-                    ${productRows}
-                </table>
-            </div>
-
-            <div style="padding: 0 4px 20px 4px;">
-                <table style="width: 100%; border-collapse: collapse;">
-                    <tr>
-                        <td style="padding: 4px 0; color: #000; font-size: 0.82rem;">Subtotal</td>
-                        <td style="padding: 4px 0; color: #000; font-size: 0.82rem; text-align: right;">R${(subtotal || 0).toLocaleString()}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 4px 0; color: #000; font-size: 0.82rem;">Shipping</td>
-                        <td style="padding: 4px 0; color: #000; font-size: 0.82rem; text-align: right;">R${(shipping || 0).toLocaleString()}</td>
-                    </tr>
-                    ${tax ? `
-                    <tr>
-                        <td style="padding: 4px 0; color: #000; font-size: 0.82rem;">Tax</td>
-                        <td style="padding: 4px 0; color: #000; font-size: 0.82rem; text-align: right;">R${tax.toLocaleString()}</td>
-                    </tr>` : ''}
-                    <tr style="border-top: 1px solid #2a2a2a;">
-                        <td style="padding: 12px 0 0 0; color: #000; font-size: 1rem; font-weight: bold;">Total</td>
-                        <td style="padding: 12px 0 0 0; color: #000; font-size: 1.1rem; font-weight: bold; text-align: right;">R${amountRands}</td>
-                    </tr>
-                </table>
-            </div>
-
-            <p style="color: #000; font-size: 0.78rem; line-height: 1.7; margin-bottom: 24px;">
-                Your fragrances are being prepared. Questions?<br>
-                Email Us: <a href="mailto:elyseanperfumes@gmail.com" style="color: #ffc107; text-decoration: none;">elyseanperfumes@gmail.com</a><br>
-                Call Us On: <a href="tel:+27648570979" style="color: #ffc107; text-decoration: none;">064 857 0979</a>.
-            </p>
-
-            <div style="border-top: 1px solid #2a2a2a; padding-top: 16px; text-align: center;">
-                <p style="color: #000; font-size: 0.7rem; margin: 0;">© 2026 Elysean Perfumes · South Africa</p>
-                <p style="color: #000; font-size: 0.6rem; letter-spacing: 0.2em; margin: 4px 0 0 0;">EDP 20% · HANDCRAFTED LUXURY</p>
-            </div>
-
-        </div>
-    `;
-
-    const ownerHtml = `
-        <div style="font-family: Arial, sans-serif; max-width: 500px; padding: 24px; background: #fff;">
-            <h2 style="color: #0A0A0A; margin-bottom: 16px;">New Order Received</h2>
-            <p style="margin: 4px 0;"><strong>Name:</strong> ${customerName}</p>
-            <p style="margin: 4px 0;"><strong>Email:</strong> ${customerInfo.email}</p>
-            <p style="margin: 4px 0;"><strong>Phone:</strong> ${customerInfo.phone || 'Not provided'}</p>
-            <p style="margin: 4px 0;"><strong>Checkout ID:</strong> ${checkoutId || 'N/A'}</p>
-            <hr style="border: none; border-top: 1px solid #eee; margin: 16px 0;"/>
-            <p style="margin: 4px 0;"><strong>Delivery Address:</strong></p>
-            <p style="margin: 4px 0;">${customerInfo.addressLine1 || ''}</p>
-            ${customerInfo.addressLine2 ? `<p style="margin: 4px 0;">${customerInfo.addressLine2}</p>` : ''}
-            <p style="margin: 4px 0;">${customerInfo.city || ''}, ${customerInfo.postalCode || ''}</p>
-            <p style="margin: 4px 0;">${customerInfo.province || ''}</p>
-            <hr style="border: none; border-top: 1px solid #eee; margin: 16px 0;"/>
-            <table style="width: 100%; border-collapse: collapse;">${productRows}</table>
-            <hr style="border: none; border-top: 1px solid #eee; margin: 16px 0;"/>
-            <p style="margin: 4px 0;"><strong>Subtotal:</strong> R${(subtotal || 0).toLocaleString()}</p>
-            <p style="margin: 4px 0;"><strong>Shipping:</strong> R${(shipping || 0).toLocaleString()}</p>
-            <p style="margin: 4px 0; font-size: 1.1rem;"><strong>Total: R${amountRands}</strong></p>
-        </div>
-    `;
-
-    await sendEmail(customerInfo.email, customerName, 'Order Confirmation | Elysean Perfumes', customerHtml, 'elyseanperfumes@gmail.com');
-    console.log('✅ Confirmation email sent to customer:', customerInfo.email);
-
-    await sendEmail(process.env.OWNER_EMAIL, 'Elysean Perfumes Owner', `New Order | Elysean Perfumes`, ownerHtml, 'elyseanperfumes@gmail.com');
-    console.log('✅ Notification email sent to owner');
-}
-
-// ── IMPORTANT: webhook route needs the RAW body for signature verification ──
-// This must be registered BEFORE express.json() so the body isn't parsed yet.
-app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+  return String(signatureHeader).split(' ').some((entry) => {
+    const [version, signature] = entry.split(',');
+    if (version !== 'v1' || !signature) return false;
     try {
-        const webhookId = req.headers['webhook-id'];
-        const webhookTimestamp = req.headers['webhook-timestamp'];
-        const webhookSignature = req.headers['webhook-signature'];
-        const rawBody = req.body.toString('utf8');
-
-        const isValid = verifyWebhookSignature(webhookId, webhookTimestamp, rawBody, webhookSignature);
-
-        if (!isValid) {
-            console.error('❌ Invalid webhook signature — rejecting request');
-            return res.status(401).send('Invalid signature');
-        }
-
-        const event = JSON.parse(rawBody);
-        console.log('✅ Verified webhook received:', event.type);
-
-        if (event.type === 'payment.succeeded') {
-            const payment = event.payload;
-            const checkoutId = payment.metadata?.checkoutId || payment.id;
-
-            console.log('💰 Payment successful! Checkout ID:', checkoutId);
-
-            const order = getOrder(checkoutId);
-
-            if (order) {
-                try {
-                    await sendOrderEmails(
-                        order.customerInfo,
-                        order.amountInCents,
-                        checkoutId,
-                        order.cart,
-                        order.subtotal,
-                        order.shipping,
-                        order.tax
-                    );
-                    deleteOrder(checkoutId); // clean up after sending
-                } catch (emailError) {
-                    console.error('❌ Email error:', emailError);
-                }
-            } else {
-                console.warn('⚠️ No stored order found for checkout ID:', checkoutId);
-            }
-
-        } else if (event.type === 'payment.failed') {
-            console.log('❌ Payment Failed:', event.payload);
-            const checkoutId = event.payload.metadata?.checkoutId || event.payload.id;
-            deleteOrder(checkoutId); // clean up abandoned/failed orders
-        }
-
-        res.status(200).send('OK');
-    } catch (err) {
-        console.error('❌ Webhook error:', err);
-        res.status(400).send('Error');
+      return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
+    } catch (_) {
+      return false;
     }
+  });
+}
+
+async function sendEmailsOnce(order) {
+  const claimed = await db.claimEmails(order.id);
+  if (!claimed) return;
+  try {
+    if (!claimed.customer_email_sent_at) {
+      await sendCustomerEmail(claimed);
+      await db.markCustomerEmailSent(claimed.id);
+    }
+    if (!claimed.owner_email_sent_at) {
+      await sendOwnerEmail(claimed);
+      await db.markOwnerEmailSent(claimed.id);
+    }
+    await db.finishEmails(claimed.id);
+    console.log(`Order emails sent for ${claimed.order_number}`);
+  } catch (error) {
+    await db.finishEmails(claimed.id, error.message);
+    console.error(`Order email failure for ${claimed.order_number}:`, error.message);
+  }
+}
+
+// Yoco requires the unmodified request bytes, so this route must precede express.json().
+app.post('/webhook', express.raw({ type: 'application/json', limit: '256kb' }), async (req, res) => {
+  try {
+    const rawBody = req.body.toString('utf8');
+    const valid = verifyWebhookSignature(
+      req.headers['webhook-id'],
+      req.headers['webhook-timestamp'],
+      rawBody,
+      req.headers['webhook-signature'],
+    );
+    if (!valid) return res.status(401).send('Invalid signature');
+
+    const event = JSON.parse(rawBody);
+    const payment = event.payload || {};
+    const checkoutId = payment.metadata?.checkoutId;
+    await db.recordWebhook(event, checkoutId, payment.id);
+
+    if (!checkoutId) {
+      console.warn(`Verified Yoco event ${event.id} has no checkoutId`);
+      return res.sendStatus(200);
+    }
+
+    if (event.type === 'payment.succeeded') {
+      if (payment.status !== 'succeeded' || payment.currency !== 'ZAR') {
+        console.error(`Rejected inconsistent payment payload for checkout ${checkoutId}`);
+        return res.sendStatus(200);
+      }
+      const order = await db.markPaid(checkoutId, payment);
+      if (!order) {
+        console.error(`No matching order/amount for successful checkout ${checkoutId}`);
+        return res.sendStatus(200);
+      }
+      await sendEmailsOnce(order);
+    } else if (event.type === 'payment.failed') {
+      await db.markPaymentFailed(checkoutId, payment.id);
+    }
+
+    return res.sendStatus(200);
+  } catch (error) {
+    console.error('Webhook processing error:', error);
+    return res.status(500).send('Webhook processing failed');
+  }
 });
 
-// ── Regular JSON parsing for all other routes (must come AFTER the webhook route) ──
-app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'home-page.html'));
+app.set('trust proxy', 1);
+app.disable('x-powered-by');
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  next();
 });
+app.use(express.json({ limit: '128kb' }));
+app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'], maxAge: '1h' }));
 
-app.get('/:page', (req, res) => {
-    const page = req.params.page;
-    const filePath = path.join(__dirname, 'public', page);
-    res.sendFile(filePath, (err) => {
-        if (err) {
-            res.status(404).send('Page not found');
-        }
+function text(value, max = 160) {
+  return String(value || '').trim().replace(/\s+/g, ' ').slice(0, max);
+}
+
+function validEmail(value) {
+  const email = text(value, 254).toLowerCase();
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? email : '';
+}
+
+function validPhone(value) {
+  const phone = text(value, 30);
+  return /^\+?[0-9][0-9\s()-]{7,20}$/.test(phone) ? phone : '';
+}
+
+function customerFrom(body, { addressRequired = false } = {}) {
+  const customer = body && typeof body === 'object' ? body : {};
+  const result = {
+    firstName: text(customer.firstName, 60),
+    lastName: text(customer.lastName, 60),
+    email: validEmail(customer.email),
+    phone: validPhone(customer.phone),
+  };
+  if (!result.firstName || !result.lastName || !result.email || !result.phone) {
+    throw new Error('Please provide a valid name, email address and telephone number');
+  }
+  if (addressRequired) {
+    Object.assign(result, {
+      addressLine1: text(customer.addressLine1, 120),
+      addressLine2: text(customer.addressLine2, 120),
+      city: text(customer.city, 80),
+      postalCode: text(customer.postalCode, 12),
+      province: text(customer.province, 60),
     });
-});
-
-// ── Create Yoco Checkout (no email sent here anymore) ──
-app.post('/create-checkout', async (req, res) => {
-    const { amountInCents, customerInfo, cart, subtotal, shipping, tax } = req.body;
-
-    try {
-        const response = await fetch('https://payments.yoco.com/api/checkouts', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${YOCO_SECRET_KEY}`
-            },
-            body: JSON.stringify({
-                amount: amountInCents,
-                currency: 'ZAR',
-                successUrl: `https://elyseanperfumes.co.za/cart-page.html?success=true`,
-                cancelUrl: `https://elyseanperfumes.co.za/checkout.html`,
-                failureUrl: `https://elyseanperfumes.co.za/checkout.html`,
-                metadata: {
-                    firstName: customerInfo?.firstName || '',
-                    lastName: customerInfo?.lastName || '',
-                    email: customerInfo?.email || '',
-                    phone: customerInfo?.phone || '',
-                    addressLine1: customerInfo?.addressLine1 || '',
-                    city: customerInfo?.city || '',
-                    postalCode: customerInfo?.postalCode || '',
-                    province: customerInfo?.province || ''
-                }
-            })
-        });
-
-        const data = await response.json();
-        console.log('Yoco response:', data);
-
-        if (data.redirectUrl) {
-            // ── Store the order temporarily, keyed by checkout ID ──
-            // The webhook will look this up once payment.succeeded fires.
-            storeOrder(data.id, {
-                customerInfo,
-                amountInCents,
-                cart,
-                subtotal,
-                shipping,
-                tax
-            });
-
-            res.json({ redirectUrl: data.redirectUrl });
-        } else {
-            res.status(400).json({ error: 'Could not create checkout', details: data });
-        }
-    } catch (error) {
-        console.error('Checkout error:', error);
-        res.status(500).json({ error: error.message });
+    if (!result.addressLine1 || !result.city || !result.postalCode || !result.province) {
+      throw new Error('Please provide the complete delivery address');
     }
+  }
+  return result;
+}
+
+function cleanAttribution(value) {
+  const source = value && typeof value === 'object' ? value : {};
+  return Object.fromEntries(['source', 'medium', 'campaign', 'content', 'term']
+    .map((key) => [key, text(source[key], 100)])
+    .filter(([, item]) => item));
+}
+
+function orderNumber(prefix = 'EP') {
+  const day = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Africa/Johannesburg', year: 'numeric', month: '2-digit', day: '2-digit',
+  }).format(new Date()).replaceAll('-', '');
+  return `${prefix}-${day}-${crypto.randomBytes(8).toString('hex').toUpperCase()}`;
+}
+
+async function bogoQuote(rawItems) {
+  if (!isOfferActive()) throw new Error('The Festive BOGO offer has ended');
+  if (!Array.isArray(rawItems) || !rawItems.length || rawItems.length > MAX_BOGO_SETS) {
+    throw new Error('Choose at least one fragrance');
+  }
+
+  const combined = new Map();
+  rawItems.forEach((raw) => {
+    const productId = Number(raw.productId);
+    const quantity = Number(raw.quantity);
+    if (!Number.isInteger(productId) || !Number.isInteger(quantity) || quantity < 1 || quantity > MAX_BOGO_SETS) {
+      throw new Error('The order contains an invalid fragrance or quantity');
+    }
+    combined.set(productId, (combined.get(productId) || 0) + quantity);
+  });
+
+  const totalSets = [...combined.values()].reduce((sum, quantity) => sum + quantity, 0);
+  if (totalSets > MAX_BOGO_SETS) throw new Error(`A maximum of ${MAX_BOGO_SETS} BOGO sets is available per checkout`);
+
+  const statuses = await db.inventoryMap();
+  const items = [...combined].map(([productId, quantity]) => {
+    const product = productsById.get(productId);
+    const stock = statuses.get(productId);
+    if (!product) throw new Error('A selected fragrance no longer exists');
+    if (!stock || stock.status !== 'available') throw new Error(`${product.reference} is temporarily unavailable`);
+    return {
+      productId,
+      reference: product.reference,
+      variant: product.variant,
+      unitPriceCents: product.price100 * 100,
+      quantity,
+      complimentaryQuantity: quantity,
+      physicalBottles: quantity * 2,
+      lineTotalCents: product.price100 * 100 * quantity,
+    };
+  });
+
+  const bottleCount = totalSets * 2;
+  const shipping = shippingForBottles(bottleCount);
+  const subtotalCents = items.reduce((sum, item) => sum + item.lineTotalCents, 0);
+  return {
+    items,
+    totalSets,
+    bottleCount,
+    shippingTier: shipping.code,
+    shippingCents: shipping.customerChargeCents,
+    subtotalCents,
+    totalCents: subtotalCents + shipping.customerChargeCents,
+  };
+}
+
+function regularQuote(rawCart) {
+  if (!Array.isArray(rawCart) || !rawCart.length || rawCart.length > 30) throw new Error('Your cart is empty or invalid');
+  let itemCount = 0;
+  const items = rawCart.map((raw) => {
+    const product = regularProductsById.get(Number(raw.id));
+    const quantity = Number(raw.qty);
+    if (!product || !Number.isInteger(quantity) || quantity < 1 || quantity > 10) throw new Error('Your cart contains an invalid item');
+    const size = product.sizes.find((entry) => String(entry.ml) === String(raw.size));
+    if (!size) throw new Error('Your cart contains an invalid size');
+    itemCount += quantity;
+    return {
+      productId: Number(product.id), reference: String(product.name), variant: String(size.ml),
+      unitPriceCents: Number(size.price) * 100, quantity, complimentaryQuantity: 0,
+      physicalBottles: quantity, lineTotalCents: Number(size.price) * 100 * quantity,
+    };
+  });
+  if (itemCount > 30) throw new Error('This order is too large for one checkout');
+  const subtotalCents = items.reduce((sum, item) => sum + item.lineTotalCents, 0);
+  const shippingCents = 7900;
+  return { items, subtotalCents, shippingCents, totalCents: subtotalCents + shippingCents };
+}
+
+async function createYocoCheckout(order, { successPath, cancelPath }) {
+  if (!process.env.YOCO_SECRET_KEY) throw new Error('YOCO_SECRET_KEY is not configured');
+  const response = await fetch('https://payments.yoco.com/api/checkouts', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${process.env.YOCO_SECRET_KEY}`,
+      'Content-Type': 'application/json',
+      'Idempotency-Key': order.id,
+    },
+    body: JSON.stringify({
+      amount: order.totalCents,
+      currency: 'ZAR',
+      successUrl: `${PUBLIC_BASE_URL}${successPath}`,
+      cancelUrl: `${PUBLIC_BASE_URL}${cancelPath}`,
+      failureUrl: `${PUBLIC_BASE_URL}${cancelPath}`,
+      metadata: { orderNumber: order.orderNumber },
+      clientReferenceId: order.orderNumber,
+      externalId: order.orderNumber,
+      subtotalAmount: order.totalCents,
+    }),
+    timeout: 20_000,
+  });
+  const body = await response.json().catch(() => ({}));
+  if (!response.ok || !body.id || !body.redirectUrl) {
+    throw new Error(`Yoco checkout failed with HTTP ${response.status}`);
+  }
+  return body;
+}
+
+app.get('/health', async (_req, res) => {
+  try {
+    await db.getPool().query('SELECT 1');
+    res.json({ status: 'ok', database: 'connected', time: new Date().toISOString() });
+  } catch (_) {
+    res.status(503).json({ status: 'unavailable', database: 'disconnected' });
+  }
 });
 
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+app.get('/api/catalog/availability', async (_req, res) => {
+  const statuses = await db.inventoryMap();
+  const inventory = Object.fromEntries(products.map((product) => {
+    const stock = statuses.get(product.id);
+    return [product.id, { status: stock?.status || 'unavailable', note: stock?.note || '' }];
+  }));
+  res.setHeader('Cache-Control', 'public, max-age=60');
+  res.json({ inventory, updatedAt: new Date().toISOString() });
+});
+
+app.get('/api/pudo/lockers', async (req, res) => {
+  try {
+    const query = text(req.query.q, 100);
+    if (query.length < 2) return res.json({ lockers: [] });
+    const lockers = await searchLockers(query);
+    res.setHeader('Cache-Control', 'public, max-age=600');
+    return res.json({ lockers });
+  } catch (error) {
+    console.error('PUDO locker search failed:', error.message);
+    return res.status(502).json({ error: 'Locker search is temporarily unavailable. Please try again.' });
+  }
+});
+
+app.post('/api/bogo/quote', async (req, res) => {
+  try {
+    const quote = await bogoQuote(req.body.items);
+    res.json({ ...quote, offerDeadline: OFFER_DEADLINE });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+app.post('/api/bogo/checkout', checkoutLimit, async (req, res) => {
+  let localOrder;
+  try {
+    if (req.body.termsAccepted !== true) throw new Error('Please accept the checkout terms');
+    const quote = await bogoQuote(req.body.items);
+    const customer = customerFrom(req.body.customer);
+    const locker = await findLocker(text(req.body.lockerCode, 40));
+    if (!locker) throw new Error('Please select a valid PUDO locker');
+
+    localOrder = {
+      id: crypto.randomUUID(), orderNumber: orderNumber('EPB'), orderType: 'bogo', customer,
+      items: quote.items, locker, attribution: cleanAttribution(req.body.attribution),
+      shippingTier: quote.shippingTier, subtotalCents: quote.subtotalCents,
+      shippingCents: quote.shippingCents, totalCents: quote.totalCents,
+    };
+    await db.createOrder(localOrder);
+    const encoded = encodeURIComponent(localOrder.orderNumber);
+    const checkout = await createYocoCheckout(localOrder, {
+      successPath: `/bogo-success.html?order=${encoded}`,
+      cancelPath: `/bogo-checkout.html?payment=cancelled&order=${encoded}`,
+    });
+    await db.attachCheckout(localOrder.id, checkout.id);
+    res.json({ redirectUrl: checkout.redirectUrl, orderNumber: localOrder.orderNumber });
+  } catch (error) {
+    if (localOrder?.id) await db.markCheckoutFailed(localOrder.id, error.message).catch(() => {});
+    console.error('BOGO checkout error:', error.message);
+    res.status(400).json({ error: error.message || 'Payment could not be started' });
+  }
+});
+
+// Existing main-shop checkout retained, but prices are now rebuilt from the server catalogue.
+app.post('/create-checkout', checkoutLimit, async (req, res) => {
+  let localOrder;
+  try {
+    const quote = regularQuote(req.body.cart);
+    const customer = customerFrom(req.body.customerInfo, { addressRequired: true });
+    localOrder = {
+      id: crypto.randomUUID(), orderNumber: orderNumber('EP'), orderType: 'regular', customer,
+      items: quote.items,
+      locker: {
+        code: 'DELIVERY', name: 'Delivery address',
+        address: [customer.addressLine1, customer.addressLine2, customer.city, customer.postalCode, customer.province].filter(Boolean).join(', '),
+        city: customer.city,
+      },
+      attribution: {}, shippingTier: 'STANDARD', subtotalCents: quote.subtotalCents,
+      shippingCents: quote.shippingCents, totalCents: quote.totalCents,
+    };
+    await db.createOrder(localOrder);
+    const checkout = await createYocoCheckout(localOrder, {
+      successPath: `/cart-page.html?success=true&order=${encodeURIComponent(localOrder.orderNumber)}`,
+      cancelPath: '/checkout.html?payment=cancelled',
+    });
+    await db.attachCheckout(localOrder.id, checkout.id);
+    res.json({ redirectUrl: checkout.redirectUrl });
+  } catch (error) {
+    if (localOrder?.id) await db.markCheckoutFailed(localOrder.id, error.message).catch(() => {});
+    console.error('Regular checkout error:', error.message);
+    res.status(400).json({ error: error.message || 'Payment could not be started' });
+  }
+});
+
+app.get('/api/orders/:orderNumber/status', async (req, res) => {
+  const value = text(req.params.orderNumber, 50).toUpperCase();
+  if (!/^EPB?-\d{8}-[A-F0-9]{16}$/.test(value)) return res.status(404).json({ error: 'Order not found' });
+  const order = await db.publicOrder(value);
+  if (!order) return res.status(404).json({ error: 'Order not found' });
+  res.setHeader('Cache-Control', 'no-store');
+  res.json(order);
+});
+
+app.post('/api/admin/login', adminLoginLimit, (req, res) => {
+  const expected = process.env.STOCK_ADMIN_PASSWORD;
+  if (!expected) return res.status(503).json({ error: 'Stock administration is not configured' });
+  if (!timingSafeTextEqual(req.body.password, expected)) return res.status(401).json({ error: 'Incorrect password' });
+  res.cookie('elysean_stock_admin', adminToken(), {
+    httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'strict',
+    path: '/', maxAge: 12 * 60 * 60 * 1000,
+  });
+  return res.json({ authenticated: true });
+});
+
+app.post('/api/admin/logout', requireAdmin, (_req, res) => {
+  res.clearCookie('elysean_stock_admin', { path: '/', sameSite: 'strict' });
+  res.json({ authenticated: false });
+});
+
+app.get('/api/admin/inventory', requireAdmin, async (_req, res) => {
+  const statuses = await db.inventoryMap();
+  res.setHeader('Cache-Control', 'no-store');
+  res.json({
+    products: products.map((product) => ({
+      ...product,
+      status: statuses.get(product.id)?.status || 'unavailable',
+      note: statuses.get(product.id)?.note || '',
+      updatedAt: statuses.get(product.id)?.updated_at || null,
+    })),
+  });
+});
+
+app.patch('/api/admin/inventory/:productId', requireAdmin, async (req, res) => {
+  const productId = Number(req.params.productId);
+  const status = req.body.status;
+  const note = text(req.body.note, 200);
+  if (!productsById.has(productId) || !['available', 'unavailable'].includes(status)) {
+    return res.status(400).json({ error: 'Invalid product or stock status' });
+  }
+  const updated = await db.setInventory(productId, status, note);
+  res.json({ inventory: updated });
+});
+
+app.get('/', (_req, res) => res.sendFile(path.join(__dirname, 'public', 'home-page.html')));
+
+app.use((error, _req, res, _next) => {
+  console.error('Unhandled request error:', error);
+  res.status(500).json({ error: 'Something went wrong. Please try again.' });
+});
+
+async function start() {
+  await db.initDatabase(products.map((product) => product.id));
+  app.listen(PORT, () => {
+    console.log(`Elysean server listening on port ${PORT}`);
+    console.log(`Festive BOGO ends ${OFFER_DEADLINE}; business WhatsApp ${BUSINESS_PHONE} (+${BUSINESS_PHONE_E164})`);
+  });
+}
+
+if (require.main === module) {
+  start().catch((error) => {
+    console.error('Server startup failed:', error);
+    process.exit(1);
+  });
+}
+
+module.exports = { app, start, bogoQuote, regularQuote, verifyWebhookSignature, customerFrom };

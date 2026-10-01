@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en-ZA">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Order Confirmation | Elysean Perfumes</title>
+  <meta name="theme-color" content="#fbf6ef">
+  <link rel="icon" type="image/webp" href="images/assets/favicon.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="bogo-success.css?v=20261001-1">
+  <link rel="stylesheet" href="tracking.css?v=20260904-1">
+  <script src="tracking.js?v=20260904-1"></script>
+</head>
+<body>
+  <header>
+    <a class="brand" href="promo.html" aria-label="Elysean Perfumes">
+      <img src="images/assets/logo-stag.webp" alt="" width="45" height="45">
+      <span><strong>ELYSEAN</strong><small>PERFUMES</small></span>
+    </a>
+  </header>
+
+  <main>
+    <section class="confirmation" aria-live="polite">
+      <div class="confirmation__mark" id="status-mark" aria-hidden="true">…</div>
+      <p class="eyebrow">FESTIVE BOGO</p>
+      <h1 id="status-title">Confirming your payment.</h1>
+      <p class="lead" id="status-copy">Yoco has returned you safely. We are waiting for the verified payment notification before confirming your order.</p>
+
+      <div class="loader" id="loader"><span></span><span></span><span></span></div>
+      <div class="notice" id="status-notice">This normally takes only a few seconds. Please keep this page open.</div>
+
+      <article class="order-card" id="order-card" hidden>
+        <div class="order-card__heading">
+          <div><small>ORDER NUMBER</small><strong id="order-number"></strong></div>
+          <span id="order-badge">PAID</span>
+        </div>
+        <div id="order-items" class="order-items"></div>
+        <div class="detail-row"><span>PUDO locker</span><strong id="order-locker"></strong></div>
+        <div class="detail-row"><span>Delivery</span><strong id="order-shipping"></strong></div>
+        <div class="detail-row detail-row--total"><span>Paid total</span><strong id="order-total"></strong></div>
+      </article>
+
+      <div class="next-steps" id="next-steps" hidden>
+        <h2>What happens next?</h2>
+        <ol>
+          <li><span>01</span><p><strong>Check your inbox.</strong> Your payment and order confirmation is being emailed to you.</p></li>
+          <li><span>02</span><p><strong>We source and prepare.</strong> Allow approximately 7–10 business days for ingredient sourcing, blending and preparation before dispatch.</p></li>
+          <li><span>03</span><p><strong>PUDO delivery follows.</strong> We dispatch to your selected locker and PUDO sends collection information to your mobile number.</p></li>
+        </ol>
+      </div>
+
+      <div class="actions">
+        <a class="button button--gold" id="primary-action" href="promo.html">Return to Festive BOGO</a>
+        <a class="button button--light" href="https://wa.me/27774638001" target="_blank" rel="noopener">Need help? WhatsApp us</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>Elysean Perfumes · George, Western Cape · 077 463 8001</footer>
+  <script src="bogo-success.js?v=20261001-1"></script>
+</body>
+</html>

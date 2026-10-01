@@ -1,6 +1,6 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
-const c=require('./sample-core.js'),ctx={window:{}};
-vm.runInNewContext(fs.readFileSync(__dirname+'/sample-products.js','utf8'),ctx);
+const publicRoot=__dirname+'/public',c=require('./public/sample-core.js'),ctx={window:{}};
+vm.runInNewContext(fs.readFileSync(publicRoot+'/sample-products.js','utf8'),ctx);
 const products=Array.from(ctx.window.ELYSEAN_PRODUCTS);
 assert(products.length>200);assert.equal(new Set(products.map(p=>p.id)).size,products.length);
 for(const value of [null,undefined,'','4','3foo','03','__proto__','constructor'])assert.equal(c.bundle(value),null);
@@ -23,12 +23,13 @@ const opium=products.find(p=>p.id===164);assert(opium);
 assert(c.matches(opium,'BLACK opium','all'));assert(c.matches(opium,'164','all'));
 assert(!c.matches(opium,'zzzz-no-match','all'));
 assert.equal(c.matches(products[0],'','masculine'),products[0].category==='masculine');
-const html=fs.readFileSync(__dirname+'/samples.html','utf8');
+const html=fs.readFileSync(publicRoot+'/samples.html','utf8');
 for(const m of html.matchAll(/(?:src|href)="([^"?#]+)(?:[^" ]*)"/g)){
  const path=m[1];if(path.startsWith('http')||['promo.html','privacy-policy.html'].includes(path))continue;
- assert(fs.existsSync(__dirname+'/'+path),'Missing asset '+path);
+ assert(fs.existsSync(publicRoot+'/'+path),'Missing asset '+path);
 }
-assert.equal((html.match(/fbq\('track','PageView'\)/g)||[]).length,1);
-assert.equal((html.match(/gtag\('config','G-NT5SEGTN2N'\)/g)||[]).length,1);
+assert.equal((html.match(/tracking\.js/g)||[]).length,1);
+const tracking=fs.readFileSync(publicRoot+'/tracking.js','utf8');
+assert(tracking.includes('1084792373896315'));assert(tracking.includes('1723955528897231'));assert(tracking.includes('G-NT5SEGTN2N'));
 assert(!html.includes('src="app.js"'));
 console.log('PASS: catalogue integrity; Trio/Five selection limits, duplicates, removal, restoration, invalid bundles, search, message totals, assets and single base tags.');

@@ -228,7 +228,7 @@
         let url; try { url = new URL(link.href, w.location.href); } catch (_) { return; }
         if (['wa.me','api.whatsapp.com','web.whatsapp.com'].includes(url.hostname)) track('contact', { source, contact_method: 'whatsapp' });
         else if (/google\.|g\.page/.test(url.hostname) && /review/i.test(href + link.textContent)) track('outbound_click', { link_name: 'google_reviews', link_url: url.href });
-        else if (url.origin === w.location.origin && /\/(samples|promo|checkout)\.html$/.test(url.pathname)) track('cta_click', { cta_name: url.pathname.includes('samples') ? 'choose_samples_' + (url.searchParams.get('bundle') || '') : url.pathname.includes('checkout') ? 'website_checkout_start' : 'october_offer', source });
+        else if (url.origin === w.location.origin && /\/(samples|promo|checkout)\.html$/.test(url.pathname)) track('cta_click', { cta_name: url.pathname.includes('samples') ? 'choose_samples_' + (url.searchParams.get('bundle') || '') : url.pathname.includes('checkout') ? 'website_checkout_start' : 'festive_offer', source });
       }
     });
   }

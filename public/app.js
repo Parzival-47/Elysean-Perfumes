@@ -1,7 +1,7 @@
 const CONFIG = {
   whatsappNumber: "27774638001", // 077 463 8001
-  offerDeadline: "2026-10-31T23:59:59+02:00",
-  offerName: "October Buy One 100ml Get the Same 100ml Free",
+  offerDeadline: "2026-12-31T23:59:59+02:00",
+  offerName: "Festive Buy One 100ml Get the Same 100ml Free",
   pudoDelivery: 79,
   sampleSingle: 49,
   sampleTrioDelivered: 219,
@@ -9,6 +9,9 @@ const CONFIG = {
   initialProductLimit: 9,
   resultPageSize: 12,
   featuredIds: [164, 201, 45, 106, 258, 261, 280, 310, 314],
+  cartKey: "elysean-bogo-cart-v1",
+  attributionKey: "elysean-bogo-attribution-v1",
+  maxBogoSets: 4,
 };
 
 const $ = (selector, scope = document) => scope.querySelector(selector);
@@ -20,6 +23,7 @@ let visibleLimit = CONFIG.initialProductLimit;
 let selectedProduct = null;
 let searchTimer = null;
 let lastTrackedSearch = "";
+const availability = new Map();
 
 function money(value) {
   return `R${Number(value).toLocaleString("en-ZA")}`;
@@ -28,7 +32,7 @@ function money(value) {
 function trackingContext() {
   const url = new URL(window.location.href);
   return {
-    page_name: "october_same_scent_bogo",
+    page_name: "festive_same_scent_bogo",
     campaign_source: url.searchParams.get("utm_source") || undefined,
     campaign_medium: url.searchParams.get("utm_medium") || undefined,
     campaign_name: url.searchParams.get("utm_campaign") || undefined,
@@ -103,8 +107,12 @@ function filteredProducts() {
 
 function productCard(product) {
   const notes = product.notes ? product.notes.split(",").slice(0, 5).join(" · ") : product.description;
+  const stock = availability.get(Number(product.id));
+  const unavailable = stock?.status === "unavailable";
+  const checking = !stock;
+  const statusText = unavailable ? "Temporarily unavailable" : checking ? "Checking availability…" : "Available to order";
   return `
-    <article class="product-card" data-product-id="${product.id}">
+    <article class="product-card${unavailable ? " is-unavailable" : ""}" data-product-id="${product.id}">
       <div class="product-card__top">
         <span class="product-card__number">ELYSEAN NO. ${String(product.id).padStart(3, "0")}</span>
         <span class="product-card__category">${categoryLabel(product.category)}</span>
@@ -118,8 +126,9 @@ function productCard(product) {
           <strong>${money(product.price100)}</strong>
           <small>Pay once · 100ml price</small>
           <div class="product-card__bogo">Receive 2 × 100ml of this same scent</div>
+          <div class="product-card__stock ${unavailable ? "is-unavailable" : ""}">${statusText}</div>
         </div>
-        <button class="btn btn--gold js-bogo-select" type="button" data-select-id="${product.id}">Select</button>
+        <button class="btn btn--gold js-bogo-select" type="button" data-select-id="${product.id}" ${unavailable || checking ? "disabled" : ""}>${unavailable ? "Unavailable" : checking ? "Checking…" : "Select"}</button>
       </div>
     </article>`;
 }
@@ -168,6 +177,10 @@ function renderProducts(resetLimit = false) {
 function selectProduct(id) {
   const product = PRODUCTS.find((p) => p.id === id);
   if (!product) return;
+  if (availability.get(Number(id))?.status !== "available") {
+    showToast("This fragrance is currently unavailable. Please choose another scent.");
+    return;
+  }
   selectedProduct = product;
 
   $("#selected-title").textContent = `Elysean No. ${String(product.id).padStart(3, "0")} · ${product.variant}`;
@@ -196,6 +209,34 @@ function selectProduct(id) {
     offer: CONFIG.offerName,
   });
   showToast(`${product.reference} selected — your second matching 100ml bottle is free.`);
+}
+
+async function loadAvailability() {
+  try {
+    const response = await fetch("/api/catalog/availability", { headers: { Accept: "application/json" } });
+    if (!response.ok) throw new Error("Availability could not be loaded");
+    const body = await response.json();
+    availability.clear();
+    Object.entries(body.inventory || {}).forEach(([id, stock]) => availability.set(Number(id), stock));
+    renderProducts(false);
+  } catch (_) {
+    showToast("Live availability is temporarily unavailable. Please refresh before ordering.");
+    renderProducts(false);
+  }
+}
+
+function saveAttribution() {
+  const url = new URL(window.location.href);
+  const attribution = {
+    source: url.searchParams.get("utm_source") || "",
+    medium: url.searchParams.get("utm_medium") || "",
+    campaign: url.searchParams.get("utm_campaign") || "",
+    content: url.searchParams.get("utm_content") || "",
+    term: url.searchParams.get("utm_term") || "",
+    fbclid: url.searchParams.get("fbclid") || "",
+    landingPage: `${url.pathname}${url.search}`.slice(0, 500),
+  };
+  try { localStorage.setItem(CONFIG.attributionKey, JSON.stringify(attribution)); } catch (_) { /* Checkout still works without attribution. */ }
 }
 
 function setupCollection() {
@@ -249,26 +290,31 @@ function setupCollection() {
     $("#choose")?.scrollIntoView({ behavior: "smooth", block: "start" });
   });
 
-  $("#continue-whatsapp")?.addEventListener("click", () => {
+  $("#continue-checkout")?.addEventListener("click", () => {
     if (!selectedProduct) return;
-    const total = selectedProduct.price100 + CONFIG.pudoDelivery;
-    const message = [
-      "Hi Elysean Perfumes 👋",
-      "I would like to claim the October Buy One 100ml Get One Free offer.",
-      "",
-      `Elysean product: No. ${String(selectedProduct.id).padStart(3, "0")} — ${selectedProduct.variant}`,
-      `Scent reference: ${selectedProduct.reference}`,
-      `BOGO: 2 × 100ml of the SAME fragrance/formulation`,
-      `Fragrance price: ${money(selectedProduct.price100)}`,
-      `PUDO locker delivery: ${money(CONFIG.pudoDelivery)}`,
-      `Order total: ${money(total)}`,
-      "",
-      "Please confirm the expected dispatch date and availability, then send me the secure Yoco payment link.",
-    ].join("\n");
+    if (availability.get(Number(selectedProduct.id))?.status !== "available") {
+      showToast("This fragrance is no longer available. Please choose another scent.");
+      return;
+    }
+    let cart = [];
+    try {
+      const saved = JSON.parse(localStorage.getItem(CONFIG.cartKey));
+      if (Array.isArray(saved)) cart = saved;
+    } catch (_) { cart = []; }
+    const currentSets = cart.reduce((sum, item) => sum + (Number(item.quantity) || 0), 0);
+    if (currentSets >= CONFIG.maxBogoSets) {
+      showToast("Your checkout already contains the maximum of 4 BOGO sets.");
+      window.location.assign("bogo-checkout.html");
+      return;
+    }
+    const existing = cart.find((item) => Number(item.productId) === Number(selectedProduct.id));
+    if (existing) existing.quantity = Math.min(CONFIG.maxBogoSets, (Number(existing.quantity) || 0) + 1);
+    else cart.push({ productId: Number(selectedProduct.id), quantity: 1 });
+    localStorage.setItem(CONFIG.cartKey, JSON.stringify(cart));
+    saveAttribution();
 
-    track("initiate_checkout", {
-      source: "bogo_order",
-      shipping: CONFIG.pudoDelivery,
+    track("add_to_cart", {
+      source: "festive_bogo_collection",
       num_items: 2,
       content_name: selectedProduct.reference,
       content_ids: [String(selectedProduct.id)],
@@ -283,12 +329,11 @@ function setupCollection() {
         price: selectedProduct.price100,
         quantity: 1,
       }],
-      value: total,
+      value: selectedProduct.price100,
       currency: "ZAR",
-      contact_method: "whatsapp",
       offer: CONFIG.offerName,
     });
-    window.open(whatsappUrl(message), "_blank", "noopener,noreferrer");
+    window.location.assign("bogo-checkout.html");
   });
 
   renderProducts(true);
@@ -303,7 +348,7 @@ function setupCountdown() {
   const render = () => {
     const remaining = deadline - Date.now();
     if (remaining <= 0) {
-      el.textContent = "Offer ended 31 October 2026";
+      el.textContent = "Offer ended 31 December 2026";
       strip.classList.add("offer-ended");
       document.body.classList.add("offer-expired");
       return;
@@ -383,8 +428,10 @@ function showToast(message) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  saveAttribution();
   bindWhatsAppLinks();
   setupCollection();
+  loadAvailability();
   setupCountdown();
   setupMobileMenu();
   setupReveal();

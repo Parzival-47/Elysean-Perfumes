@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en-ZA">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Festive BOGO Checkout | Elysean Perfumes</title>
+  <meta name="description" content="Review your Festive BOGO fragrances, select a PUDO locker and pay securely with Yoco.">
+  <meta name="theme-color" content="#fbf6ef">
+  <link rel="icon" type="image/webp" href="images/assets/favicon.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="bogo-checkout.css?v=20261001-1">
+  <link rel="stylesheet" href="tracking.css?v=20260904-1">
+  <script src="tracking.js?v=20260904-1"></script>
+</head>
+<body>
+  <a class="skip-link" href="#checkout-main">Skip to checkout</a>
+  <header class="checkout-header">
+    <a class="brand" href="promo.html" aria-label="Return to the Elysean Festive BOGO page">
+      <img src="images/assets/logo-stag.webp" alt="" width="42" height="42">
+      <span><strong>ELYSEAN</strong><small>PERFUMES</small></span>
+    </a>
+    <div class="secure-mark"><span aria-hidden="true">◇</span> Secure Yoco checkout</div>
+  </header>
+
+  <div class="checkout-ribbon">FESTIVE BOGO · BUY ONE 100 ML · RECEIVE THE SAME 100 ML FREE</div>
+
+  <main id="checkout-main" class="checkout-shell">
+    <section class="checkout-copy">
+      <p class="eyebrow">COMPLETE YOUR ORDER</p>
+      <h1>Your fragrance pair,<br><em>ready when you are.</em></h1>
+      <p class="intro">Review your matching BOGO pairs, choose a convenient PUDO locker and continue to Yoco’s secure payment page.</p>
+
+      <div class="notice notice--warning" id="payment-notice" hidden>
+        Payment was not completed. Your fragrances are still here, so you can check the details and try again.
+      </div>
+
+      <section class="checkout-card" aria-labelledby="order-heading">
+        <div class="card-heading">
+          <div><span>01</span><h2 id="order-heading">Your Festive BOGO order</h2></div>
+          <a href="promo.html#choose">Add another fragrance</a>
+        </div>
+        <div id="checkout-items" class="checkout-items" aria-live="polite"></div>
+        <div id="empty-cart" class="empty-cart" hidden>
+          <h3>Your BOGO order is empty.</h3>
+          <p>Choose a fragrance to begin.</p>
+          <a class="button button--gold" href="promo.html#choose">Choose a fragrance</a>
+        </div>
+        <p class="cart-limit">Maximum 4 BOGO sets (8 physical bottles) in one online checkout.</p>
+      </section>
+
+      <form id="checkout-form" novalidate>
+        <section class="checkout-card" aria-labelledby="details-heading">
+          <div class="card-heading"><div><span>02</span><h2 id="details-heading">Your details</h2></div></div>
+          <div class="form-grid">
+            <label>First name<input id="first-name" name="firstName" autocomplete="given-name" maxlength="60" required></label>
+            <label>Last name<input id="last-name" name="lastName" autocomplete="family-name" maxlength="60" required></label>
+            <label>Email address<input id="email" name="email" type="email" autocomplete="email" maxlength="254" required></label>
+            <label>Mobile number<input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="30" placeholder="e.g. 077 123 4567" required></label>
+          </div>
+          <p class="field-note">PUDO uses the mobile number for parcel notifications and collection information.</p>
+        </section>
+
+        <section class="checkout-card" aria-labelledby="locker-heading">
+          <div class="card-heading"><div><span>03</span><h2 id="locker-heading">Choose your PUDO locker</h2></div></div>
+          <p class="section-copy">Search using your town, suburb, shopping centre or locker name. Select the exact locker where you want to collect your parcel.</p>
+          <div class="locker-search">
+            <label for="locker-query">Search PUDO lockers</label>
+            <div><input id="locker-query" autocomplete="off" placeholder="Try George, Knysna or your suburb"><button class="button button--dark" id="locker-search-button" type="button">Search</button></div>
+          </div>
+          <div id="locker-message" class="field-note" role="status" aria-live="polite">Enter at least two letters to search.</div>
+          <div id="locker-results" class="locker-results"></div>
+          <div id="selected-locker" class="selected-locker" hidden>
+            <span>SELECTED LOCKER</span>
+            <strong id="selected-locker-name"></strong>
+            <p id="selected-locker-address"></p>
+            <button type="button" id="change-locker">Change locker</button>
+          </div>
+        </section>
+
+        <section class="checkout-card checkout-card--terms">
+          <label class="check-row">
+            <input id="terms" type="checkbox" required>
+            <span>I confirm that the order and locker details are correct, and I accept the <a href="returns-policy.html" target="_blank">returns policy</a>, <a href="shipping-info.html" target="_blank">shipping information</a> and <a href="privacy-policy.html" target="_blank">privacy policy</a>.</span>
+          </label>
+        </section>
+      </form>
+    </section>
+
+    <aside class="order-summary" aria-labelledby="summary-heading">
+      <div class="summary-visual">
+        <img src="images/assets/elysean-bottle-clean-studio.webp" alt="Elysean Perfumes 100 ml bottle" width="520" height="700">
+        <span>FESTIVE<br>BOGO</span>
+      </div>
+      <div class="summary-content">
+        <p class="eyebrow">ORDER SUMMARY</p>
+        <h2 id="summary-heading">Pay once. Receive two.</h2>
+        <div class="summary-row"><span>Fragrance pairs</span><strong id="summary-subtotal">—</strong></div>
+        <div class="summary-row"><span id="shipping-label">PUDO locker delivery</span><strong id="summary-shipping">—</strong></div>
+        <div class="summary-row summary-row--total"><span>Total</span><strong id="summary-total">—</strong></div>
+        <button class="button button--gold button--pay" id="pay-button" type="submit" form="checkout-form" disabled>
+          <span id="pay-label">Select a locker to continue</span>
+          <small>Redirects securely to Yoco</small>
+        </button>
+        <div id="checkout-error" class="checkout-error" role="alert" hidden></div>
+        <ul class="trust-list">
+          <li><span>✓</span> Server-verified pricing and availability</li>
+          <li><span>✓</span> Card details handled securely by Yoco</li>
+          <li><span>✓</span> Confirmation email after verified payment</li>
+        </ul>
+        <p class="timing-note"><strong>Made to order:</strong> allow approximately 7–10 business days for ingredient sourcing, blending and preparation before dispatch. Courier transit follows afterward.</p>
+      </div>
+    </aside>
+  </main>
+
+  <footer>Questions before paying? <a href="https://wa.me/27774638001" target="_blank" rel="noopener">WhatsApp 077 463 8001</a></footer>
+  <script src="products.js"></script>
+  <script src="bogo-checkout.js?v=20261001-1"></script>
+</body>
+</html>

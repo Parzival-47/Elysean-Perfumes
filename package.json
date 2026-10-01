@@ -6,21 +6,17 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node tests.cjs && node festive-tests.cjs"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "@getbrevo/brevo": "^5.0.4",
-    "axios": "^1.15.0",
-    "bootstrap": "^5.3.8",
     "dotenv": "^17.4.1",
     "express": "^5.2.1",
-    "jquery": "^4.0.0",
     "node-fetch": "^2.7.0",
-    "nodemailer": "^9.0.1"
+    "pg": "^8.16.3"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"

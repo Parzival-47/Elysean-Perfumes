@@ -1,3 +1,7 @@
 node_modules/
 .envpending-orders.json
 .env
+.env.*
+!.env.example
+npm-debug.log*
+.DS_Store

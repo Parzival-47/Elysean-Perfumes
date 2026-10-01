@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en-ZA">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>Stock Manager | Elysean Perfumes</title>
+  <link rel="icon" type="image/webp" href="images/assets/favicon.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="stock-admin.css?v=20261001-1">
+</head>
+<body>
+  <main>
+    <section class="login-panel" id="login-panel">
+      <img src="images/assets/logo-stag.webp" alt="" width="70" height="70">
+      <p class="eyebrow">ELYSEAN PERFUMES</p>
+      <h1>Stock manager</h1>
+      <p>Private access for updating fragrance availability.</p>
+      <form id="login-form">
+        <label for="password">Stock administration password</label>
+        <input id="password" type="password" autocomplete="current-password" required>
+        <button type="submit">Sign in securely</button>
+        <div id="login-error" class="error" role="alert" hidden></div>
+      </form>
+    </section>
+
+    <section class="dashboard" id="dashboard" hidden>
+      <header>
+        <div class="brand"><img src="images/assets/logo-stag.webp" alt="" width="42" height="42"><div><strong>ELYSEAN</strong><span>STOCK MANAGER</span></div></div>
+        <div class="header-actions"><a href="promo.html" target="_blank">View BOGO page</a><button id="logout" type="button">Sign out</button></div>
+      </header>
+      <div class="dashboard-shell">
+        <div class="dashboard-title">
+          <div><p class="eyebrow">SCENT LAB AVAILABILITY</p><h1>Fragrance stock status</h1><p>Unavailable fragrances are disabled immediately on the BOGO page and rejected again by the payment server.</p></div>
+          <button id="refresh" type="button">Refresh catalogue</button>
+        </div>
+        <div class="stats" aria-live="polite">
+          <div><span>Available</span><strong id="available-count">—</strong></div>
+          <div><span>Unavailable</span><strong id="unavailable-count">—</strong></div>
+          <div><span>Visible results</span><strong id="visible-count">—</strong></div>
+        </div>
+        <div class="controls">
+          <label>Search<input id="stock-search" type="search" placeholder="Fragrance, Elysean number or notes"></label>
+          <div class="filter-group" role="group" aria-label="Stock filter">
+            <button class="active" data-filter="all" type="button">All</button>
+            <button data-filter="available" type="button">Available</button>
+            <button data-filter="unavailable" type="button">Unavailable</button>
+          </div>
+        </div>
+        <div id="status-message" class="status-message" role="status" aria-live="polite">Loading stock…</div>
+        <div id="inventory" class="inventory"></div>
+      </div>
+    </section>
+  </main>
+  <script src="stock-admin.js?v=20261001-1"></script>
+</body>
+</html>
