@@ -67,7 +67,7 @@ function productRows(items, orderType = 'bogo') {
 
 function customerTemplate(order) {
   const customer = order.customer;
-  const locker = order.locker;
+  const delivery = order.delivery || order.locker || {};
   const name = `${customer.firstName} ${customer.lastName}`.trim();
   const isBogo = order.order_type === 'bogo';
   return `<!doctype html>
@@ -92,17 +92,17 @@ function customerTemplate(order) {
 
           <table style="width:100%;border-collapse:collapse;margin:22px 0">
             <tr><td style="padding:5px 0;color:${BRAND.muted};font-size:13px">Fragrances</td><td style="text-align:right">${money(order.subtotal_cents)}</td></tr>
-            <tr><td style="padding:5px 0;color:${BRAND.muted};font-size:13px">${order.order_type === 'bogo' ? `PUDO ${escapeHtml(order.shipping_tier)} locker delivery` : 'Delivery'}</td><td style="text-align:right">${money(order.shipping_cents)}</td></tr>
+            <tr><td style="padding:5px 0;color:${BRAND.muted};font-size:13px">${escapeHtml(delivery.zoneName || 'Local delivery')}</td><td style="text-align:right">${money(order.shipping_cents)}</td></tr>
             <tr><td style="padding:14px 0 0;border-top:1px solid #eadfd5;font-weight:700">Total paid</td><td style="padding:14px 0 0;border-top:1px solid #eadfd5;text-align:right;font-size:19px;font-weight:700;color:${BRAND.burgundy}">${money(order.total_cents)}</td></tr>
           </table>
 
           <div style="border-left:3px solid ${BRAND.gold};padding:4px 0 4px 16px;margin:24px 0">
-            <strong style="display:block;margin-bottom:6px">${order.order_type === 'bogo' ? 'Your selected PUDO locker' : 'Delivery details'}</strong>
-            <span style="font-size:13px;line-height:1.6;color:${BRAND.muted}">${escapeHtml(locker.name)} (${escapeHtml(locker.code)})<br>${escapeHtml(locker.address || locker.city)}</span>
+            <strong style="display:block;margin-bottom:6px">${delivery.method === 'collection' ? 'Collection details' : 'Local delivery details'}</strong>
+            <span style="font-size:13px;line-height:1.6;color:${BRAND.muted}">${escapeHtml(delivery.areaName || 'George collection')}<br>${delivery.method === 'collection' ? 'We will arrange collection with you when the order is ready.' : [delivery.addressLine1, delivery.addressLine2, delivery.suburb, delivery.postalCode].filter(Boolean).map(escapeHtml).join('<br>')}</span>
           </div>
 
-          <p style="font-size:13px;line-height:1.75;color:${BRAND.muted}"><strong style="color:${BRAND.ink}">Preparation:</strong> Each fragrance is made to order. Please allow approximately 7–10 business days for ingredient sourcing, blending and preparation before dispatch. PUDO transit begins after dispatch and varies by destination and locker availability.</p>
-          <p style="font-size:13px;line-height:1.75;color:${BRAND.muted}">Tracking and collection details will be sent once the parcel has been booked and handed to the courier.</p>
+          <p style="font-size:13px;line-height:1.75;color:${BRAND.muted}"><strong style="color:${BRAND.ink}">Preparation:</strong> Each fragrance is made to order. Please allow approximately 7–10 business days for ingredient sourcing, blending and preparation.</p>
+          <p style="font-size:13px;line-height:1.75;color:${BRAND.muted}"><strong style="color:${BRAND.ink}">Delivery:</strong> ${escapeHtml(delivery.schedule || 'We will contact you to arrange delivery after your order is ready.')} We will confirm the delivery date with you. No Sunday deliveries.</p>
 
           <div style="margin-top:28px;padding-top:22px;border-top:1px solid #eadfd5;font-size:12px;line-height:1.7;color:${BRAND.muted}">
             Questions? Reply to this email or contact us on <a href="https://wa.me/27774638001" style="color:${BRAND.burgundy};font-weight:700">WhatsApp 077 463 8001</a>.<br>
@@ -117,7 +117,7 @@ function customerTemplate(order) {
 
 function ownerTemplate(order) {
   const customer = order.customer;
-  const locker = order.locker;
+  const delivery = order.delivery || order.locker || {};
   const isBogo = order.order_type === 'bogo';
   return `<!doctype html><html><body style="font-family:Arial,sans-serif;color:#222;max-width:720px;margin:0 auto;padding:24px">
     <h1 style="margin:0 0 8px">New paid ${isBogo ? 'Festive BOGO ' : ''}order</h1>
@@ -126,8 +126,8 @@ function ownerTemplate(order) {
     <p>${escapeHtml(customer.firstName)} ${escapeHtml(customer.lastName)}<br>${escapeHtml(customer.email)}<br>${escapeHtml(customer.phone)}</p>
     <h2>Fragrances</h2>
     <table style="width:100%;border-collapse:collapse">${productRows(order.items, order.order_type)}</table>
-    <h2>${order.order_type === 'bogo' ? 'PUDO locker' : 'Delivery details'}</h2>
-    <p><strong>${escapeHtml(locker.name)}</strong> (${escapeHtml(locker.code)})<br>${escapeHtml(locker.address || locker.city)}<br>Parcel tier: ${escapeHtml(order.shipping_tier)}</p>
+    <h2>${delivery.method === 'collection' ? 'Collection details' : 'Local delivery details'}</h2>
+    <p><strong>${escapeHtml(delivery.areaName || 'George collection')}</strong><br>Zone: ${escapeHtml(delivery.zoneName || order.delivery_zone || order.shipping_tier || '')}<br>${delivery.method === 'collection' ? 'Customer will collect by arrangement.' : [delivery.addressLine1, delivery.addressLine2, delivery.suburb, delivery.postalCode].filter(Boolean).map(escapeHtml).join('<br>')}<br>Instructions: ${escapeHtml(delivery.instructions || 'None')}<br>Schedule: ${escapeHtml(delivery.schedule || '')}</p>
     <h2>Totals</h2>
     <p>Fragrances: ${money(order.subtotal_cents)}<br>Delivery: ${money(order.shipping_cents)}<br><strong>Total paid: ${money(order.total_cents)}</strong></p>
     <p>Yoco checkout: ${escapeHtml(order.checkout_id || '')}<br>Payment: ${escapeHtml(order.payment_id || '')}</p>

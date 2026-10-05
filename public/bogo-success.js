@@ -27,8 +27,8 @@
     document.querySelector('#next-steps').hidden = false;
     document.querySelector('#order-number').textContent = order.order_number;
     document.querySelector('#order-items').innerHTML = (order.items || []).map((item) => `<div class="order-item"><strong>Elysean No. ${String(item.productId).padStart(3, '0')} · ${escapeHtml(item.reference)}</strong><span>${Number(item.quantity)} paid + ${Number(item.complimentaryQuantity)} free<br>${Number(item.physicalBottles)} × 100 ml</span></div>`).join('');
-    document.querySelector('#order-locker').textContent = `${order.locker?.name || 'Selected locker'}${order.locker?.code ? ` (${order.locker.code})` : ''}`;
-    document.querySelector('#order-shipping').textContent = `PUDO ${order.shipping_tier || ''} · ${money(order.shipping_cents)}`;
+    document.querySelector('#order-delivery').textContent = order.delivery?.areaName || 'Local delivery / collection';
+    document.querySelector('#order-shipping').textContent = `${order.delivery?.zoneName || order.delivery_zone || 'Local delivery'} · ${money(order.shipping_cents)}`;
     document.querySelector('#order-total').textContent = money(order.total_cents);
     document.querySelector('#primary-action').textContent = 'Return to Elysean';
   }

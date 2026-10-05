@@ -2,7 +2,6 @@ const CONFIG = {
   whatsappNumber: "27774638001", // 077 463 8001
   offerDeadline: "2026-12-31T23:59:59+02:00",
   offerName: "Festive Buy One 100ml Get the Same 100ml Free",
-  pudoDelivery: 79,
   sampleSingle: 49,
   sampleTrioDelivered: 219,
   sampleFiveDelivered: 299,
@@ -186,7 +185,7 @@ function selectProduct(id) {
   $("#selected-title").textContent = `Elysean No. ${String(product.id).padStart(3, "0")} · ${product.variant}`;
   $("#selected-reference").textContent = `Scent reference: ${product.reference} · 2 × 100ml same scent`;
   $("#selected-price").textContent = money(product.price100);
-  $("#selected-total").textContent = money(product.price100 + CONFIG.pudoDelivery);
+  $("#selected-total").textContent = money(product.price100);
   $("#order-dock").hidden = false;
 
   track("view_content", {

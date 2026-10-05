@@ -4,13 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Festive BOGO Checkout | Elysean Perfumes</title>
-  <meta name="description" content="Review your Festive BOGO fragrances, select a PUDO locker and pay securely with Yoco.">
+  <meta name="description" content="Review your Festive BOGO fragrances, choose local delivery or George collection and pay securely with Yoco.">
   <meta name="theme-color" content="#fbf6ef">
   <link rel="icon" type="image/webp" href="images/assets/favicon.webp">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="bogo-checkout.css?v=20261001-1">
+  <link rel="stylesheet" href="bogo-checkout.css?v=20261005-1">
   <link rel="stylesheet" href="tracking.css?v=20260904-1">
   <script src="tracking.js?v=20260904-1"></script>
 </head>
@@ -30,7 +30,7 @@
     <section class="checkout-copy">
       <p class="eyebrow">COMPLETE YOUR ORDER</p>
       <h1>Your fragrance pair,<br><em>ready when you are.</em></h1>
-      <p class="intro">Review your matching BOGO pairs, choose a convenient PUDO locker and continue to Yoco’s secure payment page.</p>
+      <p class="intro">Review your matching BOGO pairs, choose local hand delivery or free George collection, and continue to Yoco’s secure payment page.</p>
 
       <div class="notice notice--warning" id="payment-notice" hidden>
         Payment was not completed. Your fragrances are still here, so you can check the details and try again.
@@ -59,30 +59,29 @@
             <label>Email address<input id="email" name="email" type="email" autocomplete="email" maxlength="254" required></label>
             <label>Mobile number<input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="30" placeholder="e.g. 077 123 4567" required></label>
           </div>
-          <p class="field-note">PUDO uses the mobile number for parcel notifications and collection information.</p>
+          <p class="field-note">We use your mobile number only to confirm your order and arrange delivery or collection.</p>
         </section>
 
-        <section class="checkout-card" aria-labelledby="locker-heading">
-          <div class="card-heading"><div><span>03</span><h2 id="locker-heading">Choose your PUDO locker</h2></div></div>
-          <p class="section-copy">Search using your town, suburb, shopping centre or locker name. Select the exact locker where you want to collect your parcel.</p>
-          <div class="locker-search">
-            <label for="locker-query">Search PUDO lockers</label>
-            <div><input id="locker-query" autocomplete="off" placeholder="Try George, Knysna or your suburb"><button class="button button--dark" id="locker-search-button" type="button">Search</button></div>
-          </div>
-          <div id="locker-message" class="field-note" role="status" aria-live="polite">Enter at least two letters to search.</div>
-          <div id="locker-results" class="locker-results"></div>
-          <div id="selected-locker" class="selected-locker" hidden>
-            <span>SELECTED LOCKER</span>
-            <strong id="selected-locker-name"></strong>
-            <p id="selected-locker-address"></p>
-            <button type="button" id="change-locker">Change locker</button>
+        <section class="checkout-card" aria-labelledby="delivery-heading">
+          <div class="card-heading"><div><span>03</span><h2 id="delivery-heading">Choose delivery or collection</h2></div></div>
+          <p class="section-copy">We personally deliver from George to Mossel Bay and Knysna. Select your area to see the exact charge and schedule.</p>
+          <div class="form-grid delivery-fields">
+            <label class="field-wide">Delivery area<select id="delivery-area" required><option value="">Choose your area</option></select></label>
+            <div class="delivery-note field-wide" id="delivery-note" hidden></div>
+            <div class="form-grid field-wide" id="address-fields" hidden>
+              <label class="field-wide">Street address<input id="address-line-1" autocomplete="address-line1" maxlength="120"></label>
+              <label class="field-wide">Complex, unit or building (optional)<input id="address-line-2" autocomplete="address-line2" maxlength="120"></label>
+              <label>Suburb<input id="suburb" autocomplete="address-level2" maxlength="80"></label>
+              <label>Postal code<input id="postal-code" autocomplete="postal-code" inputmode="numeric" maxlength="12"></label>
+              <label class="field-wide">Delivery instructions (optional)<textarea id="delivery-instructions" maxlength="240" rows="3" placeholder="Gate code, landmark or other helpful detail"></textarea></label>
+            </div>
           </div>
         </section>
 
         <section class="checkout-card checkout-card--terms">
           <label class="check-row">
             <input id="terms" type="checkbox" required>
-            <span>I confirm that the order and locker details are correct, and I accept the <a href="returns-policy.html" target="_blank">returns policy</a>, <a href="shipping-info.html" target="_blank">shipping information</a> and <a href="privacy-policy.html" target="_blank">privacy policy</a>.</span>
+            <span>I confirm that the order and delivery details are correct, and I accept the <a href="returns-policy.html" target="_blank">returns policy</a>, <a href="shipping-info.html" target="_blank">delivery information</a> and <a href="privacy-policy.html" target="_blank">privacy policy</a>.</span>
           </label>
         </section>
       </form>
@@ -97,10 +96,10 @@
         <p class="eyebrow">ORDER SUMMARY</p>
         <h2 id="summary-heading">Pay once. Receive two.</h2>
         <div class="summary-row"><span>Fragrance pairs</span><strong id="summary-subtotal">—</strong></div>
-        <div class="summary-row"><span id="shipping-label">PUDO locker delivery</span><strong id="summary-shipping">—</strong></div>
+        <div class="summary-row"><span id="shipping-label">Local delivery</span><strong id="summary-shipping">—</strong></div>
         <div class="summary-row summary-row--total"><span>Total</span><strong id="summary-total">—</strong></div>
         <button class="button button--gold button--pay" id="pay-button" type="submit" form="checkout-form" disabled>
-          <span id="pay-label">Select a locker to continue</span>
+          <span id="pay-label">Choose your delivery area</span>
           <small>Redirects securely to Yoco</small>
         </button>
         <div id="checkout-error" class="checkout-error" role="alert" hidden></div>
@@ -109,13 +108,14 @@
           <li><span>✓</span> Card details handled securely by Yoco</li>
           <li><span>✓</span> Confirmation email after verified payment</li>
         </ul>
-        <p class="timing-note"><strong>Made to order:</strong> allow approximately 7–10 business days for ingredient sourcing, blending and preparation before dispatch. Courier transit follows afterward.</p>
+        <p class="timing-note"><strong>Made to order:</strong> allow approximately 7–10 business days for sourcing, blending and preparation. We then confirm your local delivery or collection date. No Sunday deliveries.</p>
       </div>
     </aside>
   </main>
 
   <footer>Questions before paying? <a href="https://wa.me/27774638001" target="_blank" rel="noopener">WhatsApp 077 463 8001</a></footer>
   <script src="products.js"></script>
-  <script src="bogo-checkout.js?v=20261001-1"></script>
+  <script src="delivery-config.js?v=20261005-1"></script>
+  <script src="bogo-checkout.js?v=20261005-1"></script>
 </body>
 </html>

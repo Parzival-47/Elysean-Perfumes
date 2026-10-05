@@ -12,11 +12,11 @@ for(const size of [3,5]){
  ids=c.toggle(ids,products[size].id,size);assert.equal(ids.length,size);
  const restored=c.clean(JSON.parse(JSON.stringify([...ids,ids[0],99999])),products,size);
  assert.deepEqual(restored,ids);
- const items=ids.map(id=>products.find(p=>p.id===id)),msg=c.message(b,items);
- assert(msg.includes('R'+b.price));assert(msg.includes('PUDO locker delivery: included'));
+ const items=ids.map(id=>products.find(p=>p.id===id)),msg=c.message(b,items,{areaName:'George',customerChargeCents:7900});
+ assert(msg.includes('R'+b.price));assert(msg.includes('Delivery: R79'));assert(msg.includes('Total: R'+(b.price+79)));
  for(const p of items){assert(msg.includes(p.reference));assert(msg.includes(String(p.id).padStart(3,'0')))}
  assert.equal(decodeURIComponent(encodeURIComponent(msg)),msg);
- assert.throws(()=>c.message(b,items.slice(1)));assert.throws(()=>c.message(b,Array(size).fill(items[0])));
+ assert.throws(()=>c.message(b,items.slice(1),{areaName:'George'}));assert.throws(()=>c.message(b,Array(size).fill(items[0]),{areaName:'George'}));assert.throws(()=>c.message(b,items));
 }
 assert.deepEqual(c.clean({bad:'data'},products,3),[]);
 const opium=products.find(p=>p.id===164);assert(opium);

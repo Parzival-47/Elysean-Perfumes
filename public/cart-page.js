@@ -183,15 +183,14 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateTotals(cart) {
         const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
         const tax = subtotal * 0;
-        const shipping = cart.length > 0 ? 79 : 0;
-        const total = subtotal + tax + shipping;
+        const total = subtotal + tax;
 
         const subtotalEl = document.getElementById('subtotal');
         const taxEl = document.getElementById('tax');
         const totalEl = document.getElementById('total');
         const shippingEl = document.getElementById('shipping')
 
-        if (shippingEl) shippingEl.textContent = 'R' + shipping;
+        if (shippingEl) shippingEl.textContent = cart.length ? 'Calculated at checkout' : '—';
         if (subtotalEl) subtotalEl.textContent = 'R' + subtotal.toLocaleString();
         if (taxEl) taxEl.textContent = 'R' + Math.round(tax).toLocaleString();
         if (totalEl) totalEl.textContent = 'R' + Math.round(total).toLocaleString();

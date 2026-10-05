@@ -11,6 +11,9 @@
  document.title=b.name+' — Choose '+b.size+' samples | Elysean Perfumes';
  $('bundle-label').textContent=b.name.toUpperCase()+' · '+b.size+' × 2ML · R'+b.price;
  $('total-label').textContent=b.name+' · '+b.size+' × 2ml';$('total').textContent='R'+b.price;$('progress').max=b.size;
+ const deliveryApi=window.ElyseanDelivery,deliverySelect=$('sample-delivery-area');let deliveryQuote=null;
+ deliveryApi.areas.forEach(area=>{const quote=deliveryApi.quote(area.id),option=document.createElement('option');option.value=area.id;option.textContent=area.name+' — R'+(quote.customerChargeCents/100);deliverySelect.append(option);});
+ deliverySelect.addEventListener('change',()=>{deliveryQuote=deliverySelect.value?deliveryApi.quote(deliverySelect.value):null;$('sample-delivery-fee').textContent=deliveryQuote?'R'+(deliveryQuote.customerChargeCents/100):'—';$('sample-grand-total').textContent=deliveryQuote?'R'+(b.price+deliveryQuote.customerChargeCents/100):'—';$('sample-delivery-note').textContent=deliveryQuote?deliveryQuote.schedule:'Choose free George collection or local delivery.';render();});
  const key='elysean-samples-v1-'+b.size;let ids=[],category='all',limit=12,timer;
  try{ids=core.clean(JSON.parse(localStorage.getItem(key)||'[]'),products,b.size);}catch{$('storage-notice').hidden=false;}
  const track=(name,extra={})=>window.ElyseanTracking?.track(name,{bundle_name:b.name,sample_count:b.size,currency:'ZAR',value:b.price,...extra});
@@ -23,7 +26,7 @@
   list.slice(0,limit).forEach(p=>{const selected=ids.includes(p.id),card=el('article','card'+(selected?' selected':''));card.append(el('div','meta','ELYSEAN NO. '+String(p.id).padStart(3,'0')+' · '+p.category.toUpperCase()),el('h3','',p.variant),el('p','','Scent reference: '+p.reference),el('p','notes',p.notes));const button=el('button','button '+(selected?'outline':'gold'),selected?'✓ Selected — remove':ids.length===b.size?'Set full — remove a choice first':'Add 2ml sample');button.type='button';button.dataset.add=p.id;button.setAttribute('aria-pressed',String(selected));button.setAttribute('aria-label',(selected?'Remove ':'Add ')+'Elysean No. '+p.id+', '+p.reference);button.disabled=!selected&&ids.length===b.size;button.addEventListener('click',()=>change(p.id));card.append(button);fragment.append(card);});$('products').replaceChildren(fragment);
  }
  function render(){
-  renderCards();const left=b.size-ids.length,complete=left===0;$('remaining').textContent=complete?'Your set is complete. Review your choices below.':ids.length+' of '+b.size+' selected · Choose '+left+' more';$('progress').value=ids.length;$('bar-count').textContent=ids.length+' of '+b.size+' selected';$('bar-remaining').textContent=complete?'Ready to review':left+' sample'+(left===1?'':'s')+' remaining';$('summary-title').textContent=complete?'Ready for your discovery?':'Your selection';$('send').disabled=!complete;$('review-note').textContent=complete?'Please check your choices before continuing.':'Choose exactly '+b.size+' samples to continue. You can remove or swap any choice.';
+  renderCards();const left=b.size-ids.length,complete=left===0;$('remaining').textContent=complete?'Your set is complete. Review your choices below.':ids.length+' of '+b.size+' selected · Choose '+left+' more';$('progress').value=ids.length;$('bar-count').textContent=ids.length+' of '+b.size+' selected';$('bar-remaining').textContent=complete?'Ready to review':left+' sample'+(left===1?'':'s')+' remaining';$('summary-title').textContent=complete?'Ready for your discovery?':'Your selection';$('send').disabled=!(complete&&deliveryQuote);$('review-note').textContent=complete?(deliveryQuote?'Please check your choices and delivery area before continuing.':'Choose your delivery area to continue.'):'Choose exactly '+b.size+' samples to continue. You can remove or swap any choice.';
   const frag=document.createDocumentFragment();ids.forEach(id=>{const p=products.find(x=>x.id===id),li=el('li'),text=el('div');text.append(el('strong','','Elysean No. '+String(p.id).padStart(3,'0')),el('span','',p.reference),el('small','',p.variant+' · 2ml'));const remove=el('button','','×');remove.type='button';remove.setAttribute('aria-label','Remove Elysean No. '+p.id+', '+p.reference);remove.addEventListener('click',()=>change(id));li.append(text,remove);frag.append(li);});$('chosen').replaceChildren(frag);
  }
  let lastSearch='';
@@ -33,9 +36,10 @@
  $('more').addEventListener('click',()=>{limit+=12;renderCards();});
  $('send').addEventListener('click',()=>{
   const items=ids.map(id=>products.find(p=>p.id===id));if(items.length!==b.size||items.some(p=>!p))return;
-  const message=core.message(b,items);
+  if(!deliveryQuote)return;
+  const message=core.message(b,items,deliveryQuote);
   // A completed selection sent to WhatsApp is order intent, NOT a purchase.
-  track('initiate_checkout',{source:b.size===3?'sample_trio_order':'sample_five_order',contact_method:'whatsapp',content_name:b.name,content_type:'product',content_ids:ids.map(String),num_items:b.size,items:[{item_id:'discovery-'+b.size,item_name:b.name,price:b.price,quantity:1}]});
+  track('initiate_checkout',{source:b.size===3?'sample_trio_order':'sample_five_order',contact_method:'whatsapp',content_name:b.name,content_type:'product',content_ids:ids.map(String),num_items:b.size,value:b.price+deliveryQuote.customerChargeCents/100,items:[{item_id:'discovery-'+b.size,item_name:b.name,price:b.price,quantity:1}]});
   location.href='https://wa.me/27774638001?text='+encodeURIComponent(message);
  });
  render();track('sample_bundle_view');

@@ -10,9 +10,8 @@ const fetch = require('node-fetch');
 const db = require('./db');
 const { products, productsById } = require('./catalog');
 const { productsById: regularProductsById } = require('./legacy-catalog');
-const { findLocker, searchLockers } = require('./pudo');
 const { sendCustomerEmail, sendOwnerEmail } = require('./email');
-const { OFFER_DEADLINE, MAX_BOGO_SETS, isOfferActive, shippingForBottles } = require('./shop-config');
+const { OFFER_DEADLINE, MAX_BOGO_SETS, isOfferActive, delivery } = require('./shop-config');
 
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
@@ -190,7 +189,7 @@ function validPhone(value) {
   return /^\+?[0-9][0-9\s()-]{7,20}$/.test(phone) ? phone : '';
 }
 
-function customerFrom(body, { addressRequired = false } = {}) {
+function customerFrom(body) {
   const customer = body && typeof body === 'object' ? body : {};
   const result = {
     firstName: text(customer.firstName, 60),
@@ -201,17 +200,27 @@ function customerFrom(body, { addressRequired = false } = {}) {
   if (!result.firstName || !result.lastName || !result.email || !result.phone) {
     throw new Error('Please provide a valid name, email address and telephone number');
   }
-  if (addressRequired) {
-    Object.assign(result, {
-      addressLine1: text(customer.addressLine1, 120),
-      addressLine2: text(customer.addressLine2, 120),
-      city: text(customer.city, 80),
-      postalCode: text(customer.postalCode, 12),
-      province: text(customer.province, 60),
-    });
-    if (!result.addressLine1 || !result.city || !result.postalCode || !result.province) {
-      throw new Error('Please provide the complete delivery address');
-    }
+  return result;
+}
+
+function deliveryFrom(body) {
+  const supplied = body && typeof body === 'object' ? body : {};
+  const verified = delivery.quote(text(supplied.areaId, 60));
+  const result = {
+    areaId: verified.areaId,
+    areaName: verified.areaName,
+    zoneCode: verified.zoneCode,
+    zoneName: verified.zoneName,
+    method: verified.method,
+    schedule: verified.schedule,
+    addressLine1: text(supplied.addressLine1, 120),
+    addressLine2: text(supplied.addressLine2, 120),
+    suburb: text(supplied.suburb, 80),
+    postalCode: text(supplied.postalCode, 12),
+    instructions: text(supplied.instructions, 240),
+  };
+  if (result.method !== 'collection' && (!result.addressLine1 || !result.suburb || !result.postalCode)) {
+    throw new Error('Please provide the complete local delivery address');
   }
   return result;
 }
@@ -230,7 +239,7 @@ function orderNumber(prefix = 'EP') {
   return `${prefix}-${day}-${crypto.randomBytes(8).toString('hex').toUpperCase()}`;
 }
 
-async function bogoQuote(rawItems) {
+async function bogoQuote(rawItems, deliveryAreaId = '') {
   if (!isOfferActive()) throw new Error('The Festive BOGO offer has ended');
   if (!Array.isArray(rawItems) || !rawItems.length || rawItems.length > MAX_BOGO_SETS) {
     throw new Error('Choose at least one fragrance');
@@ -268,20 +277,23 @@ async function bogoQuote(rawItems) {
   });
 
   const bottleCount = totalSets * 2;
-  const shipping = shippingForBottles(bottleCount);
+  const deliveryQuote = deliveryAreaId ? delivery.quote(deliveryAreaId) : null;
   const subtotalCents = items.reduce((sum, item) => sum + item.lineTotalCents, 0);
   return {
     items,
     totalSets,
     bottleCount,
-    shippingTier: shipping.code,
-    shippingCents: shipping.customerChargeCents,
+    deliveryAreaId: deliveryQuote?.areaId || null,
+    deliveryAreaName: deliveryQuote?.areaName || null,
+    deliveryZone: deliveryQuote?.zoneCode || null,
+    deliveryZoneName: deliveryQuote?.zoneName || null,
+    shippingCents: deliveryQuote?.customerChargeCents ?? null,
     subtotalCents,
-    totalCents: subtotalCents + shipping.customerChargeCents,
+    totalCents: subtotalCents + (deliveryQuote?.customerChargeCents || 0),
   };
 }
 
-function regularQuote(rawCart) {
+function regularQuote(rawCart, deliveryAreaId) {
   if (!Array.isArray(rawCart) || !rawCart.length || rawCart.length > 30) throw new Error('Your cart is empty or invalid');
   let itemCount = 0;
   const items = rawCart.map((raw) => {
@@ -299,8 +311,18 @@ function regularQuote(rawCart) {
   });
   if (itemCount > 30) throw new Error('This order is too large for one checkout');
   const subtotalCents = items.reduce((sum, item) => sum + item.lineTotalCents, 0);
-  const shippingCents = 7900;
-  return { items, subtotalCents, shippingCents, totalCents: subtotalCents + shippingCents };
+  const deliveryQuote = delivery.quote(deliveryAreaId);
+  const shippingCents = deliveryQuote.customerChargeCents;
+  return {
+    items,
+    deliveryAreaId: deliveryQuote.areaId,
+    deliveryAreaName: deliveryQuote.areaName,
+    deliveryZone: deliveryQuote.zoneCode,
+    deliveryZoneName: deliveryQuote.zoneName,
+    subtotalCents,
+    shippingCents,
+    totalCents: subtotalCents + shippingCents,
+  };
 }
 
 async function createYocoCheckout(order, { successPath, cancelPath }) {
@@ -351,22 +373,14 @@ app.get('/api/catalog/availability', async (_req, res) => {
   res.json({ inventory, updatedAt: new Date().toISOString() });
 });
 
-app.get('/api/pudo/lockers', async (req, res) => {
-  try {
-    const query = text(req.query.q, 100);
-    if (query.length < 2) return res.json({ lockers: [] });
-    const lockers = await searchLockers(query);
-    res.setHeader('Cache-Control', 'public, max-age=600');
-    return res.json({ lockers });
-  } catch (error) {
-    console.error('PUDO locker search failed:', error.message);
-    return res.status(502).json({ error: 'Locker search is temporarily unavailable. Please try again.' });
-  }
+app.get('/api/delivery/areas', (_req, res) => {
+  res.setHeader('Cache-Control', 'public, max-age=3600');
+  res.json(delivery.publicConfig());
 });
 
 app.post('/api/bogo/quote', async (req, res) => {
   try {
-    const quote = await bogoQuote(req.body.items);
+    const quote = await bogoQuote(req.body.items, text(req.body.deliveryAreaId, 60));
     res.json({ ...quote, offerDeadline: OFFER_DEADLINE });
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -377,15 +391,14 @@ app.post('/api/bogo/checkout', checkoutLimit, async (req, res) => {
   let localOrder;
   try {
     if (req.body.termsAccepted !== true) throw new Error('Please accept the checkout terms');
-    const quote = await bogoQuote(req.body.items);
+    const deliveryDetails = deliveryFrom(req.body.delivery);
+    const quote = await bogoQuote(req.body.items, deliveryDetails.areaId);
     const customer = customerFrom(req.body.customer);
-    const locker = await findLocker(text(req.body.lockerCode, 40));
-    if (!locker) throw new Error('Please select a valid PUDO locker');
 
     localOrder = {
       id: crypto.randomUUID(), orderNumber: orderNumber('EPB'), orderType: 'bogo', customer,
-      items: quote.items, locker, attribution: cleanAttribution(req.body.attribution),
-      shippingTier: quote.shippingTier, subtotalCents: quote.subtotalCents,
+      items: quote.items, delivery: deliveryDetails, attribution: cleanAttribution(req.body.attribution),
+      deliveryZone: quote.deliveryZone, subtotalCents: quote.subtotalCents,
       shippingCents: quote.shippingCents, totalCents: quote.totalCents,
     };
     await db.createOrder(localOrder);
@@ -407,17 +420,14 @@ app.post('/api/bogo/checkout', checkoutLimit, async (req, res) => {
 app.post('/create-checkout', checkoutLimit, async (req, res) => {
   let localOrder;
   try {
-    const quote = regularQuote(req.body.cart);
-    const customer = customerFrom(req.body.customerInfo, { addressRequired: true });
+    const deliveryDetails = deliveryFrom(req.body.delivery);
+    const quote = regularQuote(req.body.cart, deliveryDetails.areaId);
+    const customer = customerFrom(req.body.customerInfo);
     localOrder = {
       id: crypto.randomUUID(), orderNumber: orderNumber('EP'), orderType: 'regular', customer,
       items: quote.items,
-      locker: {
-        code: 'DELIVERY', name: 'Delivery address',
-        address: [customer.addressLine1, customer.addressLine2, customer.city, customer.postalCode, customer.province].filter(Boolean).join(', '),
-        city: customer.city,
-      },
-      attribution: {}, shippingTier: 'STANDARD', subtotalCents: quote.subtotalCents,
+      delivery: deliveryDetails,
+      attribution: {}, deliveryZone: quote.deliveryZone, subtotalCents: quote.subtotalCents,
       shippingCents: quote.shippingCents, totalCents: quote.totalCents,
     };
     await db.createOrder(localOrder);
@@ -505,4 +515,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { app, start, bogoQuote, regularQuote, verifyWebhookSignature, customerFrom };
+module.exports = { app, start, bogoQuote, regularQuote, verifyWebhookSignature, customerFrom, deliveryFrom };

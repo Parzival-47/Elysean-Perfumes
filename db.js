@@ -102,8 +102,8 @@ async function createOrder(order) {
        shipping_tier, subtotal_cents, shipping_cents, total_cents
      ) VALUES ($1, $2, $3, 'creating_checkout', $4, $5, $6, $7, $8, $9, $10, $11)
      RETURNING *`,
-    [order.id, order.orderNumber, order.orderType || 'bogo', order.customer, JSON.stringify(order.items), order.locker,
-      order.attribution || {}, order.shippingTier, order.subtotalCents, order.shippingCents, order.totalCents],
+    [order.id, order.orderNumber, order.orderType || 'bogo', order.customer, JSON.stringify(order.items), order.delivery,
+      order.attribution || {}, order.deliveryZone, order.subtotalCents, order.shippingCents, order.totalCents],
   );
   return rows[0];
 }
@@ -192,7 +192,7 @@ async function markOwnerEmailSent(orderId) {
 
 async function publicOrder(orderNumber) {
   const { rows } = await getPool().query(
-    `SELECT order_number, status, items, locker, shipping_tier,
+    `SELECT order_number, status, items, locker AS delivery, shipping_tier AS delivery_zone,
             subtotal_cents, shipping_cents, total_cents, created_at, paid_at
        FROM orders WHERE order_number = $1`,
     [orderNumber],
